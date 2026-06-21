@@ -18,15 +18,7 @@ import {
 } from "lucide-react";
 import QuickAddModal from "@/components/ui/QuickAddModal";
 
-const statusOptions = [
-  "All",
-  "Watching",
-  "Applied",
-  "Under Review",
-  "Accepted",
-  "Rejected",
-  "Waitlisted",
-];
+const statusFilters = ["All", "Applied", "Accepted", "Rejected", "Waitlisted"];
 
 const dotColorClass: Record<"red" | "amber" | "green", string> = {
   red: "bg-red-500",
@@ -328,32 +320,18 @@ export default function ApplicationsPage() {
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <div className="flex flex-col sm:flex-row gap-3 flex-1">
-          <div className="relative flex-1 max-w-md">
-            <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            />
-            <input
-              type="text"
-              placeholder="Search name, university, or funding body..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent"
-            />
-          </div>
-
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full sm:w-44 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent bg-white"
-          >
-            {statusOptions.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+        <div className="relative flex-1 max-w-md">
+          <Search
+            size={18}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            type="text"
+            placeholder="Search name, university, or funding body..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent"
+          />
         </div>
 
         <div className="flex items-center gap-2">
@@ -371,6 +349,22 @@ export default function ApplicationsPage() {
             + Add Application
           </button>
         </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 mb-6">
+        {statusFilters.map((s) => (
+          <button
+            key={s}
+            onClick={() => setStatusFilter(s)}
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+              statusFilter === s
+                ? "bg-[#4a7c59] text-white"
+                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+            }`}
+          >
+            {s}
+          </button>
+        ))}
       </div>
 
       {loading ? (
