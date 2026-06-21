@@ -124,35 +124,35 @@ export default function Header() {
   const upcomingCount = reminders.length;
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-6 py-3">
+    <header className="sticky top-0 z-30 bg-card border-b border-cardBorder px-6 py-3">
       <div className="flex items-center justify-end">
         <div className="relative" ref={containerRef}>
           <button
             onClick={() => setOpen(!open)}
-            className="relative p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+            className="relative p-2 rounded-md text-white hover:bg-white/10 transition-colors"
             aria-label="Open reminders"
           >
             <Bell size={20} />
             {upcomingCount > 0 && (
-              <span className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white px-1">
+              <span className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent text-[10px] font-medium text-black px-1">
                 {upcomingCount}
               </span>
             )}
           </button>
 
           {open && (
-            <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 py-4 z-50">
-              <p className="px-4 text-sm font-semibold text-[#2d3436]">
+            <div className="absolute right-0 mt-2 w-80 bg-card rounded-xl shadow-lg border border-cardBorder py-4 z-50">
+              <p className="px-4 text-sm font-semibold text-white">
                 Upcoming Reminders
               </p>
 
               <div className="mt-3 max-h-80 overflow-y-auto">
                 {reminders.length === 0 ? (
-                  <p className="px-4 text-sm text-gray-500">
+                  <p className="px-4 text-sm text-textMuted">
                     No upcoming reminders
                   </p>
                 ) : (
-                  <ul className="divide-y divide-gray-100">
+                  <ul className="divide-y divide-gray-700/50">
                     {reminders.map((item) => (
                       <li
                         key={`${item.kind}-${item.id}`}
@@ -164,15 +164,15 @@ export default function Header() {
                           }`}
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-[#2d3436] truncate">
+                          <p className="text-sm font-medium text-white truncate">
                             {item.label}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-textMuted">
                             {formatDate(item.date)} &bull;{" "}
                             <span
                               className={
                                 item.kind === "Opening soon"
-                                  ? "text-amber-600 font-medium"
+                                  ? "text-secondary font-medium"
                                   : ""
                               }
                             >
@@ -190,18 +190,18 @@ export default function Header() {
                 )}
               </div>
 
-              <div className="mt-3 px-4 pt-3 border-t border-gray-200 flex gap-3">
+              <div className="mt-3 px-4 pt-3 border-t border-gray-700/50 flex gap-3">
                 <Link
                   href="/applications"
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-[#4a7c59] hover:text-[#3e6b4b] transition-colors"
+                  className="text-sm font-medium text-accent hover:text-green-300 transition-colors"
                 >
                   Applications
                 </Link>
                 <Link
                   href="/watchlist"
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-[#4a7c59] hover:text-[#3e6b4b] transition-colors"
+                  className="text-sm font-medium text-accent hover:text-green-300 transition-colors"
                 >
                   Watchlist
                 </Link>

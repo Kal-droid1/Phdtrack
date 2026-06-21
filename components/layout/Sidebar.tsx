@@ -21,9 +21,12 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex fixed left-0 top-0 h-full w-[240px] flex-col bg-white border-r border-gray-200 z-40">
+    <aside className="hidden md:flex fixed left-0 top-0 h-full w-[240px] flex-col bg-sidebar z-40">
       <div className="flex items-center h-16 px-6">
-        <span className="text-xl font-bold text-[#2d3436]">PhDTrack</span>
+        <span className="relative flex items-center gap-2 text-xl font-bold text-white">
+          <span className="w-2 h-2 rounded-full bg-accent" />
+          PhDTrack
+        </span>
       </div>
 
       <nav className="flex-1 px-4 py-4 space-y-1">
@@ -37,8 +40,8 @@ export default function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-[#f0f4f0] text-[#4a7c59] border-l-4 border-[#4a7c59]"
-                  : "text-gray-600 hover:bg-gray-50 border-l-4 border-transparent"
+                  ? "bg-accentDark text-accent border-l-[3px] border-accent"
+                  : "text-textMuted hover:text-white hover:bg-white/5 border-l-[3px] border-transparent"
               }`}
             >
               <Icon size={20} />
@@ -48,13 +51,13 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="px-4 py-4 border-t border-gray-200">
+      <div className="px-4 py-4 border-t border-gray-700/50">
         <Link
           href="/settings"
           className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
             pathname === "/settings"
-              ? "bg-[#f0f4f0] text-[#4a7c59] border-l-4 border-[#4a7c59]"
-              : "text-gray-600 hover:bg-gray-50 border-l-4 border-transparent"
+              ? "bg-accentDark text-accent border-l-[3px] border-accent"
+              : "text-textMuted hover:text-white hover:bg-white/5 border-l-[3px] border-transparent"
           }`}
         >
           <Settings size={20} />
