@@ -53,6 +53,7 @@ export default function ApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingApplication, setEditingApplication] = useState<
     Application | undefined
@@ -97,6 +98,10 @@ export default function ApplicationsPage() {
   }, []);
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter]);
+
+  useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       const target = e.target as HTMLElement;
       if (!target.closest("[data-menu]")) {
@@ -121,6 +126,12 @@ export default function ApplicationsPage() {
       statusFilter === "All" || a.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const totalPages = Math.ceil(filteredApplications.length / 10);
+  const paginatedApplications = filteredApplications.slice(
+    (currentPage - 1) * 10,
+    currentPage * 10
+  );
 
   function handleAdd() {
     setEditingApplication(undefined);
@@ -401,7 +412,7 @@ export default function ApplicationsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredApplications.map((application) => (
+                {paginatedApplications.map((application) => (
                   <tr key={application.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <p className="text-sm font-medium text-[#2d3436]">
@@ -444,7 +455,7 @@ export default function ApplicationsPage() {
 
           {/* Mobile cards */}
           <div className="md:hidden space-y-4">
-            {filteredApplications.map((application) => (
+            {paginatedApplications.map((application) => (
               <div
                 key={application.id}
                 className="bg-white rounded-xl shadow-sm p-4"
@@ -499,6 +510,28 @@ export default function ApplicationsPage() {
               </div>
             ))}
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-6">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              <span className="text-sm text-gray-600">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </>
       )}
 

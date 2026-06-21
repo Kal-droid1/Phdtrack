@@ -34,6 +34,7 @@ export default function SupervisorsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingSupervisor, setEditingSupervisor] = useState<
     Supervisor | undefined
@@ -80,6 +81,10 @@ export default function SupervisorsPage() {
   }, []);
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter]);
+
+  useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       const target = e.target as HTMLElement;
       if (!target.closest("[data-menu]")) {
@@ -102,6 +107,12 @@ export default function SupervisorsPage() {
       statusFilter === "All" || s.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const totalPages = Math.ceil(filteredSupervisors.length / 10);
+  const paginatedSupervisors = filteredSupervisors.slice(
+    (currentPage - 1) * 10,
+    currentPage * 10
+  );
 
   function handleAdd() {
     setEditingSupervisor(undefined);
@@ -370,7 +381,7 @@ export default function SupervisorsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredSupervisors.map((supervisor) => (
+                {paginatedSupervisors.map((supervisor) => (
                   <tr key={supervisor.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -413,7 +424,7 @@ export default function SupervisorsPage() {
 
           {/* Mobile cards */}
           <div className="md:hidden space-y-4">
-            {filteredSupervisors.map((supervisor) => (
+            {paginatedSupervisors.map((supervisor) => (
               <div
                 key={supervisor.id}
                 className="bg-white rounded-xl shadow-sm p-4"
@@ -460,6 +471,28 @@ export default function SupervisorsPage() {
               </div>
             ))}
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-6">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              <span className="text-sm text-gray-600">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </>
       )}
 
