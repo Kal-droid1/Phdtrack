@@ -22,9 +22,9 @@ import QuickAddModal from "@/components/ui/QuickAddModal";
 const statusFilters = ["All", "Applied", "Accepted", "Rejected", "Waitlisted"];
 
 const dotColorClass: Record<"red" | "amber" | "green", string> = {
-  red: "bg-rose",
-  amber: "bg-gold",
-  green: "bg-sage",
+  red: "bg-glow-rose shadow-glow-rose",
+  amber: "bg-glow-amber shadow-glow-amber",
+  green: "bg-glow-teal shadow-glow-teal",
 };
 
 function isOpeningSoon(openDate: string | null): boolean {
@@ -289,7 +289,7 @@ Applications: ${list || "none"}`;
   }
 
   function renderDeadline(deadline: string | null) {
-    if (!deadline) return <span className="text-sm text-ink-muted">—</span>;
+    if (!deadline) return <span className="text-sm text-white/20">—</span>;
 
     const days = daysUntil(deadline);
     const color = deadlineColor(days);
@@ -298,8 +298,8 @@ Applications: ${list || "none"}`;
       <div className="flex items-center gap-2">
         <span className={`w-2 h-2 rounded-full ${dotColorClass[color]}`} />
         <div className="flex flex-col">
-          <span className="text-sm text-ink">{formatDate(deadline)}</span>
-          <span className="text-xs text-ink-light">
+          <span className="text-sm text-white/70">{formatDate(deadline)}</span>
+          <span className="text-xs text-white/40">
             {days < 0 ? `${Math.abs(days)} days ago` : `${days} days left`}
           </span>
         </div>
@@ -314,20 +314,26 @@ Applications: ${list || "none"}`;
       <div className="relative" data-menu="true">
         <button
           onClick={() => setOpenMenuId(isOpen ? null : application.id)}
-          className="p-1.5 rounded-lg hover:bg-cream text-ink-muted"
+          className="p-1.5 rounded-lg hover:bg-white/5 text-white/30"
           aria-label="Open actions"
         >
           <MoreVertical size={18} />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-warm-lg border border-border py-1 z-50 overflow-hidden">
+          <div className="absolute right-0 mt-1 w-32 rounded-xl py-1 z-50 overflow-hidden animate-fadeIn"
+            style={{
+              background: "#0f0f17",
+              border: "1px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+            }}
+          >
             <button
               onClick={() => {
                 handleEdit(application);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
+              className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 transition-colors"
             >
               Edit
             </button>
@@ -336,7 +342,7 @@ Applications: ${list || "none"}`;
                 handleArchiveClick(application);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
+              className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 transition-colors"
             >
               Archive
             </button>
@@ -345,7 +351,7 @@ Applications: ${list || "none"}`;
                 handleDeleteClick(application);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2.5 text-sm text-rose hover:bg-rose/5 transition-colors"
+              className="w-full text-left px-4 py-2.5 text-sm text-glow-rose hover:bg-white/5 transition-colors"
             >
               Delete
             </button>
@@ -357,11 +363,11 @@ Applications: ${list || "none"}`;
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-ink tracking-tight">
-          Applications
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight font-syne">
+          <span className="gradient-text">A</span>pplications
         </h1>
-        <p className="text-sm text-ink-light mt-1.5">
+        <p className="text-white/30 text-sm mt-2">
           PhD programs and funding opportunities you are tracking.
         </p>
       </div>
@@ -371,7 +377,7 @@ Applications: ${list || "none"}`;
           <div className="relative flex-1 max-w-md">
             <Search
               size={18}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30"
             />
             <input
               type="text"
@@ -385,10 +391,15 @@ Applications: ${list || "none"}`;
           <button
             onClick={handleGenerateReport}
             disabled={reportLoading}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-brand bg-white border border-brand/20 rounded-xl hover:bg-brand-light transition-all duration-200 disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 disabled:opacity-50"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.7)",
+            }}
           >
             {reportLoading && (
-              <span className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
             )}
             <FileText size={16} />
             Generate Report
@@ -398,14 +409,23 @@ Applications: ${list || "none"}`;
         <div className="flex items-center gap-2">
           <button
             onClick={handleQuickAdd}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-brand bg-white border border-brand/20 rounded-xl hover:bg-brand-light transition-all duration-200"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.7)",
+            }}
           >
             <Wand2 size={16} />
             Quick Add
           </button>
           <button
             onClick={handleAdd}
-            className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 shadow-warm"
+            className="px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-all duration-200"
+            style={{
+              background: "linear-gradient(135deg, #8b5cf6, #14b8a6)",
+              boxShadow: "0 0 20px rgba(139,92,246,0.2)",
+            }}
           >
             + Add Application
           </button>
@@ -427,7 +447,6 @@ Applications: ${list || "none"}`;
             {statusFilters
               .filter((s) => {
                 if (s === "All") return true;
-                if (s === "Applied") return true;
                 return (statusCounts[s] || 0) > 0;
               })
               .map((s) => {
@@ -438,9 +457,15 @@ Applications: ${list || "none"}`;
                     onClick={() => setStatusFilter(s)}
                     className={`px-3.5 py-1.5 text-sm font-medium rounded-xl transition-all duration-200 ${
                       statusFilter === s
-                        ? "bg-brand text-white shadow-sm"
-                        : "bg-white text-ink-light border border-border hover:bg-cream"
+                        ? "text-white"
+                        : "text-white/40 hover:text-white/70"
                     }`}
+                    style={statusFilter === s ? {
+                      background: "linear-gradient(135deg, #8b5cf6, #14b8a6)",
+                    } : {
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
                   >
                     {s} ({count})
                   </button>
@@ -451,7 +476,7 @@ Applications: ${list || "none"}`;
       })()}
 
       {loading ? (
-        <div className="text-ink-light text-sm animate-pulse">Loading applications...</div>
+        <div className="text-white/40 text-sm animate-pulse">Loading applications...</div>
       ) : filteredApplications.length === 0 ? (
         <EmptyState
           message="No applications found."
@@ -461,14 +486,23 @@ Applications: ${list || "none"}`;
       ) : (
         <>
           {reportOpen && reportText && (
-            <div className="mb-6 bg-white rounded-2xl shadow-warm border-l-[3px] border-brand p-5 relative">
+            <div className="mb-6 rounded-2xl p-5 relative animate-fadeIn"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                backdropFilter: "blur(20px)",
+                borderLeft: "4px solid #8b5cf6",
+                borderTop: "1px solid rgba(255,255,255,0.1)",
+                borderRight: "1px solid rgba(255,255,255,0.1)",
+                borderBottom: "1px solid rgba(255,255,255,0.1)",
+              }}
+            >
               <div className="flex items-start justify-between gap-4">
-                <p className="text-sm text-ink leading-relaxed whitespace-pre-line">
+                <p className="text-sm text-white/70 leading-relaxed whitespace-pre-line">
                   {reportText}
                 </p>
                 <button
                   onClick={() => setReportOpen(false)}
-                  className="p-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-cream transition-colors shrink-0"
+                  className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/10 transition-colors shrink-0"
                   aria-label="Dismiss report"
                 >
                   ×
@@ -478,55 +512,59 @@ Applications: ${list || "none"}`;
           )}
 
           {/* Desktop table */}
-          <div className="hidden md:block bg-white rounded-2xl shadow-warm overflow-visible">
+          <div className="hidden md:block rounded-2xl overflow-visible"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-border-light">
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Name
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Country
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Program
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Deadline
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Stipend
-                  </th>
-                  <th className="px-6 py-4 w-16">
-                    {/* Actions */}
-                  </th>
+                <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Name</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Country</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Program</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Deadline</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Status</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Stipend</th>
+                  <th className="px-6 py-4 w-16" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border-light">
+              <tbody>
                 {paginatedApplications.map((application) => (
-                  <tr key={application.id} className="hover:bg-cream/50 transition-colors">
+                  <tr
+                    key={application.id}
+                    className="transition-colors"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                  >
                     <td className="px-6 py-4">
-                      <p className="text-sm font-medium text-ink">
+                      <p className="text-sm font-medium text-white/80">
                         {application.name}
                       </p>
                       {application.university && (
-                        <p className="text-xs text-ink-light mt-0.5">
+                        <p className="text-xs text-white/40 mt-0.5">
                           {application.university}
                         </p>
                       )}
                       {isOpeningSoon(application.open_date) && (
-                        <span className="inline-flex items-center mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gold/10 text-gold">
+                        <span className="inline-flex items-center mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium"
+                          style={{
+                            background: "rgba(245, 158, 11, 0.1)",
+                            border: "1px solid rgba(245, 158, 11, 0.2)",
+                            color: "#f59e0b",
+                            boxShadow: "0 0 10px rgba(245, 158, 11, 0.2)",
+                          }}
+                        >
                           Opening soon
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-ink">
+                    <td className="px-6 py-4 text-sm text-white/60">
                       {application.country || "—"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-ink">
+                    <td className="px-6 py-4 text-sm text-white/60">
                       {application.program || "—"}
                     </td>
                     <td className="px-6 py-4">
@@ -535,7 +573,7 @@ Applications: ${list || "none"}`;
                     <td className="px-6 py-4">
                       <StatusBadge status={application.status} />
                     </td>
-                    <td className="px-6 py-4 text-sm text-ink">
+                    <td className="px-6 py-4 text-sm text-white/60">
                       {extractStipend(application.notes) || "—"}
                     </td>
                     <td className="px-6 py-4 text-right relative overflow-visible">
@@ -552,20 +590,32 @@ Applications: ${list || "none"}`;
             {paginatedApplications.map((application) => (
               <div
                 key={application.id}
-                className="bg-white rounded-2xl shadow-warm p-4"
+                className="rounded-2xl p-4"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-medium text-ink">
+                    <p className="text-sm font-medium text-white/80">
                       {application.name}
                     </p>
                     {application.university && (
-                      <p className="text-xs text-ink-light mt-0.5">
+                      <p className="text-xs text-white/40 mt-0.5">
                         {application.university}
                       </p>
                     )}
                     {isOpeningSoon(application.open_date) && (
-                      <span className="inline-flex items-center mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gold/10 text-gold">
+                      <span className="inline-flex items-center mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium"
+                        style={{
+                          background: "rgba(245, 158, 11, 0.1)",
+                          border: "1px solid rgba(245, 158, 11, 0.2)",
+                          color: "#f59e0b",
+                          boxShadow: "0 0 10px rgba(245, 158, 11, 0.2)",
+                        }}
+                      >
                         Opening soon
                       </span>
                     )}
@@ -575,24 +625,24 @@ Applications: ${list || "none"}`;
 
                 <div className="mt-4 space-y-2.5">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-ink-light">Country</span>
-                    <span className="text-ink">{application.country || "—"}</span>
+                    <span className="text-white/40">Country</span>
+                    <span className="text-white/70">{application.country || "—"}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-ink-light">Program</span>
-                    <span className="text-ink">{application.program || "—"}</span>
+                    <span className="text-white/40">Program</span>
+                    <span className="text-white/70">{application.program || "—"}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-ink-light text-sm">Deadline</span>
+                    <span className="text-white/40 text-sm">Deadline</span>
                     {renderDeadline(application.deadline)}
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-ink-light text-sm">Status</span>
+                    <span className="text-white/40 text-sm">Status</span>
                     <StatusBadge status={application.status} />
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-ink-light">Stipend</span>
-                    <span className="text-ink">
+                    <span className="text-white/40">Stipend</span>
+                    <span className="text-white/70">
                       {extractStipend(application.notes) || "—"}
                     </span>
                   </div>
@@ -606,17 +656,27 @@ Applications: ${list || "none"}`;
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2.5 text-sm font-medium text-ink-light bg-white border border-border rounded-xl hover:bg-cream transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "rgba(255,255,255,0.6)",
+                }}
               >
                 Previous
               </button>
-              <span className="text-sm text-ink-light">
+              <span className="text-sm text-white/40">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2.5 text-sm font-medium text-ink-light bg-white border border-border rounded-xl hover:bg-cream transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "rgba(255,255,255,0.6)",
+                }}
               >
                 Next
               </button>
@@ -630,7 +690,7 @@ Applications: ${list || "none"}`;
         <div className="mt-10">
           <button
             onClick={() => setArchivedExpanded(!archivedExpanded)}
-            className="flex items-center gap-2 text-sm font-medium text-ink-light hover:text-ink transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-white/40 hover:text-white/70 transition-colors"
           >
             {archivedExpanded ? (
               <ChevronUp size={18} />
@@ -645,18 +705,22 @@ Applications: ${list || "none"}`;
               {archivedApplications.map((application) => (
                 <div
                   key={application.id}
-                  className="bg-cream rounded-2xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+                  className="rounded-2xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                  }}
                 >
                   <div>
-                    <p className="text-sm font-medium text-ink">
+                    <p className="text-sm font-medium text-white/70">
                       {application.name} — {application.university || "—"}
                     </p>
-                    <p className="text-xs text-ink-light mt-1">
+                    <p className="text-xs text-white/40 mt-1">
                       Archived on {formatDate(application.archived_at || "")}
                     </p>
                     {application.lessons && (
-                      <p className="text-sm text-ink-light mt-2 leading-relaxed">
-                        <span className="font-medium text-ink">Lessons:</span>{" "}
+                      <p className="text-sm text-white/50 mt-2 leading-relaxed">
+                        <span className="font-medium text-white/70">Lessons:</span>{" "}
                         {application.lessons}
                       </p>
                     )}
@@ -664,13 +728,23 @@ Applications: ${list || "none"}`;
                   <div className="flex items-center gap-2 self-start shrink-0">
                     <button
                       onClick={() => handleUnarchiveClick(application)}
-                      className="px-3.5 py-1.5 text-sm font-medium text-sage border border-sage/20 rounded-xl hover:bg-sage/5 transition-all duration-200"
+                      className="px-3.5 py-1.5 text-sm font-medium rounded-xl transition-all duration-200"
+                      style={{
+                        color: "#14b8a6",
+                        border: "1px solid rgba(20, 184, 166, 0.2)",
+                        background: "rgba(20, 184, 166, 0.05)",
+                      }}
                     >
                       Unarchive
                     </button>
                     <button
                       onClick={() => handleDeleteClick(application)}
-                      className="px-3.5 py-1.5 text-sm font-medium text-rose border border-rose/20 rounded-xl hover:bg-rose/5 transition-all duration-200"
+                      className="px-3.5 py-1.5 text-sm font-medium rounded-xl transition-all duration-200"
+                      style={{
+                        color: "#f43f5e",
+                        border: "1px solid rgba(244, 63, 94, 0.2)",
+                        background: "rgba(244, 63, 94, 0.05)",
+                      }}
                     >
                       Delete
                     </button>
@@ -719,7 +793,7 @@ Applications: ${list || "none"}`;
           value={archiveLessons}
           onChange={(e) => setArchiveLessons(e.target.value)}
           placeholder="Write your lessons learned..."
-          className="w-full rounded-xl border-border px-3.5 py-2.5 text-sm resize-none"
+          className="w-full rounded-xl px-3.5 py-2.5 text-sm resize-none"
         />
       </ConfirmModal>
 

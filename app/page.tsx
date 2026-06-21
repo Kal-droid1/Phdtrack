@@ -14,16 +14,16 @@ interface DeadlineItem {
 }
 
 const dotColorClass: Record<"red" | "amber" | "green", string> = {
-  red: "bg-rose",
-  amber: "bg-gold",
-  green: "bg-sage",
+  red: "bg-glow-rose shadow-glow-rose",
+  amber: "bg-glow-amber shadow-glow-amber",
+  green: "bg-glow-teal shadow-glow-teal",
 };
 
-const statIconColors = [
-  { icon: FileText, bg: "bg-brand-light", color: "text-brand" },
-  { icon: Users, bg: "bg-lavender/10", color: "text-lavender" },
-  { icon: Bookmark, bg: "bg-gold/10", color: "text-gold" },
-  { icon: Globe, bg: "bg-sage/10", color: "text-sage" },
+const statConfigs = [
+  { icon: FileText, accent: "glow-purple", gradient: "gradient-text-purple" },
+  { icon: Users, accent: "glow-teal", gradient: "gradient-text-teal" },
+  { icon: Bookmark, accent: "glow-amber", gradient: "gradient-text-amber" },
+  { icon: Globe, accent: "glow-rose", gradient: "gradient-text-rose" },
 ];
 
 function getGreeting(): string {
@@ -202,59 +202,67 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
   }
 
   const greeting = getGreeting();
-  const today = new Date().toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
 
   const statCards = [
-    { label: "Total Applications", value: stats.totalApplications },
+    { label: "Applications", value: stats.totalApplications },
     { label: "Supervisors", value: stats.totalSupervisors },
-    { label: "Watchlist Items", value: stats.watchlistItems },
-    { label: "Countries Applied", value: stats.countriesApplied },
+    { label: "Watchlist", value: stats.watchlistItems },
+    { label: "Countries", value: stats.countriesApplied },
   ];
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       {/* Greeting */}
-      <div className="mb-8">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-ink tracking-tight">
-            {greeting}, Kal
+      <div className="mb-10">
+        <p className="text-white/50 text-xl md:text-2xl font-light tracking-wide">{greeting},</p>
+        <div className="flex items-center gap-1 mt-1">
+          <h1 className="font-syne text-6xl md:text-7xl font-black text-white tracking-tight">
+            <span className="gradient-text">K</span>al.
           </h1>
-          <div className="flex items-center gap-3 mt-2">
-            <span className="h-0.5 w-12 rounded-full bg-brand" />
-            <p className="text-sm text-ink-light">{today}</p>
-          </div>
+          <span className="w-[3px] h-[2.5rem] bg-white/60 animate-blink ml-1 rounded-full" />
+        </div>
+        <div className="flex items-center gap-3 mt-3">
+          <div className="w-0.5 h-4 rounded-full" style={{ background: "linear-gradient(180deg, #8b5cf6, #14b8a6)" }} />
+          <p className="text-white/30 text-sm italic">Tracking your path to academia.</p>
         </div>
       </div>
 
       {loading ? (
-        <div className="text-ink-light text-sm animate-pulse">Loading dashboard...</div>
+        <div className="text-white/40 text-sm animate-pulse">Loading dashboard...</div>
       ) : (
         <>
           {/* Stat Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8">
             {statCards.map((card, idx) => {
-              const { icon: Icon, bg: iconBg, color: iconColor } = statIconColors[idx];
+              const { icon: Icon, gradient } = statConfigs[idx];
               return (
                 <div
                   key={card.label}
-                  className="bg-white rounded-2xl shadow-warm p-5 md:p-6 hover:shadow-warm-md transition-all duration-200 group"
+                  className="glass-card rounded-2xl p-5 md:p-6 group cursor-default"
+                  style={{
+                    borderColor: "rgba(255,255,255,0.1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    const colors = ["#8b5cf6", "#14b8a6", "#f59e0b", "#f43f5e"];
+                    e.currentTarget.style.borderColor = colors[idx];
+                    e.currentTarget.style.boxShadow = `0 0 30px ${colors[idx]}22`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-white/30">
                         {card.label}
                       </p>
-                      <p className="text-3xl md:text-4xl font-bold mt-2 text-ink tracking-tight">
+                      <p className={`text-4xl md:text-5xl font-black mt-2 tracking-tight ${gradient}`}>
                         {card.value}
                       </p>
                     </div>
-                    <div className={`p-3 rounded-xl ${iconBg} group-hover:scale-105 transition-transform duration-200`}>
-                      <Icon size={22} className={iconColor} />
+                    <div className="p-3 rounded-xl bg-white/5 group-hover:scale-110 transition-transform duration-300">
+                      <Icon size={22} className="text-white/50" />
                     </div>
                   </div>
                 </div>
@@ -267,34 +275,49 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             <button
               onClick={generateBrief}
               disabled={briefLoading}
-              className="group flex items-center gap-2.5 px-5 py-3 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 shadow-warm disabled:opacity-50"
+              className="group relative overflow-hidden flex items-center gap-2.5 px-8 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-300 disabled:opacity-50"
+              style={{
+                background: "linear-gradient(135deg, #8b5cf6, #14b8a6)",
+                boxShadow: "0 0 30px rgba(139,92,246,0.2), 0 0 60px rgba(20,184,166,0.1)",
+              }}
             >
+              <span className="absolute inset-0 animate-shimmer pointer-events-none" />
               {briefLoading ? (
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin relative z-10" />
               ) : (
-                <Sparkles size={16} className="group-hover:rotate-12 transition-transform" />
+                <Sparkles size={16} className="group-hover:rotate-12 transition-transform relative z-10" />
               )}
-              {briefLoading ? "Generating..." : "Morning Brief"}
+              <span className="relative z-10">{briefLoading ? "Generating..." : "Morning Brief"}</span>
             </button>
 
             {briefOpen && briefText && (
-              <div className="mt-4 bg-white rounded-2xl shadow-warm border-l-[3px] border-brand p-5 md:p-6 relative">
+              <div
+                className="mt-4 rounded-2xl p-5 md:p-6 relative animate-fadeIn"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  backdropFilter: "blur(20px)",
+                  borderLeft: "4px solid #8b5cf6",
+                  borderTop: "1px solid rgba(255,255,255,0.1)",
+                  borderRight: "1px solid rgba(255,255,255,0.1)",
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
                 <div className="flex items-start justify-between gap-4">
-                  <p className="text-sm text-ink leading-relaxed whitespace-pre-line">
+                  <p className="text-sm text-white/70 leading-relaxed whitespace-pre-line">
                     {briefText}
                   </p>
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={generateBrief}
                       disabled={briefLoading}
-                      className="p-2 rounded-lg text-ink-muted hover:text-brand hover:bg-brand-light transition-all duration-200"
+                      className="p-2 rounded-lg text-white/30 hover:text-white hover:bg-white/10 transition-all duration-200"
                       aria-label="Regenerate brief"
                     >
                       <RefreshCw size={15} />
                     </button>
                     <button
                       onClick={() => setBriefOpen(false)}
-                      className="p-2 rounded-lg text-ink-muted hover:text-ink hover:bg-cream transition-all duration-200 text-lg leading-none"
+                      className="p-2 rounded-lg text-white/30 hover:text-white hover:bg-white/10 transition-all duration-200 text-lg leading-none"
                       aria-label="Dismiss brief"
                     >
                       ×
@@ -308,10 +331,14 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
           {/* Two Panels */}
           <div className="grid md:grid-cols-2 gap-5 md:gap-6">
             {/* Upcoming Deadlines */}
-            <div className="bg-white rounded-2xl shadow-warm p-5 md:p-6">
+            <div className="rounded-2xl p-5 md:p-6" style={{
+              background: "rgba(255,255,255,0.05)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}>
               <div className="flex items-center gap-2.5 mb-5">
-                <span className="w-1 h-5 rounded-full bg-brand" />
-                <h2 className="text-base font-semibold text-ink tracking-tight">
+                <span className="w-1 h-5 rounded-full" style={{ background: "linear-gradient(180deg, #8b5cf6, #14b8a6)" }} />
+                <h2 className="text-xs font-semibold uppercase tracking-[0.2em] gradient-text">
                   Upcoming Deadlines
                 </h2>
               </div>
@@ -319,7 +346,7 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
               {upcomingDeadlines.length === 0 ? (
                 <EmptyState message="No upcoming deadlines." />
               ) : (
-                <ul className="space-y-4">
+                <ul className="space-y-1">
                   {upcomingDeadlines.map((item) => {
                     const days = daysUntil(item.date);
                     const color = deadlineColor(days);
@@ -327,24 +354,24 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
                     return (
                       <li
                         key={item.id}
-                        className="flex items-center justify-between py-2 border-b border-border-light last:border-0"
+                        className="flex items-center justify-between py-3 px-3 -mx-3 rounded-xl transition-all duration-200 hover:bg-white/5 hover:translate-x-1"
                       >
                         <div className="flex items-center gap-3">
                           <span
                             className={`w-2.5 h-2.5 rounded-full ${dotColorClass[color]}`}
                           />
                           <div>
-                            <p className="text-sm font-medium text-ink">
+                            <p className="text-sm font-medium text-white/80">
                               {item.name}
                             </p>
-                            <p className="text-xs text-ink-light">
+                            <p className="text-xs text-white/40">
                               {days < 0
                                 ? `${Math.abs(days)} days ago`
                                 : `${days} days left`}
                             </p>
                           </div>
                         </div>
-                        <span className="text-sm text-ink-light tabular-nums">
+                        <span className="text-sm text-white/50 tabular-nums">
                           {formatDate(item.date)}
                         </span>
                       </li>
@@ -355,32 +382,36 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             </div>
 
             {/* Supervisors to Follow Up */}
-            <div className="bg-white rounded-2xl shadow-warm p-5 md:p-6">
+            <div className="rounded-2xl p-5 md:p-6" style={{
+              background: "rgba(255,255,255,0.05)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}>
               <div className="flex items-center gap-2.5 mb-5">
-                <span className="w-1 h-5 rounded-full bg-lavender" />
-                <h2 className="text-base font-semibold text-ink tracking-tight">
-                  Supervisors to Follow Up
+                <span className="w-1 h-5 rounded-full" style={{ background: "linear-gradient(180deg, #14b8a6, #8b5cf6)" }} />
+                <h2 className="text-xs font-semibold uppercase tracking-[0.2em] gradient-text">
+                  Follow Up
                 </h2>
               </div>
 
               {followUps.length === 0 ? (
                 <EmptyState message="No supervisors need follow-up." />
               ) : (
-                <ul className="space-y-4">
+                <ul className="space-y-1">
                   {followUps.map((supervisor) => (
                     <li
                       key={supervisor.id}
-                      className="flex items-center justify-between py-2 border-b border-border-light last:border-0"
+                      className="flex items-center justify-between py-3 px-3 -mx-3 rounded-xl transition-all duration-200 hover:bg-white/5 hover:translate-x-1"
                     >
                       <div>
-                        <p className="text-sm font-medium text-ink">
+                        <p className="text-sm font-medium text-white/80">
                           {supervisor.name}
                         </p>
-                        <p className="text-xs text-ink-light">
+                        <p className="text-xs text-white/40">
                           {supervisor.university}
                         </p>
                       </div>
-                      <span className="text-sm text-ink-light tabular-nums">
+                      <span className="text-sm text-white/50 tabular-nums">
                         {supervisor.date_contacted
                           ? formatDate(supervisor.date_contacted)
                           : "Not contacted"}

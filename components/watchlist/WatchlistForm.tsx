@@ -94,14 +94,20 @@ export default function WatchlistForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="p-3.5 rounded-xl bg-rose/5 border border-rose/10 text-rose text-sm leading-relaxed">
+        <div className="p-3.5 rounded-xl text-sm leading-relaxed"
+          style={{
+            color: "#f43f5e",
+            background: "rgba(244, 63, 94, 0.1)",
+            border: "1px solid rgba(244, 63, 94, 0.2)",
+          }}
+        >
           {error}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
-          Name <span className="text-rose">*</span>
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
+          Name <span style={{ color: "#f43f5e" }}>*</span>
         </label>
         <input
           type="text"
@@ -114,7 +120,7 @@ export default function WatchlistForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-ink-light mb-1.5">
+          <label className="block text-sm font-medium text-white/50 mb-1.5">
             Funding Body
           </label>
           <input
@@ -126,7 +132,7 @@ export default function WatchlistForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-ink-light mb-1.5">
+          <label className="block text-sm font-medium text-white/50 mb-1.5">
             Country
           </label>
           <input
@@ -140,7 +146,7 @@ export default function WatchlistForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-ink-light mb-1.5">
+          <label className="block text-sm font-medium text-white/50 mb-1.5">
             Expected Open Date
           </label>
           <input
@@ -151,7 +157,7 @@ export default function WatchlistForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-ink-light mb-1.5">
+          <label className="block text-sm font-medium text-white/50 mb-1.5">
             Expected Deadline
           </label>
           <input
@@ -163,8 +169,8 @@ export default function WatchlistForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
-          URL <span className="text-ink-muted font-normal">(optional)</span>
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
+          URL <span className="text-white/20 font-normal">(optional)</span>
         </label>
         <input
           type="url"
@@ -175,17 +181,22 @@ export default function WatchlistForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
           Reminder
         </label>
         <button
           type="button"
           onClick={() => setReminder(!reminder)}
-          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-sm font-medium transition-all duration-200 ${
-            reminder
-              ? "bg-gold/5 border-gold/20 text-gold"
-              : "bg-white border-border text-ink-light hover:bg-cream"
-          }`}
+          className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-sm font-medium transition-all duration-200"
+          style={reminder ? {
+            background: "rgba(245, 158, 11, 0.1)",
+            border: "1px solid rgba(245, 158, 11, 0.2)",
+            color: "#f59e0b",
+          } : {
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "rgba(255,255,255,0.5)",
+          }}
         >
           <Bell size={18} fill={reminder ? "currentColor" : "none"} />
           Remind me when opening soon
@@ -193,7 +204,7 @@ export default function WatchlistForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
           Notes
         </label>
         <textarea
@@ -207,14 +218,22 @@ export default function WatchlistForm({
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2.5 text-sm font-medium text-ink-light border border-border rounded-xl hover:bg-cream transition-all duration-200"
+          className="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200"
+          style={{
+            color: "rgba(255,255,255,0.5)",
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.1)",
+          }}
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 disabled:opacity-50 shadow-warm"
+          className="px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-all duration-200 disabled:opacity-50"
+          style={{
+            background: "linear-gradient(135deg, #8b5cf6, #14b8a6)",
+          }}
         >
           {saving
             ? "Saving..."

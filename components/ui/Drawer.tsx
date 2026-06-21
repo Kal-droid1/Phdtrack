@@ -32,21 +32,29 @@ export default function Drawer({ isOpen, onClose, title, children }: DrawerProps
   return (
     <div className="fixed inset-0 z-50">
       <div
-        className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
+        className="absolute inset-0 backdrop-blur-sm"
+        style={{ background: "rgba(0,0,0,0.6)" }}
         onClick={onClose}
         aria-hidden="true"
       />
 
       <div
-        className="absolute right-0 top-0 h-full w-full md:w-[440px] bg-white shadow-[-8px_0_32px_rgba(44,42,56,0.12)] flex flex-col"
+        className="absolute right-0 top-0 h-full w-full md:w-[440px] flex flex-col"
+        style={{
+          background: "#0f0f17",
+          borderLeft: "1px solid rgba(255,255,255,0.1)",
+          boxShadow: "-8px 0 32px rgba(0,0,0,0.3)",
+        }}
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
-          <h2 className="text-base font-semibold text-ink tracking-tight">{title}</h2>
+        <div className="flex items-center justify-between px-6 py-4 shrink-0"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <h2 className="text-base font-semibold text-white/80 tracking-tight">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-cream transition-colors"
+            className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 transition-colors"
             aria-label="Close drawer"
           >
             <X size={18} />

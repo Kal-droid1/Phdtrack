@@ -40,6 +40,22 @@ function getInitials(name: string): string {
   return name.slice(0, 2).toUpperCase();
 }
 
+function getAvatarColors(name: string) {
+  const gradients = [
+    ["#8b5cf6", "#a78bfa"],
+    ["#14b8a6", "#5eead4"],
+    ["#f59e0b", "#fbbf24"],
+    ["#f43f5e", "#fb7185"],
+    ["#6366f1", "#818cf8"],
+    ["#ec4899", "#f472b6"],
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return gradients[Math.abs(hash) % gradients.length];
+}
+
 export default function SupervisorsPage() {
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -245,20 +261,26 @@ export default function SupervisorsPage() {
       <div className="relative" data-menu="true">
         <button
           onClick={() => setOpenMenuId(isOpen ? null : supervisor.id)}
-          className="p-1.5 rounded-lg hover:bg-cream text-ink-muted"
+          className="p-1.5 rounded-lg hover:bg-white/5 text-white/30"
           aria-label="Open actions"
         >
           <MoreVertical size={18} />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-warm-lg border border-border py-1 z-50 overflow-hidden">
+          <div className="absolute right-0 mt-1 w-32 rounded-xl py-1 z-50 overflow-hidden animate-fadeIn"
+            style={{
+              background: "#0f0f17",
+              border: "1px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+            }}
+          >
             <button
               onClick={() => {
                 handleEdit(supervisor);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
+              className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 transition-colors"
             >
               Edit
             </button>
@@ -267,7 +289,7 @@ export default function SupervisorsPage() {
                 handleArchiveClick(supervisor);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
+              className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 transition-colors"
             >
               Archive
             </button>
@@ -276,7 +298,7 @@ export default function SupervisorsPage() {
                 handleDeleteClick(supervisor);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2.5 text-sm text-rose hover:bg-rose/5 transition-colors"
+              className="w-full text-left px-4 py-2.5 text-sm text-glow-rose hover:bg-white/5 transition-colors"
             >
               Delete
             </button>
@@ -287,8 +309,12 @@ export default function SupervisorsPage() {
   }
 
   function renderAvatar(supervisor: Supervisor) {
+    const [from, to] = getAvatarColors(supervisor.name);
     return (
-      <div className="w-10 h-10 rounded-full bg-brand/15 text-brand flex items-center justify-center text-sm font-semibold shrink-0">
+      <div
+        className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
+        style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
+      >
         {getInitials(supervisor.name)}
       </div>
     );
@@ -296,11 +322,11 @@ export default function SupervisorsPage() {
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-ink tracking-tight">
-          Supervisor Outreach
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight font-syne">
+          <span className="gradient-text">S</span>upervisor Outreach
         </h1>
-        <p className="text-sm text-ink-light mt-1.5">
+        <p className="text-white/30 text-sm mt-2">
           Professors you have contacted about PhD positions.
         </p>
       </div>
@@ -309,7 +335,7 @@ export default function SupervisorsPage() {
         <div className="relative flex-1 max-w-md">
           <Search
             size={18}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30"
           />
           <input
             type="text"
@@ -323,14 +349,23 @@ export default function SupervisorsPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={handleQuickAdd}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-brand bg-white border border-brand/20 rounded-xl hover:bg-brand-light transition-all duration-200"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.7)",
+            }}
           >
             <Wand2 size={16} />
             Quick Add
           </button>
           <button
             onClick={handleAdd}
-            className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 shadow-warm"
+            className="px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-all duration-200"
+            style={{
+              background: "linear-gradient(135deg, #8b5cf6, #14b8a6)",
+              boxShadow: "0 0 20px rgba(139,92,246,0.2)",
+            }}
           >
             + Add Professor
           </button>
@@ -344,9 +379,15 @@ export default function SupervisorsPage() {
             onClick={() => setStatusFilter(s)}
             className={`px-3.5 py-1.5 text-sm font-medium rounded-xl transition-all duration-200 ${
               statusFilter === s
-                ? "bg-brand text-white shadow-sm"
-                : "bg-white text-ink-light border border-border hover:bg-cream"
+                ? "text-white"
+                : "text-white/40 hover:text-white/70"
             }`}
+            style={statusFilter === s ? {
+              background: "linear-gradient(135deg, #8b5cf6, #14b8a6)",
+            } : {
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}
           >
             {s}
           </button>
@@ -354,7 +395,7 @@ export default function SupervisorsPage() {
       </div>
 
       {loading ? (
-        <div className="text-ink-light text-sm animate-pulse">Loading supervisors...</div>
+        <div className="text-white/40 text-sm animate-pulse">Loading supervisors...</div>
       ) : filteredSupervisors.length === 0 ? (
         <EmptyState
           message="No supervisors found."
@@ -364,64 +405,61 @@ export default function SupervisorsPage() {
       ) : (
         <>
           {/* Desktop table */}
-          <div className="hidden md:block bg-white rounded-2xl shadow-warm overflow-visible">
+          <div className="hidden md:block rounded-2xl overflow-visible"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-border-light">
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Name + Title
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    University
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Date Contacted
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Email
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
-                    Notes
-                  </th>
-                  <th className="px-6 py-4 w-16">
-                    {/* Actions */}
-                  </th>
+                <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Name + Title</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">University</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Date Contacted</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Email</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Status</th>
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/40">Notes</th>
+                  <th className="px-6 py-4 w-16" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border-light">
+              <tbody>
                 {paginatedSupervisors.map((supervisor) => (
-                  <tr key={supervisor.id} className="hover:bg-cream/50 transition-colors">
+                  <tr
+                    key={supervisor.id}
+                    className="transition-colors"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                  >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         {renderAvatar(supervisor)}
                         <div>
-                          <p className="text-sm font-medium text-ink">
+                          <p className="text-sm font-medium text-white/80">
                             {supervisor.name}
                           </p>
-                          <p className="text-xs text-ink-light">
+                          <p className="text-xs text-white/40">
                             {supervisor.title || "—"}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-ink">
+                    <td className="px-6 py-4 text-sm text-white/60">
                       {supervisor.university}
                     </td>
-                    <td className="px-6 py-4 text-sm text-ink-light">
+                    <td className="px-6 py-4 text-sm text-white/50">
                       {supervisor.date_contacted
                         ? formatDate(supervisor.date_contacted)
                         : "—"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-ink-light">
+                    <td className="px-6 py-4 text-sm text-white/50">
                       {supervisor.email || "—"}
                     </td>
                     <td className="px-6 py-4">
                       <StatusBadge status={supervisor.status} />
                     </td>
-                    <td className="px-6 py-4 text-sm text-ink-light max-w-xs truncate">
+                    <td className="px-6 py-4 text-sm text-white/50 max-w-xs truncate">
                       {supervisor.notes || "—"}
                     </td>
                     <td className="px-6 py-4 text-right relative overflow-visible">
@@ -438,16 +476,21 @@ export default function SupervisorsPage() {
             {paginatedSupervisors.map((supervisor) => (
               <div
                 key={supervisor.id}
-                className="bg-white rounded-2xl shadow-warm p-4"
+                className="rounded-2xl p-4"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     {renderAvatar(supervisor)}
                     <div>
-                      <p className="text-sm font-medium text-ink">
+                      <p className="text-sm font-medium text-white/80">
                         {supervisor.name}
                       </p>
-                      <p className="text-xs text-ink-light">
+                      <p className="text-xs text-white/40">
                         {supervisor.title && `${supervisor.title} • `}
                         {supervisor.university}
                       </p>
@@ -458,23 +501,23 @@ export default function SupervisorsPage() {
 
                 <div className="mt-4 space-y-2.5">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-ink-light">Email</span>
-                    <span className="text-ink">{supervisor.email || "—"}</span>
+                    <span className="text-white/40">Email</span>
+                    <span className="text-white/70">{supervisor.email || "—"}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-ink-light">Contacted</span>
-                    <span className="text-ink">
+                    <span className="text-white/40">Contacted</span>
+                    <span className="text-white/70">
                       {supervisor.date_contacted
                         ? formatDate(supervisor.date_contacted)
                         : "—"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-ink-light text-sm">Status</span>
+                    <span className="text-white/40 text-sm">Status</span>
                     <StatusBadge status={supervisor.status} />
                   </div>
                   {supervisor.notes && (
-                    <p className="text-sm text-ink-light leading-relaxed">{supervisor.notes}</p>
+                    <p className="text-sm text-white/50 leading-relaxed">{supervisor.notes}</p>
                   )}
                 </div>
               </div>
@@ -486,17 +529,27 @@ export default function SupervisorsPage() {
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2.5 text-sm font-medium text-ink-light bg-white border border-border rounded-xl hover:bg-cream transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "rgba(255,255,255,0.6)",
+                }}
               >
                 Previous
               </button>
-              <span className="text-sm text-ink-light">
+              <span className="text-sm text-white/40">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2.5 text-sm font-medium text-ink-light bg-white border border-border rounded-xl hover:bg-cream transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "rgba(255,255,255,0.6)",
+                }}
               >
                 Next
               </button>
@@ -510,7 +563,7 @@ export default function SupervisorsPage() {
         <div className="mt-10">
           <button
             onClick={() => setArchivedExpanded(!archivedExpanded)}
-            className="flex items-center gap-2 text-sm font-medium text-ink-light hover:text-ink transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-white/40 hover:text-white/70 transition-colors"
           >
             {archivedExpanded ? (
               <ChevronUp size={18} />
@@ -525,18 +578,22 @@ export default function SupervisorsPage() {
               {archivedSupervisors.map((supervisor) => (
                 <div
                   key={supervisor.id}
-                  className="bg-cream rounded-2xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+                  className="rounded-2xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                  }}
                 >
                   <div>
-                    <p className="text-sm font-medium text-ink">
+                    <p className="text-sm font-medium text-white/70">
                       {supervisor.name} — {supervisor.university}
                     </p>
-                    <p className="text-xs text-ink-light mt-1">
+                    <p className="text-xs text-white/40 mt-1">
                       Archived on {formatDate(supervisor.archived_at || "")}
                     </p>
                     {supervisor.lessons && (
-                      <p className="text-sm text-ink-light mt-2 leading-relaxed">
-                        <span className="font-medium text-ink">Lessons:</span>{" "}
+                      <p className="text-sm text-white/50 mt-2 leading-relaxed">
+                        <span className="font-medium text-white/70">Lessons:</span>{" "}
                         {supervisor.lessons}
                       </p>
                     )}
@@ -544,13 +601,23 @@ export default function SupervisorsPage() {
                   <div className="flex items-center gap-2 self-start shrink-0">
                     <button
                       onClick={() => handleUnarchiveClick(supervisor)}
-                      className="px-3.5 py-1.5 text-sm font-medium text-sage border border-sage/20 rounded-xl hover:bg-sage/5 transition-all duration-200"
+                      className="px-3.5 py-1.5 text-sm font-medium rounded-xl transition-all duration-200"
+                      style={{
+                        color: "#14b8a6",
+                        border: "1px solid rgba(20, 184, 166, 0.2)",
+                        background: "rgba(20, 184, 166, 0.05)",
+                      }}
                     >
                       Unarchive
                     </button>
                     <button
                       onClick={() => handleDeleteClick(supervisor)}
-                      className="px-3.5 py-1.5 text-sm font-medium text-rose border border-rose/20 rounded-xl hover:bg-rose/5 transition-all duration-200"
+                      className="px-3.5 py-1.5 text-sm font-medium rounded-xl transition-all duration-200"
+                      style={{
+                        color: "#f43f5e",
+                        border: "1px solid rgba(244, 63, 94, 0.2)",
+                        background: "rgba(244, 63, 94, 0.05)",
+                      }}
                     >
                       Delete
                     </button>
@@ -599,7 +666,7 @@ export default function SupervisorsPage() {
           value={archiveLessons}
           onChange={(e) => setArchiveLessons(e.target.value)}
           placeholder="Write your lessons learned..."
-          className="w-full rounded-xl border-border px-3.5 py-2.5 text-sm resize-none"
+          className="w-full rounded-xl px-3.5 py-2.5 text-sm resize-none"
         />
       </ConfirmModal>
 

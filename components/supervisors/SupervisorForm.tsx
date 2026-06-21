@@ -101,14 +101,20 @@ export default function SupervisorForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="p-3.5 rounded-xl bg-rose/5 border border-rose/10 text-rose text-sm leading-relaxed">
+        <div className="p-3.5 rounded-xl text-sm leading-relaxed"
+          style={{
+            color: "#f43f5e",
+            background: "rgba(244, 63, 94, 0.1)",
+            border: "1px solid rgba(244, 63, 94, 0.2)",
+          }}
+        >
           {error}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
-          Name <span className="text-rose">*</span>
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
+          Name <span style={{ color: "#f43f5e" }}>*</span>
         </label>
         <input
           type="text"
@@ -119,7 +125,7 @@ export default function SupervisorForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
           Title
         </label>
         <input
@@ -131,7 +137,7 @@ export default function SupervisorForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
           University
         </label>
         <input
@@ -142,7 +148,7 @@ export default function SupervisorForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
           Department
         </label>
         <input
@@ -153,7 +159,7 @@ export default function SupervisorForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
           Email
         </label>
         <input
@@ -164,7 +170,7 @@ export default function SupervisorForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
           Date Contacted
         </label>
         <input
@@ -175,7 +181,7 @@ export default function SupervisorForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
           Status
         </label>
         <select
@@ -191,7 +197,7 @@ export default function SupervisorForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-ink-light mb-1.5">
+        <label className="block text-sm font-medium text-white/50 mb-1.5">
           Notes
         </label>
         <textarea
@@ -205,14 +211,22 @@ export default function SupervisorForm({
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2.5 text-sm font-medium text-ink-light border border-border rounded-xl hover:bg-cream transition-all duration-200"
+          className="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200"
+          style={{
+            color: "rgba(255,255,255,0.5)",
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.1)",
+          }}
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 disabled:opacity-50 shadow-warm"
+          className="px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-all duration-200 disabled:opacity-50"
+          style={{
+            background: "linear-gradient(135deg, #8b5cf6, #14b8a6)",
+          }}
         >
           {saving
             ? "Saving..."
