@@ -20,7 +20,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#2d1f24] border-t border-[#8b3a52]/30 z-50 flex items-center justify-around px-2">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-sidebar/95 backdrop-blur-lg border-t border-white/5 z-50 flex items-center justify-around px-2 safe-area-bottom">
       {tabs.map((tab) => {
         const isActive = pathname === tab.href;
         const Icon = tab.icon;
@@ -29,12 +29,15 @@ export default function BottomNav() {
           <Link
             key={tab.href}
             href={tab.href}
-            className={`flex flex-col items-center justify-center gap-1 flex-1 h-full ${
-              isActive ? "text-[#e8a0b0]" : "text-[#f5e6e8]"
+            className={`flex flex-col items-center justify-center gap-1 flex-1 h-full relative transition-all duration-200 ${
+              isActive ? "text-brand" : "text-white/40"
             }`}
           >
+            {isActive && (
+              <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-brand" />
+            )}
             <Icon size={20} />
-            <span className="text-[10px] font-medium leading-tight text-center">
+            <span className="text-[10px] font-semibold leading-tight text-center tracking-wide">
               {tab.label}
             </span>
           </Link>

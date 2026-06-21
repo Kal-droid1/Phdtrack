@@ -8,17 +8,17 @@ interface EmptyStateProps {
 
 export default function EmptyState({ message, actionLabel, onAction }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center text-center py-16 px-4">
-      <div className="p-4 rounded-full bg-gray-100 text-gray-400 mb-4">
-        <Inbox size={32} />
+    <div className="flex flex-col items-center justify-center text-center py-12 px-4">
+      <div className="p-3.5 rounded-2xl bg-brand-light text-brand/50 mb-4">
+        <Inbox size={28} />
       </div>
 
-      <p className="text-gray-600 text-sm max-w-xs mb-4">{message}</p>
+      <p className="text-ink-light text-sm max-w-xs mb-5 leading-relaxed">{message}</p>
 
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors"
+          className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 shadow-warm"
         >
           {actionLabel}
         </button>

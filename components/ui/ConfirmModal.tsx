@@ -31,32 +31,32 @@ export default function ConfirmModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
       <div
-        className="relative z-50 w-full max-w-sm mx-4 bg-white rounded-lg shadow-lg p-6"
+        className="relative z-50 w-full max-w-sm bg-white rounded-2xl shadow-warm-lg p-6"
         role="alertdialog"
         aria-modal="true"
       >
-        <p className="text-[#2d3436] text-sm leading-relaxed">{message}</p>
+        <p className="text-ink text-sm leading-relaxed">{message}</p>
 
         {children && <div className="mt-4">{children}</div>}
 
         <div className="flex items-center justify-end gap-3 mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            className="px-4 py-2.5 text-sm font-medium text-ink-light border border-border rounded-xl hover:bg-cream transition-all duration-200"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors"
+            className="px-4 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200"
           >
             Confirm
           </button>

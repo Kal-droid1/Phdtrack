@@ -15,15 +15,16 @@ import {
   ChevronUp,
   Search,
   Wand2,
+  FileText,
 } from "lucide-react";
 import QuickAddModal from "@/components/ui/QuickAddModal";
 
 const statusFilters = ["All", "Applied", "Accepted", "Rejected", "Waitlisted"];
 
 const dotColorClass: Record<"red" | "amber" | "green", string> = {
-  red: "bg-red-500",
-  amber: "bg-amber-500",
-  green: "bg-green-500",
+  red: "bg-rose",
+  amber: "bg-gold",
+  green: "bg-sage",
 };
 
 function isOpeningSoon(openDate: string | null): boolean {
@@ -288,7 +289,7 @@ Applications: ${list || "none"}`;
   }
 
   function renderDeadline(deadline: string | null) {
-    if (!deadline) return <span className="text-sm text-gray-400">—</span>;
+    if (!deadline) return <span className="text-sm text-ink-muted">—</span>;
 
     const days = daysUntil(deadline);
     const color = deadlineColor(days);
@@ -297,8 +298,8 @@ Applications: ${list || "none"}`;
       <div className="flex items-center gap-2">
         <span className={`w-2 h-2 rounded-full ${dotColorClass[color]}`} />
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">{formatDate(deadline)}</span>
-          <span className="text-xs text-gray-500">
+          <span className="text-sm text-ink">{formatDate(deadline)}</span>
+          <span className="text-xs text-ink-light">
             {days < 0 ? `${Math.abs(days)} days ago` : `${days} days left`}
           </span>
         </div>
@@ -313,20 +314,20 @@ Applications: ${list || "none"}`;
       <div className="relative" data-menu="true">
         <button
           onClick={() => setOpenMenuId(isOpen ? null : application.id)}
-          className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500"
+          className="p-1.5 rounded-lg hover:bg-cream text-ink-muted"
           aria-label="Open actions"
         >
           <MoreVertical size={18} />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+          <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-warm-lg border border-border py-1 z-50 overflow-hidden">
             <button
               onClick={() => {
                 handleEdit(application);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
             >
               Edit
             </button>
@@ -335,7 +336,7 @@ Applications: ${list || "none"}`;
                 handleArchiveClick(application);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
             >
               Archive
             </button>
@@ -344,7 +345,7 @@ Applications: ${list || "none"}`;
                 handleDeleteClick(application);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              className="w-full text-left px-4 py-2.5 text-sm text-rose hover:bg-rose/5 transition-colors"
             >
               Delete
             </button>
@@ -357,10 +358,10 @@ Applications: ${list || "none"}`;
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#2d3436]">
+        <h1 className="text-2xl md:text-3xl font-bold text-ink tracking-tight">
           Applications
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-ink-light mt-1.5">
           PhD programs and funding opportunities you are tracking.
         </p>
       </div>
@@ -370,25 +371,26 @@ Applications: ${list || "none"}`;
           <div className="relative flex-1 max-w-md">
             <Search
               size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted"
             />
             <input
               type="text"
               placeholder="Search name, university, or funding body..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2.5 rounded-xl"
             />
           </div>
 
           <button
             onClick={handleGenerateReport}
             disabled={reportLoading}
-            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[#8b3a52] bg-white border border-[#8b3a52] rounded-md hover:bg-[#8b3a52]/5 transition-colors disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-brand bg-white border border-brand/20 rounded-xl hover:bg-brand-light transition-all duration-200 disabled:opacity-50"
           >
             {reportLoading && (
-              <span className="w-4 h-4 border-2 border-[#8b3a52] border-t-transparent rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin" />
             )}
+            <FileText size={16} />
             Generate Report
           </button>
         </div>
@@ -396,14 +398,14 @@ Applications: ${list || "none"}`;
         <div className="flex items-center gap-2">
           <button
             onClick={handleQuickAdd}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#8b3a52] bg-white border border-[#8b3a52] rounded-md hover:bg-[#8b3a52]/5 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-brand bg-white border border-brand/20 rounded-xl hover:bg-brand-light transition-all duration-200"
           >
-            <Wand2 size={18} />
+            <Wand2 size={16} />
             Quick Add
           </button>
           <button
             onClick={handleAdd}
-            className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors"
+            className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 shadow-warm"
           >
             + Add Application
           </button>
@@ -434,10 +436,10 @@ Applications: ${list || "none"}`;
                   <button
                     key={s}
                     onClick={() => setStatusFilter(s)}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                    className={`px-3.5 py-1.5 text-sm font-medium rounded-xl transition-all duration-200 ${
                       statusFilter === s
-                        ? "bg-[#8b3a52] text-white"
-                        : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                        ? "bg-brand text-white shadow-sm"
+                        : "bg-white text-ink-light border border-border hover:bg-cream"
                     }`}
                   >
                     {s} ({count})
@@ -449,7 +451,7 @@ Applications: ${list || "none"}`;
       })()}
 
       {loading ? (
-        <div className="text-gray-500 text-sm">Loading applications...</div>
+        <div className="text-ink-light text-sm animate-pulse">Loading applications...</div>
       ) : filteredApplications.length === 0 ? (
         <EmptyState
           message="No applications found."
@@ -459,14 +461,14 @@ Applications: ${list || "none"}`;
       ) : (
         <>
           {reportOpen && reportText && (
-            <div className="mb-6 bg-white rounded-xl shadow-sm border-l-4 border-[#8b3a52] p-5 relative">
+            <div className="mb-6 bg-white rounded-2xl shadow-warm border-l-[3px] border-brand p-5 relative">
               <div className="flex items-start justify-between gap-4">
-                <p className="text-sm text-[#2d3436] whitespace-pre-line">
+                <p className="text-sm text-ink leading-relaxed whitespace-pre-line">
                   {reportText}
                 </p>
                 <button
                   onClick={() => setReportOpen(false)}
-                  className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors shrink-0"
+                  className="p-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-cream transition-colors shrink-0"
                   aria-label="Dismiss report"
                 >
                   ×
@@ -476,55 +478,55 @@ Applications: ${list || "none"}`;
           )}
 
           {/* Desktop table */}
-          <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-visible">
+          <div className="hidden md:block bg-white rounded-2xl shadow-warm overflow-visible">
             <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+              <thead>
+                <tr className="border-b border-border-light">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Country
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Program
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Deadline
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Stipend
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase w-16">
+                  <th className="px-6 py-4 w-16">
                     {/* Actions */}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-border-light">
                 {paginatedApplications.map((application) => (
-                  <tr key={application.id} className="hover:bg-gray-50">
+                  <tr key={application.id} className="hover:bg-cream/50 transition-colors">
                     <td className="px-6 py-4">
-                      <p className="text-sm font-medium text-[#2d3436]">
+                      <p className="text-sm font-medium text-ink">
                         {application.name}
                       </p>
                       {application.university && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-ink-light mt-0.5">
                           {application.university}
                         </p>
                       )}
                       {isOpeningSoon(application.open_date) && (
-                        <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                        <span className="inline-flex items-center mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gold/10 text-gold">
                           Opening soon
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-[#2d3436]">
+                    <td className="px-6 py-4 text-sm text-ink">
                       {application.country || "—"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-[#2d3436]">
+                    <td className="px-6 py-4 text-sm text-ink">
                       {application.program || "—"}
                     </td>
                     <td className="px-6 py-4">
@@ -533,7 +535,7 @@ Applications: ${list || "none"}`;
                     <td className="px-6 py-4">
                       <StatusBadge status={application.status} />
                     </td>
-                    <td className="px-6 py-4 text-sm text-[#2d3436]">
+                    <td className="px-6 py-4 text-sm text-ink">
                       {extractStipend(application.notes) || "—"}
                     </td>
                     <td className="px-6 py-4 text-right relative overflow-visible">
@@ -550,20 +552,20 @@ Applications: ${list || "none"}`;
             {paginatedApplications.map((application) => (
               <div
                 key={application.id}
-                className="bg-white rounded-xl shadow-sm p-4"
+                className="bg-white rounded-2xl shadow-warm p-4"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-medium text-[#2d3436]">
+                    <p className="text-sm font-medium text-ink">
                       {application.name}
                     </p>
                     {application.university && (
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-ink-light mt-0.5">
                         {application.university}
                       </p>
                     )}
                     {isOpeningSoon(application.open_date) && (
-                      <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                      <span className="inline-flex items-center mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gold/10 text-gold">
                         Opening soon
                       </span>
                     )}
@@ -571,30 +573,26 @@ Applications: ${list || "none"}`;
                   {renderActions(application)}
                 </div>
 
-                <div className="mt-4 space-y-2">
+                <div className="mt-4 space-y-2.5">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Country</span>
-                    <span className="text-gray-700">
-                      {application.country || "—"}
-                    </span>
+                    <span className="text-ink-light">Country</span>
+                    <span className="text-ink">{application.country || "—"}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Program</span>
-                    <span className="text-gray-700">
-                      {application.program || "—"}
-                    </span>
+                    <span className="text-ink-light">Program</span>
+                    <span className="text-ink">{application.program || "—"}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">Deadline</span>
+                    <span className="text-ink-light text-sm">Deadline</span>
                     {renderDeadline(application.deadline)}
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">Status</span>
+                    <span className="text-ink-light text-sm">Status</span>
                     <StatusBadge status={application.status} />
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Stipend</span>
-                    <span className="text-gray-700">
+                    <span className="text-ink-light">Stipend</span>
+                    <span className="text-ink">
                       {extractStipend(application.notes) || "—"}
                     </span>
                   </div>
@@ -608,17 +606,17 @@ Applications: ${list || "none"}`;
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 text-sm font-medium text-ink-light bg-white border border-border rounded-xl hover:bg-cream transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-ink-light">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 text-sm font-medium text-ink-light bg-white border border-border rounded-xl hover:bg-cream transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>
@@ -632,7 +630,7 @@ Applications: ${list || "none"}`;
         <div className="mt-10">
           <button
             onClick={() => setArchivedExpanded(!archivedExpanded)}
-            className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="flex items-center gap-2 text-sm font-medium text-ink-light hover:text-ink transition-colors"
           >
             {archivedExpanded ? (
               <ChevronUp size={18} />
@@ -647,32 +645,32 @@ Applications: ${list || "none"}`;
               {archivedApplications.map((application) => (
                 <div
                   key={application.id}
-                  className="bg-gray-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+                  className="bg-cream rounded-2xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium text-ink">
                       {application.name} — {application.university || "—"}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-ink-light mt-1">
                       Archived on {formatDate(application.archived_at || "")}
                     </p>
                     {application.lessons && (
-                      <p className="text-sm text-gray-600 mt-2">
-                        <span className="font-medium">Lessons:</span>{" "}
+                      <p className="text-sm text-ink-light mt-2 leading-relaxed">
+                        <span className="font-medium text-ink">Lessons:</span>{" "}
                         {application.lessons}
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 self-start">
+                  <div className="flex items-center gap-2 self-start shrink-0">
                     <button
                       onClick={() => handleUnarchiveClick(application)}
-                      className="px-3 py-1.5 text-sm font-medium text-green-700 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                      className="px-3.5 py-1.5 text-sm font-medium text-sage border border-sage/20 rounded-xl hover:bg-sage/5 transition-all duration-200"
                     >
                       Unarchive
                     </button>
                     <button
                       onClick={() => handleDeleteClick(application)}
-                      className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200 rounded-md hover:bg-red-50 transition-colors"
+                      className="px-3.5 py-1.5 text-sm font-medium text-rose border border-rose/20 rounded-xl hover:bg-rose/5 transition-all duration-200"
                     >
                       Delete
                     </button>
@@ -721,7 +719,7 @@ Applications: ${list || "none"}`;
           value={archiveLessons}
           onChange={(e) => setArchiveLessons(e.target.value)}
           placeholder="Write your lessons learned..."
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent resize-none"
+          className="w-full rounded-xl border-border px-3.5 py-2.5 text-sm resize-none"
         />
       </ConfirmModal>
 

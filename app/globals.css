@@ -3,27 +3,75 @@
 @tailwind utilities;
 
 body {
-  color: #1a1a1a;
-  background: #edbfc6;
-  font-family: Arial, Helvetica, sans-serif;
+  color: #2c2a38;
+  background: #f7f2ed;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: #e8c8b8;
+  color: #2c2a38;
 }
 
 input, select, textarea {
-  color: #1a1a1a;
+  color: #2c2a38;
   background-color: #ffffff;
-  border: 1px solid #e8c5cc;
-  border-radius: 8px;
-  padding: 8px 12px;
+  border: 1px solid #ddd5ce;
+  border-radius: 10px;
+  padding: 10px 14px;
   width: 100%;
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input::placeholder, select::placeholder, textarea::placeholder {
-  color: #6b4f55;
+  color: #ada0a0;
 }
 
 input:focus, select:focus, textarea:focus {
-  outline: 2px solid #8b3a52;
-  outline-offset: 1px;
+  outline: none;
+  border-color: #c1614d;
+  box-shadow: 0 0 0 3px rgba(193, 97, 77, 0.12);
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(193, 97, 77, 0.3);
+  border-radius: 2px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(193, 97, 77, 0.5);
+}
+
+/* Card with warm border-top accent */
+.card-accent {
+  @apply bg-white rounded-xl shadow-warm border-t-[3px] border-brand;
+}
+
+/* Warm table styling */
+.table-warm th {
+  @apply text-xs font-semibold uppercase tracking-wider text-ink-light;
+}
+
+/* Smooth page transitions */
+main {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @layer utilities {

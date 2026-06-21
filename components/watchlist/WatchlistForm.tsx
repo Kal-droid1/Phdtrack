@@ -12,9 +12,6 @@ interface WatchlistFormProps {
   onClose: () => void;
 }
 
-const fieldClasses =
-  "w-full rounded-lg border border-[#d1d5db] bg-white px-3 py-2 text-sm text-[#1a1a1a] focus:outline-2 focus:outline-[#8b3a52] focus:outline-offset-1";
-
 export default function WatchlistForm({
   initialData,
   prefillData,
@@ -97,14 +94,14 @@ export default function WatchlistForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="p-3 rounded-md bg-red-50 text-red-700 text-sm">
+        <div className="p-3.5 rounded-xl bg-rose/5 border border-rose/10 text-rose text-sm leading-relaxed">
           {error}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Name <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
+          Name <span className="text-rose">*</span>
         </label>
         <input
           type="text"
@@ -112,13 +109,12 @@ export default function WatchlistForm({
           placeholder="e.g. Fulbright Scholarship"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-ink-light mb-1.5">
             Funding Body
           </label>
           <input
@@ -126,12 +122,11 @@ export default function WatchlistForm({
             placeholder="e.g. DAAD"
             value={fundingBody}
             onChange={(e) => setFundingBody(e.target.value)}
-            className={fieldClasses}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-ink-light mb-1.5">
             Country
           </label>
           <input
@@ -139,61 +134,57 @@ export default function WatchlistForm({
             placeholder="e.g. Germany"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            className={fieldClasses}
           />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-ink-light mb-1.5">
             Expected Open Date
           </label>
           <input
             type="date"
             value={expectedOpenDate}
             onChange={(e) => setExpectedOpenDate(e.target.value)}
-            className={fieldClasses}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-ink-light mb-1.5">
             Expected Deadline
           </label>
           <input
             type="date"
             value={expectedDeadline}
             onChange={(e) => setExpectedDeadline(e.target.value)}
-            className={fieldClasses}
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          URL <span className="text-gray-400 font-normal">(optional)</span>
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
+          URL <span className="text-ink-muted font-normal">(optional)</span>
         </label>
         <input
           type="url"
           placeholder="https://..."
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
           Reminder
         </label>
         <button
           type="button"
           onClick={() => setReminder(!reminder)}
-          className={`flex items-center gap-2 px-3 py-2 rounded-md border text-sm font-medium transition-colors ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-sm font-medium transition-all duration-200 ${
             reminder
-              ? "bg-amber-50 border-amber-200 text-amber-700"
-              : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+              ? "bg-gold/5 border-gold/20 text-gold"
+              : "bg-white border-border text-ink-light hover:bg-cream"
           }`}
         >
           <Bell size={18} fill={reminder ? "currentColor" : "none"} />
@@ -202,14 +193,13 @@ export default function WatchlistForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
           Notes
         </label>
         <textarea
           rows={4}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
@@ -217,14 +207,14 @@ export default function WatchlistForm({
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+          className="px-4 py-2.5 text-sm font-medium text-ink-light border border-border rounded-xl hover:bg-cream transition-all duration-200"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors disabled:opacity-50"
+          className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 disabled:opacity-50 shadow-warm"
         >
           {saving
             ? "Saving..."

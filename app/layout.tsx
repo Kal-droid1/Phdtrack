@@ -22,9 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} font-sans antialiased bg-dark`}
-      >
+      <body className={`${inter.variable} font-sans antialiased bg-cream`}>
         <Sidebar />
         <div className="md:ml-[240px] min-h-screen flex flex-col pb-16 md:pb-0">
           <Header />

@@ -245,20 +245,20 @@ export default function SupervisorsPage() {
       <div className="relative" data-menu="true">
         <button
           onClick={() => setOpenMenuId(isOpen ? null : supervisor.id)}
-          className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500"
+          className="p-1.5 rounded-lg hover:bg-cream text-ink-muted"
           aria-label="Open actions"
         >
           <MoreVertical size={18} />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+          <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-warm-lg border border-border py-1 z-50 overflow-hidden">
             <button
               onClick={() => {
                 handleEdit(supervisor);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
             >
               Edit
             </button>
@@ -267,7 +267,7 @@ export default function SupervisorsPage() {
                 handleArchiveClick(supervisor);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
             >
               Archive
             </button>
@@ -276,7 +276,7 @@ export default function SupervisorsPage() {
                 handleDeleteClick(supervisor);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              className="w-full text-left px-4 py-2.5 text-sm text-rose hover:bg-rose/5 transition-colors"
             >
               Delete
             </button>
@@ -288,7 +288,7 @@ export default function SupervisorsPage() {
 
   function renderAvatar(supervisor: Supervisor) {
     return (
-      <div className="w-10 h-10 rounded-full bg-[#8b3a52] text-white flex items-center justify-center text-sm font-semibold shrink-0">
+      <div className="w-10 h-10 rounded-full bg-brand/15 text-brand flex items-center justify-center text-sm font-semibold shrink-0">
         {getInitials(supervisor.name)}
       </div>
     );
@@ -297,10 +297,10 @@ export default function SupervisorsPage() {
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#2d3436]">
+        <h1 className="text-2xl md:text-3xl font-bold text-ink tracking-tight">
           Supervisor Outreach
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-ink-light mt-1.5">
           Professors you have contacted about PhD positions.
         </p>
       </div>
@@ -309,28 +309,28 @@ export default function SupervisorsPage() {
         <div className="relative flex-1 max-w-md">
           <Search
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted"
           />
           <input
             type="text"
             placeholder="Search name or university..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent"
+            className="w-full pl-10 pr-3 py-2.5 rounded-xl"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={handleQuickAdd}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#8b3a52] bg-white border border-[#8b3a52] rounded-md hover:bg-[#a84a66]/5 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-brand bg-white border border-brand/20 rounded-xl hover:bg-brand-light transition-all duration-200"
           >
-            <Wand2 size={18} />
+            <Wand2 size={16} />
             Quick Add
           </button>
           <button
             onClick={handleAdd}
-            className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors"
+            className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 shadow-warm"
           >
             + Add Professor
           </button>
@@ -342,10 +342,10 @@ export default function SupervisorsPage() {
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
-            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+            className={`px-3.5 py-1.5 text-sm font-medium rounded-xl transition-all duration-200 ${
               statusFilter === s
-                ? "bg-[#8b3a52] text-white"
-                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                ? "bg-brand text-white shadow-sm"
+                : "bg-white text-ink-light border border-border hover:bg-cream"
             }`}
           >
             {s}
@@ -354,7 +354,7 @@ export default function SupervisorsPage() {
       </div>
 
       {loading ? (
-        <div className="text-gray-500 text-sm">Loading supervisors...</div>
+        <div className="text-ink-light text-sm animate-pulse">Loading supervisors...</div>
       ) : filteredSupervisors.length === 0 ? (
         <EmptyState
           message="No supervisors found."
@@ -364,64 +364,64 @@ export default function SupervisorsPage() {
       ) : (
         <>
           {/* Desktop table */}
-          <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-visible">
+          <div className="hidden md:block bg-white rounded-2xl shadow-warm overflow-visible">
             <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+              <thead>
+                <tr className="border-b border-border-light">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Name + Title
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     University
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Date Contacted
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Email
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Notes
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase w-16">
+                  <th className="px-6 py-4 w-16">
                     {/* Actions */}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-border-light">
                 {paginatedSupervisors.map((supervisor) => (
-                  <tr key={supervisor.id} className="hover:bg-gray-50">
+                  <tr key={supervisor.id} className="hover:bg-cream/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         {renderAvatar(supervisor)}
                         <div>
-                          <p className="text-sm font-medium text-[#2d3436]">
+                          <p className="text-sm font-medium text-ink">
                             {supervisor.name}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-ink-light">
                             {supervisor.title || "—"}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-[#2d3436]">
+                    <td className="px-6 py-4 text-sm text-ink">
                       {supervisor.university}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-ink-light">
                       {supervisor.date_contacted
                         ? formatDate(supervisor.date_contacted)
                         : "—"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-ink-light">
                       {supervisor.email || "—"}
                     </td>
                     <td className="px-6 py-4">
                       <StatusBadge status={supervisor.status} />
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
+                    <td className="px-6 py-4 text-sm text-ink-light max-w-xs truncate">
                       {supervisor.notes || "—"}
                     </td>
                     <td className="px-6 py-4 text-right relative overflow-visible">
@@ -438,16 +438,16 @@ export default function SupervisorsPage() {
             {paginatedSupervisors.map((supervisor) => (
               <div
                 key={supervisor.id}
-                className="bg-white rounded-xl shadow-sm p-4"
+                className="bg-white rounded-2xl shadow-warm p-4"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     {renderAvatar(supervisor)}
                     <div>
-                      <p className="text-sm font-medium text-[#2d3436]">
+                      <p className="text-sm font-medium text-ink">
                         {supervisor.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-ink-light">
                         {supervisor.title && `${supervisor.title} • `}
                         {supervisor.university}
                       </p>
@@ -456,27 +456,25 @@ export default function SupervisorsPage() {
                   {renderActions(supervisor)}
                 </div>
 
-                <div className="mt-4 space-y-2">
+                <div className="mt-4 space-y-2.5">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Email</span>
-                    <span className="text-gray-700">
-                      {supervisor.email || "—"}
-                    </span>
+                    <span className="text-ink-light">Email</span>
+                    <span className="text-ink">{supervisor.email || "—"}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Contacted</span>
-                    <span className="text-gray-700">
+                    <span className="text-ink-light">Contacted</span>
+                    <span className="text-ink">
                       {supervisor.date_contacted
                         ? formatDate(supervisor.date_contacted)
                         : "—"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">Status</span>
+                    <span className="text-ink-light text-sm">Status</span>
                     <StatusBadge status={supervisor.status} />
                   </div>
                   {supervisor.notes && (
-                    <p className="text-sm text-gray-600">{supervisor.notes}</p>
+                    <p className="text-sm text-ink-light leading-relaxed">{supervisor.notes}</p>
                   )}
                 </div>
               </div>
@@ -488,17 +486,17 @@ export default function SupervisorsPage() {
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 text-sm font-medium text-ink-light bg-white border border-border rounded-xl hover:bg-cream transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-ink-light">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 text-sm font-medium text-ink-light bg-white border border-border rounded-xl hover:bg-cream transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>
@@ -512,7 +510,7 @@ export default function SupervisorsPage() {
         <div className="mt-10">
           <button
             onClick={() => setArchivedExpanded(!archivedExpanded)}
-            className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="flex items-center gap-2 text-sm font-medium text-ink-light hover:text-ink transition-colors"
           >
             {archivedExpanded ? (
               <ChevronUp size={18} />
@@ -527,32 +525,32 @@ export default function SupervisorsPage() {
               {archivedSupervisors.map((supervisor) => (
                 <div
                   key={supervisor.id}
-                  className="bg-gray-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+                  className="bg-cream rounded-2xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium text-ink">
                       {supervisor.name} — {supervisor.university}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-ink-light mt-1">
                       Archived on {formatDate(supervisor.archived_at || "")}
                     </p>
                     {supervisor.lessons && (
-                      <p className="text-sm text-gray-600 mt-2">
-                        <span className="font-medium">Lessons:</span>{" "}
+                      <p className="text-sm text-ink-light mt-2 leading-relaxed">
+                        <span className="font-medium text-ink">Lessons:</span>{" "}
                         {supervisor.lessons}
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 self-start">
+                  <div className="flex items-center gap-2 self-start shrink-0">
                     <button
                       onClick={() => handleUnarchiveClick(supervisor)}
-                      className="px-3 py-1.5 text-sm font-medium text-green-700 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                      className="px-3.5 py-1.5 text-sm font-medium text-sage border border-sage/20 rounded-xl hover:bg-sage/5 transition-all duration-200"
                     >
                       Unarchive
                     </button>
                     <button
                       onClick={() => handleDeleteClick(supervisor)}
-                      className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200 rounded-md hover:bg-red-50 transition-colors"
+                      className="px-3.5 py-1.5 text-sm font-medium text-rose border border-rose/20 rounded-xl hover:bg-rose/5 transition-all duration-200"
                     >
                       Delete
                     </button>
@@ -601,7 +599,7 @@ export default function SupervisorsPage() {
           value={archiveLessons}
           onChange={(e) => setArchiveLessons(e.target.value)}
           placeholder="Write your lessons learned..."
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent resize-none"
+          className="w-full rounded-xl border-border px-3.5 py-2.5 text-sm resize-none"
         />
       </ConfirmModal>
 

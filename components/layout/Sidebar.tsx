@@ -22,14 +22,21 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden md:flex fixed left-0 top-0 h-full w-[240px] flex-col bg-sidebar z-40">
-      <div className="flex items-center h-16 px-6">
-        <span className="relative flex items-center gap-2 text-xl font-bold text-[#f5e6e8]">
-          <span className="w-2 h-2 rounded-full bg-[#e8a0b0]" />
-          PhDTrack
+      {/* Logo */}
+      <div className="flex items-center h-16 px-6 border-b border-white/5">
+        <span className="relative flex items-center gap-2.5">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="absolute inset-0 rounded-full bg-brand animate-ping opacity-30" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand" />
+          </span>
+          <span className="text-lg font-bold tracking-tight text-white/90">
+            PhDTrack
+          </span>
         </span>
       </div>
 
-      <nav className="flex-1 px-4 py-4 space-y-1">
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-5 space-y-1 sidebar-scroll overflow-y-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -38,29 +45,41 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
+              className={`group flex items-center gap-3.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 isActive
-                  ? "bg-[#8b3a52] text-white border-l-[3px] border-[#e8a0b0]"
-                  : "text-[#f5e6e8] hover:text-white hover:bg-white/10 border-l-[3px] border-transparent"
+                  ? "bg-brand/15 text-white shadow-sm"
+                  : "text-white/55 hover:text-white/90 hover:bg-white/5"
               }`}
             >
-              <Icon size={20} />
+              <Icon
+                size={20}
+                className={`transition-all duration-200 ${
+                  isActive ? "text-brand" : "text-white/40 group-hover:text-white/70"
+                }`}
+              />
               <span>{item.label}</span>
+              {isActive && (
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-brand" />
+              )}
             </Link>
           );
         })}
       </nav>
 
-      <div className="px-4 py-4 border-t border-[#8b3a52]/30">
+      {/* Settings */}
+      <div className="px-3 py-4 border-t border-white/5">
         <Link
           href="/settings"
-          className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
+          className={`group flex items-center gap-3.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
             pathname === "/settings"
-              ? "bg-[#8b3a52] text-white border-l-[3px] border-[#e8a0b0]"
-              : "text-[#f5e6e8] hover:text-white hover:bg-white/10 border-l-[3px] border-transparent"
+              ? "bg-brand/15 text-white"
+              : "text-white/40 hover:text-white/70 hover:bg-white/5"
           }`}
         >
-          <Settings size={20} />
+          <Settings
+            size={18}
+            className="transition-all duration-200 group-hover:text-white/60"
+          />
           <span>Settings</span>
         </Link>
       </div>

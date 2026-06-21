@@ -32,24 +32,24 @@ export default function Drawer({ isOpen, onClose, title, children }: DrawerProps
   return (
     <div className="fixed inset-0 z-50">
       <div
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
       <div
-        className="absolute right-0 top-0 h-full w-full md:w-[420px] bg-white shadow-[-4px_0_24px_rgba(0,0,0,0.1)] flex flex-col"
+        className="absolute right-0 top-0 h-full w-full md:w-[440px] bg-white shadow-[-8px_0_32px_rgba(44,42,56,0.12)] flex flex-col"
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-[#2d3436]">{title}</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+          <h2 className="text-base font-semibold text-ink tracking-tight">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-cream transition-colors"
             aria-label="Close drawer"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 

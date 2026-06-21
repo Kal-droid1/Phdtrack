@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { Supervisor, Watchlist } from "@/types";
 import { formatDate, deadlineColor, daysUntil } from "@/lib/utils";
 import EmptyState from "@/components/ui/EmptyState";
-import { RefreshCw, FileText, Users, Bookmark, Globe } from "lucide-react";
+import { RefreshCw, FileText, Users, Bookmark, Globe, Sparkles } from "lucide-react";
 
 interface DeadlineItem {
   id: string;
@@ -14,16 +14,16 @@ interface DeadlineItem {
 }
 
 const dotColorClass: Record<"red" | "amber" | "green", string> = {
-  red: "bg-red-500",
-  amber: "bg-amber-500",
-  green: "bg-green-500",
+  red: "bg-rose",
+  amber: "bg-gold",
+  green: "bg-sage",
 };
 
 const statIconColors = [
-  { icon: FileText, bg: "bg-[#8b3a52]/10", color: "text-[#8b3a52]" },
-  { icon: Users, bg: "bg-blue-400/20", color: "text-blue-400" },
-  { icon: Bookmark, bg: "bg-amber-400/20", color: "text-amber-500" },
-  { icon: Globe, bg: "bg-emerald-400/20", color: "text-emerald-500" },
+  { icon: FileText, bg: "bg-brand-light", color: "text-brand" },
+  { icon: Users, bg: "bg-lavender/10", color: "text-lavender" },
+  { icon: Bookmark, bg: "bg-gold/10", color: "text-gold" },
+  { icon: Globe, bg: "bg-sage/10", color: "text-sage" },
 ];
 
 function getGreeting(): string {
@@ -220,39 +220,41 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       {/* Greeting */}
       <div className="mb-8">
-        <div className="inline-block">
-          <h1 className="text-2xl md:text-3xl font-bold text-[#1a1a1a]">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-ink tracking-tight">
             {greeting}, Kal
           </h1>
-          <div className="h-0.5 w-16 bg-[#8b3a52] rounded-full mt-1" />
+          <div className="flex items-center gap-3 mt-2">
+            <span className="h-0.5 w-12 rounded-full bg-brand" />
+            <p className="text-sm text-ink-light">{today}</p>
+          </div>
         </div>
-        <p className="text-sm text-[#6b4f55] mt-2">{today}</p>
       </div>
 
       {loading ? (
-        <div className="text-[#6b4f55] text-sm">Loading dashboard...</div>
+        <div className="text-ink-light text-sm animate-pulse">Loading dashboard...</div>
       ) : (
         <>
           {/* Stat Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8">
             {statCards.map((card, idx) => {
               const { icon: Icon, bg: iconBg, color: iconColor } = statIconColors[idx];
               return (
                 <div
                   key={card.label}
-                  className="bg-white border border-[#e8c5cc] rounded-xl p-5 hover:border-[#8b3a52] transition-colors duration-200"
+                  className="bg-white rounded-2xl shadow-warm p-5 md:p-6 hover:shadow-warm-md transition-all duration-200 group"
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-[#6b4f55]">
+                      <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
                         {card.label}
                       </p>
-                      <p className="text-3xl font-bold mt-2 text-[#1a1a1a]">
+                      <p className="text-3xl md:text-4xl font-bold mt-2 text-ink tracking-tight">
                         {card.value}
                       </p>
                     </div>
-                    <div className={`p-2 rounded-lg ${iconBg}`}>
-                      <Icon size={20} className={iconColor} />
+                    <div className={`p-3 rounded-xl ${iconBg} group-hover:scale-105 transition-transform duration-200`}>
+                      <Icon size={22} className={iconColor} />
                     </div>
                   </div>
                 </div>
@@ -265,32 +267,34 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             <button
               onClick={generateBrief}
               disabled={briefLoading}
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-[#8b3a52] rounded-lg hover:bg-[#a84a66] transition-colors disabled:opacity-50"
+              className="group flex items-center gap-2.5 px-5 py-3 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 shadow-warm disabled:opacity-50"
             >
-              {briefLoading && (
+              {briefLoading ? (
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Sparkles size={16} className="group-hover:rotate-12 transition-transform" />
               )}
-              Daily Brief
+              {briefLoading ? "Generating..." : "Morning Brief"}
             </button>
 
             {briefOpen && briefText && (
-              <div className="mt-4 bg-white border border-[#e8c5cc] rounded-xl border-l-4 border-l-[#8b3a52] p-5 relative">
+              <div className="mt-4 bg-white rounded-2xl shadow-warm border-l-[3px] border-brand p-5 md:p-6 relative">
                 <div className="flex items-start justify-between gap-4">
-                  <p className="text-sm text-[#1a1a1a] whitespace-pre-line leading-relaxed">
+                  <p className="text-sm text-ink leading-relaxed whitespace-pre-line">
                     {briefText}
                   </p>
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={generateBrief}
                       disabled={briefLoading}
-                      className="p-1.5 rounded-md text-[#6b4f55] hover:text-[#8b3a52] hover:bg-[#8b3a52]/10 transition-colors"
+                      className="p-2 rounded-lg text-ink-muted hover:text-brand hover:bg-brand-light transition-all duration-200"
                       aria-label="Regenerate brief"
                     >
-                      <RefreshCw size={16} />
+                      <RefreshCw size={15} />
                     </button>
                     <button
                       onClick={() => setBriefOpen(false)}
-                      className="p-1.5 rounded-md text-[#6b4f55] hover:text-[#1a1a1a] hover:bg-gray-100 transition-colors"
+                      className="p-2 rounded-lg text-ink-muted hover:text-ink hover:bg-cream transition-all duration-200 text-lg leading-none"
                       aria-label="Dismiss brief"
                     >
                       ×
@@ -302,12 +306,15 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
           </div>
 
           {/* Two Panels */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-5 md:gap-6">
             {/* Upcoming Deadlines */}
-            <div className="bg-white border border-[#e8c5cc] rounded-xl p-6">
-              <h2 className="text-lg font-semibold text-[#1a1a1a] mb-4">
-                Upcoming Deadlines
-              </h2>
+            <div className="bg-white rounded-2xl shadow-warm p-5 md:p-6">
+              <div className="flex items-center gap-2.5 mb-5">
+                <span className="w-1 h-5 rounded-full bg-brand" />
+                <h2 className="text-base font-semibold text-ink tracking-tight">
+                  Upcoming Deadlines
+                </h2>
+              </div>
 
               {upcomingDeadlines.length === 0 ? (
                 <EmptyState message="No upcoming deadlines." />
@@ -320,24 +327,24 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
                     return (
                       <li
                         key={item.id}
-                        className="flex items-center justify-between"
+                        className="flex items-center justify-between py-2 border-b border-border-light last:border-0"
                       >
                         <div className="flex items-center gap-3">
                           <span
                             className={`w-2.5 h-2.5 rounded-full ${dotColorClass[color]}`}
                           />
                           <div>
-                            <p className="text-sm font-medium text-[#1a1a1a]">
+                            <p className="text-sm font-medium text-ink">
                               {item.name}
                             </p>
-                            <p className="text-xs text-[#6b4f55]">
+                            <p className="text-xs text-ink-light">
                               {days < 0
                                 ? `${Math.abs(days)} days ago`
                                 : `${days} days left`}
                             </p>
                           </div>
                         </div>
-                        <span className="text-sm text-[#6b4f55]">
+                        <span className="text-sm text-ink-light tabular-nums">
                           {formatDate(item.date)}
                         </span>
                       </li>
@@ -348,10 +355,13 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             </div>
 
             {/* Supervisors to Follow Up */}
-            <div className="bg-white border border-[#e8c5cc] rounded-xl p-6">
-              <h2 className="text-lg font-semibold text-[#1a1a1a] mb-4">
-                Supervisors to Follow Up
-              </h2>
+            <div className="bg-white rounded-2xl shadow-warm p-5 md:p-6">
+              <div className="flex items-center gap-2.5 mb-5">
+                <span className="w-1 h-5 rounded-full bg-lavender" />
+                <h2 className="text-base font-semibold text-ink tracking-tight">
+                  Supervisors to Follow Up
+                </h2>
+              </div>
 
               {followUps.length === 0 ? (
                 <EmptyState message="No supervisors need follow-up." />
@@ -360,17 +370,17 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
                   {followUps.map((supervisor) => (
                     <li
                       key={supervisor.id}
-                      className="flex items-center justify-between"
+                      className="flex items-center justify-between py-2 border-b border-border-light last:border-0"
                     >
                       <div>
-                        <p className="text-sm font-medium text-[#1a1a1a]">
+                        <p className="text-sm font-medium text-ink">
                           {supervisor.name}
                         </p>
-                        <p className="text-xs text-[#6b4f55]">
+                        <p className="text-xs text-ink-light">
                           {supervisor.university}
                         </p>
                       </div>
-                      <span className="text-sm text-[#6b4f55]">
+                      <span className="text-sm text-ink-light tabular-nums">
                         {supervisor.date_contacted
                           ? formatDate(supervisor.date_contacted)
                           : "Not contacted"}

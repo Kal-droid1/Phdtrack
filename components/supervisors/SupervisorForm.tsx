@@ -13,9 +13,6 @@ interface SupervisorFormProps {
   onClose: () => void;
 }
 
-const fieldClasses =
-  "w-full rounded-lg border border-[#d1d5db] bg-white px-3 py-2 text-sm text-[#1a1a1a] focus:outline-2 focus:outline-[#8b3a52] focus:outline-offset-1";
-
 export default function SupervisorForm({
   initialData,
   prefillData,
@@ -104,26 +101,25 @@ export default function SupervisorForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="p-3 rounded-md bg-red-50 text-red-700 text-sm">
+        <div className="p-3.5 rounded-xl bg-rose/5 border border-rose/10 text-rose text-sm leading-relaxed">
           {error}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Name <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
+          Name <span className="text-rose">*</span>
         </label>
         <input
           type="text"
           required
           value={name ?? ""}
           onChange={(e) => setName(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
           Title
         </label>
         <input
@@ -131,66 +127,60 @@ export default function SupervisorForm({
           placeholder="e.g. Professor, Dr."
           value={title ?? ""}
           onChange={(e) => setTitle(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
           University
         </label>
         <input
           type="text"
           value={university ?? ""}
           onChange={(e) => setUniversity(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
           Department
         </label>
         <input
           type="text"
           value={department ?? ""}
           onChange={(e) => setDepartment(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
           Email
         </label>
         <input
           type="email"
           value={email ?? ""}
           onChange={(e) => setEmail(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
           Date Contacted
         </label>
         <input
           type="date"
           value={dateContacted ?? ""}
           onChange={(e) => setDateContacted(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
           Status
         </label>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className={fieldClasses}
         >
           {statuses.map((s) => (
             <option key={s} value={s}>
@@ -201,14 +191,13 @@ export default function SupervisorForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-ink-light mb-1.5">
           Notes
         </label>
         <textarea
           rows={4}
           value={notes ?? ""}
           onChange={(e) => setNotes(e.target.value)}
-          className={fieldClasses}
         />
       </div>
 
@@ -216,14 +205,14 @@ export default function SupervisorForm({
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+          className="px-4 py-2.5 text-sm font-medium text-ink-light border border-border rounded-xl hover:bg-cream transition-all duration-200"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors disabled:opacity-50"
+          className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 disabled:opacity-50 shadow-warm"
         >
           {saving
             ? "Saving..."

@@ -15,6 +15,7 @@ import {
   Search,
   Wand2,
   Bell,
+  BarChart3,
 } from "lucide-react";
 
 export default function WatchlistPage() {
@@ -260,16 +261,16 @@ Text: ${quickAddText}`;
   }
 
   function renderExpectedOpen(openDate: string | null) {
-    if (!openDate) return <span className="text-sm text-gray-400">—</span>;
+    if (!openDate) return <span className="text-sm text-ink-muted">—</span>;
 
     const days = daysUntil(openDate);
     const isSoon = days >= 0 && days <= 30;
 
     return (
       <div className="flex flex-col">
-        <span className="text-sm text-gray-700">{formatDate(openDate)}</span>
+        <span className="text-sm text-ink">{formatDate(openDate)}</span>
         {isSoon && (
-          <span className="text-xs text-amber-600 font-medium">
+          <span className="text-xs text-gold font-medium">
             Opens in {days} {days === 1 ? "day" : "days"}
           </span>
         )}
@@ -284,20 +285,20 @@ Text: ${quickAddText}`;
       <div className="relative" data-menu="true">
         <button
           onClick={() => setOpenMenuId(isOpen ? null : item.id)}
-          className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500"
+          className="p-1.5 rounded-lg hover:bg-cream text-ink-muted"
           aria-label="Open actions"
         >
           <MoreVertical size={18} />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+          <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-warm-lg border border-border py-1 z-50 overflow-hidden">
             <button
               onClick={() => {
                 handleEdit(item);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
             >
               Edit
             </button>
@@ -306,7 +307,7 @@ Text: ${quickAddText}`;
                 handleArchiveClick(item);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-cream transition-colors"
             >
               Archive
             </button>
@@ -315,7 +316,7 @@ Text: ${quickAddText}`;
                 handleDeleteClick(item);
                 setOpenMenuId(null);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              className="w-full text-left px-4 py-2.5 text-sm text-rose hover:bg-rose/5 transition-colors"
             >
               Delete
             </button>
@@ -328,10 +329,10 @@ Text: ${quickAddText}`;
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#2d3436]">
+        <h1 className="text-2xl md:text-3xl font-bold text-ink tracking-tight">
           Watchlist
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-ink-light mt-1.5">
           Scholarships and programs opening soon that you are monitoring.
         </p>
       </div>
@@ -341,25 +342,26 @@ Text: ${quickAddText}`;
           <div className="relative flex-1 max-w-md">
             <Search
               size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted"
             />
             <input
               type="text"
               placeholder="Search name or funding body..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2.5 rounded-xl"
             />
           </div>
 
           <button
             onClick={handleAnalyzePriorities}
             disabled={analysisLoading}
-            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-md hover:bg-amber-100 transition-colors disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gold bg-white border border-gold/20 rounded-xl hover:bg-gold/5 transition-all duration-200 disabled:opacity-50"
           >
             {analysisLoading && (
-              <span className="w-4 h-4 border-2 border-amber-700 border-t-transparent rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-gold border-t-transparent rounded-full animate-spin" />
             )}
+            <BarChart3 size={16} />
             Analyze Priorities
           </button>
         </div>
@@ -367,14 +369,14 @@ Text: ${quickAddText}`;
         <div className="flex items-center gap-2">
           <button
             onClick={handleQuickAdd}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#8b3a52] bg-white border border-[#8b3a52] rounded-md hover:bg-[#a84a66]/5 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-brand bg-white border border-brand/20 rounded-xl hover:bg-brand-light transition-all duration-200"
           >
-            <Wand2 size={18} />
+            <Wand2 size={16} />
             Quick Add
           </button>
           <button
             onClick={handleAdd}
-            className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors"
+            className="px-5 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 shadow-warm"
           >
             + Add to Watchlist
           </button>
@@ -382,14 +384,14 @@ Text: ${quickAddText}`;
       </div>
 
       {analysisOpen && analysisText && (
-        <div className="mb-6 bg-white rounded-xl shadow-sm border-l-4 border-amber-500 p-5 relative">
+        <div className="mb-6 bg-white rounded-2xl shadow-warm border-l-[3px] border-gold p-5 relative">
           <div className="flex items-start justify-between gap-4">
-            <p className="text-sm text-[#2d3436] whitespace-pre-line">
+            <p className="text-sm text-ink leading-relaxed whitespace-pre-line">
               {analysisText}
             </p>
             <button
               onClick={() => setAnalysisOpen(false)}
-              className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors shrink-0"
+              className="p-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-cream transition-colors shrink-0"
               aria-label="Dismiss analysis"
             >
               ×
@@ -399,7 +401,7 @@ Text: ${quickAddText}`;
       )}
 
       {loading ? (
-        <div className="text-gray-500 text-sm">Loading watchlist...</div>
+        <div className="text-ink-light text-sm animate-pulse">Loading watchlist...</div>
       ) : filteredItems.length === 0 ? (
         <EmptyState
           message="No items in your watchlist."
@@ -409,58 +411,58 @@ Text: ${quickAddText}`;
       ) : (
         <>
           {/* Desktop table */}
-          <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-visible">
+          <div className="hidden md:block bg-white rounded-2xl shadow-warm overflow-visible">
             <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+              <thead>
+                <tr className="border-b border-border-light">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Country
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Expected Open
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Expected Deadline
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Reminder
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-ink-light">
                     Notes
                   </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase w-16">
+                  <th className="px-6 py-4 w-16">
                     {/* Actions */}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-border-light">
                 {filteredItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
+                  <tr key={item.id} className="hover:bg-cream/50 transition-colors">
                     <td className="px-6 py-4">
-                      <p className="text-sm font-medium text-[#2d3436]">
+                      <p className="text-sm font-medium text-ink">
                         {item.name}
                       </p>
                       {item.funding_body && (
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs text-ink-light mt-0.5">
                           {item.funding_body}
                         </p>
                       )}
                       {isOpeningSoon(item.expected_open_date) && (
-                        <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                        <span className="inline-flex items-center mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gold/10 text-gold">
                           Opening soon
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-[#2d3436]">
+                    <td className="px-6 py-4 text-sm text-ink">
                       {item.country || "—"}
                     </td>
                     <td className="px-6 py-4">
                       {renderExpectedOpen(item.expected_open_date)}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
+                    <td className="px-6 py-4 text-sm text-ink">
                       {item.expected_deadline
                         ? formatDate(item.expected_deadline)
                         : "—"}
@@ -469,14 +471,14 @@ Text: ${quickAddText}`;
                       {item.reminder ? (
                         <Bell
                           size={18}
-                          className="text-amber-500"
+                          className="text-gold"
                           fill="currentColor"
                         />
                       ) : (
-                        <Bell size={18} className="text-gray-300" />
+                        <Bell size={18} className="text-ink-muted" />
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-[200px] truncate">
+                    <td className="px-6 py-4 text-sm text-ink-light max-w-[200px] truncate">
                       {item.notes || "—"}
                     </td>
                     <td className="px-6 py-4 text-right relative overflow-visible">
@@ -493,20 +495,20 @@ Text: ${quickAddText}`;
             {filteredItems.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-xl shadow-sm p-4"
+                className="bg-white rounded-2xl shadow-warm p-4"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#2d3436]">
+                    <p className="text-sm font-medium text-ink">
                       {item.name}
                     </p>
                     {item.funding_body && (
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-xs text-ink-light mt-0.5">
                         {item.funding_body}
                       </p>
                     )}
                     {isOpeningSoon(item.expected_open_date) && (
-                      <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                      <span className="inline-flex items-center mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gold/10 text-gold">
                         Opening soon
                       </span>
                     )}
@@ -514,41 +516,39 @@ Text: ${quickAddText}`;
                   {renderActions(item)}
                 </div>
 
-                <div className="mt-4 space-y-2">
+                <div className="mt-4 space-y-2.5">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Country</span>
-                    <span className="text-gray-700">
-                      {item.country || "—"}
-                    </span>
+                    <span className="text-ink-light">Country</span>
+                    <span className="text-ink">{item.country || "—"}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">Expected Open</span>
+                    <span className="text-ink-light text-sm">Expected Open</span>
                     {renderExpectedOpen(item.expected_open_date)}
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Deadline</span>
-                    <span className="text-gray-700">
+                    <span className="text-ink-light">Deadline</span>
+                    <span className="text-ink">
                       {item.expected_deadline
                         ? formatDate(item.expected_deadline)
                         : "—"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Reminder</span>
+                    <span className="text-ink-light">Reminder</span>
                     {item.reminder ? (
                       <Bell
                         size={16}
-                        className="text-amber-500"
+                        className="text-gold"
                         fill="currentColor"
                       />
                     ) : (
-                      <Bell size={16} className="text-gray-300" />
+                      <Bell size={16} className="text-ink-muted" />
                     )}
                   </div>
                   {item.notes && (
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">Notes</span>
-                      <span className="text-gray-700 max-w-[200px] truncate text-right">
+                      <span className="text-ink-light">Notes</span>
+                      <span className="text-ink max-w-[200px] truncate text-right">
                         {item.notes}
                       </span>
                     </div>
@@ -565,7 +565,7 @@ Text: ${quickAddText}`;
         <div className="mt-10">
           <button
             onClick={() => setArchivedExpanded(!archivedExpanded)}
-            className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="flex items-center gap-2 text-sm font-medium text-ink-light hover:text-ink transition-colors"
           >
             {archivedExpanded ? (
               <ChevronUp size={18} />
@@ -580,32 +580,32 @@ Text: ${quickAddText}`;
               {archivedItems.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-gray-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+                  className="bg-cream rounded-2xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium text-ink">
                       {item.name}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-ink-light mt-1">
                       Archived on {formatDate(item.archived_at || "")}
                     </p>
                     {item.lessons && (
-                      <p className="text-sm text-gray-600 mt-2">
-                        <span className="font-medium">Lessons:</span>{" "}
+                      <p className="text-sm text-ink-light mt-2 leading-relaxed">
+                        <span className="font-medium text-ink">Lessons:</span>{" "}
                         {item.lessons}
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 self-start">
+                  <div className="flex items-center gap-2 self-start shrink-0">
                     <button
                       onClick={() => handleUnarchiveClick(item)}
-                      className="px-3 py-1.5 text-sm font-medium text-green-700 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                      className="px-3.5 py-1.5 text-sm font-medium text-sage border border-sage/20 rounded-xl hover:bg-sage/5 transition-all duration-200"
                     >
                       Unarchive
                     </button>
                     <button
                       onClick={() => handleDeleteClick(item)}
-                      className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200 rounded-md hover:bg-red-50 transition-colors"
+                      className="px-3.5 py-1.5 text-sm font-medium text-rose border border-rose/20 rounded-xl hover:bg-rose/5 transition-all duration-200"
                     >
                       Delete
                     </button>
@@ -642,34 +642,33 @@ Text: ${quickAddText}`;
 
       {/* Quick Add Modal */}
       {quickAddOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
             onClick={() => setQuickAddOpen(false)}
             aria-hidden="true"
           />
 
           <div
-            className="relative z-50 w-full max-w-md mx-4 bg-white rounded-lg shadow-lg p-6"
+            className="relative z-50 w-full max-w-md bg-white rounded-2xl shadow-warm-lg p-6"
             role="dialog"
             aria-modal="true"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-[#2d3436]">
+              <h2 className="text-base font-semibold text-ink tracking-tight">
                 Quick Add
               </h2>
               <button
                 onClick={() => setQuickAddOpen(false)}
-                className="p-1 rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
+                className="p-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-cream transition-colors"
                 aria-label="Close"
               >
                 <span className="text-xl leading-none">&times;</span>
               </button>
             </div>
 
-            <p className="text-sm text-gray-600 mb-3">
-              Describe the scholarship or program in plain text and let AI fill
-              the form.
+            <p className="text-sm text-ink-light mb-3 leading-relaxed">
+              Describe the scholarship or program in plain text and let AI fill the form.
             </p>
 
             <textarea
@@ -677,11 +676,11 @@ Text: ${quickAddText}`;
               value={quickAddText}
               onChange={(e) => setQuickAddText(e.target.value)}
               placeholder="e.g. DAAD Scholarship for Germany opens January 2025, funding body DAAD..."
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent resize-none"
+              className="w-full rounded-xl border-border px-3.5 py-2.5 text-sm resize-none"
             />
 
             {quickAddError && (
-              <div className="mt-3 text-sm text-red-600 bg-red-50 rounded-md p-2">
+              <div className="mt-3 text-sm text-rose bg-rose/5 rounded-xl p-3 border border-rose/10">
                 {quickAddError}
               </div>
             )}
@@ -689,14 +688,14 @@ Text: ${quickAddText}`;
             <div className="flex items-center justify-end gap-3 mt-5">
               <button
                 onClick={() => setQuickAddOpen(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                className="px-4 py-2.5 text-sm font-medium text-ink-light border border-border rounded-xl hover:bg-cream transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleQuickAddParse}
                 disabled={quickAddLoading || !quickAddText.trim()}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all duration-200 disabled:opacity-50"
               >
                 {quickAddLoading ? (
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -724,7 +723,7 @@ Text: ${quickAddText}`;
           value={archiveLessons}
           onChange={(e) => setArchiveLessons(e.target.value)}
           placeholder="Write your lessons learned..."
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent resize-none"
+          className="w-full rounded-xl border-border px-3.5 py-2.5 text-sm resize-none"
         />
       </ConfirmModal>
 

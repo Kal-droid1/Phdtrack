@@ -17,26 +17,26 @@ interface StatusBadgeProps {
 }
 
 const statusStyles: Record<string, string> = {
-  Watching: "bg-gray-100 text-gray-700",
-  Sent: "bg-gray-100 text-gray-700",
-  Applied: "bg-blue-100 text-blue-700",
-  Replied: "bg-blue-100 text-blue-700",
-  "Under Review": "bg-purple-100 text-purple-700",
-  Accepted: "bg-green-100 text-green-700",
-  Interested: "bg-green-100 text-green-700",
-  Awarded: "bg-green-100 text-green-700",
-  Rejected: "bg-red-100 text-red-700",
-  Declined: "bg-red-100 text-red-700",
-  Waitlisted: "bg-amber-100 text-amber-700",
-  "No Response": "bg-amber-100 text-amber-700",
+  Watching: "bg-cream text-ink-light",
+  Sent: "bg-cream text-ink-light",
+  Applied: "bg-sage/10 text-sage",
+  Replied: "bg-sage/10 text-sage",
+  "Under Review": "bg-lavender/10 text-lavender",
+  Accepted: "bg-sage/15 text-sage font-semibold",
+  Interested: "bg-sage/10 text-sage",
+  Awarded: "bg-sage/15 text-sage font-semibold",
+  Rejected: "bg-rose/10 text-rose",
+  Declined: "bg-rose/10 text-rose",
+  Waitlisted: "bg-gold/10 text-gold",
+  "No Response": "bg-gold/10 text-gold",
 };
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
-  const style = statusStyles[status] || "bg-gray-100 text-gray-700";
+  const style = statusStyles[status] || "bg-cream text-ink-light";
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${style}`}
+      className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide ${style}`}
     >
       {status}
     </span>
