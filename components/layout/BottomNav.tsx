@@ -6,12 +6,14 @@ import {
   LayoutDashboard,
   GraduationCap,
   Users,
+  Bookmark,
 } from "lucide-react";
 
 const tabs = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/applications", label: "Applications", icon: GraduationCap },
   { href: "/supervisors", label: "Supervisors", icon: Users },
+  { href: "/watchlist", label: "Watchlist", icon: Bookmark },
 ];
 
 export default function BottomNav() {

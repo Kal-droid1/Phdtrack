@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Bell } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { Application } from "@/types";
+import { Application, Watchlist } from "@/types";
 import { daysUntil, deadlineColor, formatDate } from "@/lib/utils";
 
 const dotColorClass: Record<"red" | "amber" | "green", string> = {
@@ -13,24 +13,51 @@ const dotColorClass: Record<"red" | "amber" | "green", string> = {
   green: "bg-green-500",
 };
 
+interface ReminderItem {
+  id: string;
+  label: string;
+  date: string;
+  days: number;
+  color: "red" | "amber" | "green";
+  kind: "Deadline" | "Opening soon";
+  href: string;
+}
+
 export default function Header() {
   const [applications, setApplications] = useState<Application[]>([]);
+  const [watchlistItems, setWatchlistItems] = useState<Watchlist[]>([]);
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   async function fetchReminders() {
     const now = new Date().toISOString();
+    const thirtyDaysFromNow = new Date(
+      Date.now() + 30 * 24 * 60 * 60 * 1000
+    ).toISOString();
 
-    const { data, error } = await supabase
-      .from("applications")
-      .select("*")
-      .eq("reminder", true)
-      .eq("archived", false)
-      .gt("deadline", now)
-      .order("deadline", { ascending: true });
+    const [appRes, watchRes] = await Promise.all([
+      supabase
+        .from("applications")
+        .select("*")
+        .eq("reminder", true)
+        .eq("archived", false)
+        .gt("deadline", now)
+        .order("deadline", { ascending: true }),
+      supabase
+        .from("watchlist")
+        .select("*")
+        .eq("reminder", true)
+        .eq("archived", false)
+        .not("expected_open_date", "is", null)
+        .lte("expected_open_date", thirtyDaysFromNow)
+        .order("expected_open_date", { ascending: true }),
+    ]);
 
-    if (!error && data) {
-      setApplications(data as Application[]);
+    if (!appRes.error && appRes.data) {
+      setApplications(appRes.data as Application[]);
+    }
+    if (!watchRes.error && watchRes.data) {
+      setWatchlistItems(watchRes.data as Watchlist[]);
     }
   }
 
@@ -57,11 +84,44 @@ export default function Header() {
   const now = new Date();
   const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-  const upcomingCount = applications.filter((a) => {
-    if (!a.deadline) return false;
-    const d = new Date(a.deadline);
-    return d > now && d <= thirtyDaysFromNow;
-  }).length;
+  const reminders: ReminderItem[] = [
+    ...applications
+      .filter((a) => a.deadline && new Date(a.deadline) > now)
+      .map((a) => {
+        const days = daysUntil(a.deadline!);
+        const color = deadlineColor(days);
+        return {
+          id: a.id,
+          label: a.name,
+          date: a.deadline!,
+          days,
+          color,
+          kind: "Deadline" as const,
+          href: "/applications",
+        };
+      }),
+    ...watchlistItems
+      .filter(
+        (w) =>
+          w.expected_open_date &&
+          new Date(w.expected_open_date) >= now &&
+          new Date(w.expected_open_date) <= thirtyDaysFromNow
+      )
+      .map((w) => {
+        const days = daysUntil(w.expected_open_date!);
+        return {
+          id: w.id,
+          label: w.name,
+          date: w.expected_open_date!,
+          days,
+          color: "amber" as const,
+          kind: "Opening soon" as const,
+          href: "/watchlist",
+        };
+      }),
+  ].sort((a, b) => a.days - b.days);
+
+  const upcomingCount = reminders.length;
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-6 py-3">
@@ -87,56 +147,63 @@ export default function Header() {
               </p>
 
               <div className="mt-3 max-h-80 overflow-y-auto">
-                {applications.length === 0 ? (
-                  <p className="px-4 text-sm text-gray-500">No upcoming reminders</p>
+                {reminders.length === 0 ? (
+                  <p className="px-4 text-sm text-gray-500">
+                    No upcoming reminders
+                  </p>
                 ) : (
                   <ul className="divide-y divide-gray-100">
-                    {applications.map((application) => {
-                      const days = application.deadline
-                        ? daysUntil(application.deadline)
-                        : 0;
-                      const color = application.deadline
-                        ? deadlineColor(days)
-                        : "green";
-
-                      return (
-                        <li
-                          key={application.id}
-                          className="px-4 py-3 flex items-center gap-3"
-                        >
-                          <span
-                            className={`w-2 h-2 rounded-full shrink-0 ${
-                              dotColorClass[color]
-                            }`}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-[#2d3436] truncate">
-                              {application.name}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {application.deadline
-                                ? `${formatDate(application.deadline)} • ${
-                                    days < 0
-                                      ? `${Math.abs(days)} days ago`
-                                      : `${days} days left`
-                                  }`
-                                : "No deadline"}
-                            </p>
-                          </div>
-                        </li>
-                      );
-                    })}
+                    {reminders.map((item) => (
+                      <li
+                        key={`${item.kind}-${item.id}`}
+                        className="px-4 py-3 flex items-center gap-3"
+                      >
+                        <span
+                          className={`w-2 h-2 rounded-full shrink-0 ${
+                            dotColorClass[item.color]
+                          }`}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-[#2d3436] truncate">
+                            {item.label}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {formatDate(item.date)} &bull;{" "}
+                            <span
+                              className={
+                                item.kind === "Opening soon"
+                                  ? "text-amber-600 font-medium"
+                                  : ""
+                              }
+                            >
+                              {item.kind}
+                            </span>{" "}
+                            &bull;{" "}
+                            {item.days < 0
+                              ? `${Math.abs(item.days)} days ago`
+                              : `${item.days} days left`}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
                   </ul>
                 )}
               </div>
 
-              <div className="mt-3 px-4 pt-3 border-t border-gray-200">
+              <div className="mt-3 px-4 pt-3 border-t border-gray-200 flex gap-3">
                 <Link
                   href="/applications"
                   onClick={() => setOpen(false)}
                   className="text-sm font-medium text-[#4a7c59] hover:text-[#3e6b4b] transition-colors"
                 >
-                  View all applications
+                  Applications
+                </Link>
+                <Link
+                  href="/watchlist"
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-[#4a7c59] hover:text-[#3e6b4b] transition-colors"
+                >
+                  Watchlist
                 </Link>
               </div>
             </div>

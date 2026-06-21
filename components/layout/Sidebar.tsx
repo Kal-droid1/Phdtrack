@@ -6,7 +6,7 @@ import {
   LayoutDashboard,
   GraduationCap,
   Users,
-  Link as LinkIcon,
+  Bookmark,
   Settings,
 } from "lucide-react";
 
@@ -14,7 +14,7 @@ const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/applications", label: "Applications", icon: GraduationCap },
   { href: "/supervisors", label: "Supervisors", icon: Users },
-  { href: "/watched-urls", label: "Watched URLs", icon: LinkIcon },
+  { href: "/watchlist", label: "Watchlist", icon: Bookmark },
 ];
 
 export default function Sidebar() {

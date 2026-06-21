@@ -35,13 +35,20 @@ export interface Application {
   updated_at: string
 }
 
-export interface WatchedUrl {
+export interface Watchlist {
   id: string
-  label: string
-  url: string
-  last_checked: string | null
-  last_content_hash: string | null
-  changed: boolean
-  notes: string
+  name: string
+  type: 'Scholarship' | 'PhD Program' | 'Fellowship'
+  funding_body: string | null
+  country: string | null
+  expected_open_date: string | null
+  expected_deadline: string | null
+  url: string | null
+  notes: string | null
+  reminder: boolean
+  archived: boolean
+  archived_at: string | null
+  lessons: string | null
   created_at: string
+  updated_at: string
 }
