@@ -12,17 +12,28 @@ import SupervisorForm from "@/components/supervisors/SupervisorForm";
 import QuickAddModal from "@/components/ui/QuickAddModal";
 import { MoreVertical, ChevronDown, ChevronUp, Search, Wand2 } from "lucide-react";
 
-const statusFilters = [
-  "All",
-  "Sent",
-  "Replied",
-  "Interested",
-  "Declined",
-  "No Response",
-];
+const statusFilters = ["All", "Sent", "Interested", "Declined"];
 
 function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
+  const titles = [
+    "prof.",
+    "prof",
+    "dr.",
+    "dr",
+    "doctor",
+    "professor",
+    "mr.",
+    "mr",
+    "mrs.",
+    "mrs",
+    "ms.",
+    "ms",
+    "miss",
+  ];
+  const parts = name
+    .trim()
+    .split(/\s+/)
+    .filter((part) => !titles.includes(part.toLowerCase()));
   if (parts.length >= 2) {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   }
