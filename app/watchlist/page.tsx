@@ -17,19 +17,10 @@ import {
   Bell,
 } from "lucide-react";
 
-const typeFilters = ["All", "Scholarship", "PhD Program", "Fellowship"];
-
-const typeStyles: Record<string, string> = {
-  Scholarship: "bg-blue-100 text-blue-700",
-  "PhD Program": "bg-purple-100 text-purple-700",
-  Fellowship: "bg-green-100 text-green-700",
-};
-
 export default function WatchlistPage() {
   const [items, setItems] = useState<Watchlist[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState("All");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Watchlist | undefined>();
   const [prefillData, setPrefillData] = useState<Partial<Watchlist> | undefined>();
@@ -86,11 +77,10 @@ export default function WatchlistPage() {
 
   const filteredItems = activeItems.filter((i) => {
     const query = search.toLowerCase();
-    const matchesSearch =
+    return (
       i.name.toLowerCase().includes(query) ||
-      (i.funding_body ?? "").toLowerCase().includes(query);
-    const matchesType = typeFilter === "All" || i.type === typeFilter;
-    return matchesSearch && matchesType;
+      (i.funding_body ?? "").toLowerCase().includes(query)
+    );
   });
 
   function handleAdd() {
@@ -189,7 +179,7 @@ export default function WatchlistPage() {
 
     try {
       const prompt = `Extract fields from this text and return ONLY a JSON object.
-Fields: name, type (one of: Scholarship/PhD Program/Fellowship), funding_body, country, expected_open_date (YYYY-MM-DD or null), expected_deadline (YYYY-MM-DD or null), url, notes
+Fields: name, funding_body, country, expected_open_date (YYYY-MM-DD or null), expected_deadline (YYYY-MM-DD or null), url, notes
 Text: ${quickAddText}`;
 
       const response = await fetch("/api/groq-ai", {
@@ -339,22 +329,6 @@ Text: ${quickAddText}`;
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        {typeFilters.map((t) => (
-          <button
-            key={t}
-            onClick={() => setTypeFilter(t)}
-            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
-              typeFilter === t
-                ? "bg-[#4a7c59] text-white"
-                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-
       {loading ? (
         <div className="text-gray-500 text-sm">Loading watchlist...</div>
       ) : filteredItems.length === 0 ? (
@@ -397,18 +371,9 @@ Text: ${quickAddText}`;
                 {filteredItems.map((item) => (
                   <tr key={item.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-[#2d3436]">
-                          {item.name}
-                        </p>
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            typeStyles[item.type] || "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {item.type}
-                        </span>
-                      </div>
+                      <p className="text-sm font-medium text-[#2d3436]">
+                        {item.name}
+                      </p>
                       {item.funding_body && (
                         <p className="text-xs text-gray-500 mt-0.5">
                           {item.funding_body}
@@ -463,18 +428,9 @@ Text: ${quickAddText}`;
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-medium text-[#2d3436]">
-                        {item.name}
-                      </p>
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                          typeStyles[item.type] || "bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {item.type}
-                      </span>
-                    </div>
+                    <p className="text-sm font-medium text-[#2d3436]">
+                      {item.name}
+                    </p>
                     {item.funding_body && (
                       <p className="text-xs text-gray-500 mt-0.5">
                         {item.funding_body}
@@ -651,7 +607,7 @@ Text: ${quickAddText}`;
               rows={5}
               value={quickAddText}
               onChange={(e) => setQuickAddText(e.target.value)}
-              placeholder='e.g. DAAD Scholarship for Germany opens January 2025, funding body DAAD...'
+              placeholder="e.g. DAAD Scholarship for Germany opens January 2025, funding body DAAD..."
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent resize-none"
             />
 

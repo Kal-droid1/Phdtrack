@@ -5,8 +5,6 @@ import { supabase } from "@/lib/supabase";
 import { Watchlist } from "@/types";
 import { Bell } from "lucide-react";
 
-const types: Watchlist["type"][] = ["Scholarship", "PhD Program", "Fellowship"];
-
 interface WatchlistFormProps {
   initialData?: Watchlist;
   prefillData?: Partial<Watchlist>;
@@ -24,7 +22,6 @@ export default function WatchlistForm({
   onClose,
 }: WatchlistFormProps) {
   const [name, setName] = useState("");
-  const [type, setType] = useState<Watchlist["type"]>("Scholarship");
   const [fundingBody, setFundingBody] = useState("");
   const [country, setCountry] = useState("");
   const [expectedOpenDate, setExpectedOpenDate] = useState("");
@@ -38,7 +35,6 @@ export default function WatchlistForm({
   useEffect(() => {
     if (initialData) {
       setName(initialData.name);
-      setType(initialData.type);
       setFundingBody(initialData.funding_body ?? "");
       setCountry(initialData.country ?? "");
       setExpectedOpenDate(initialData.expected_open_date ? initialData.expected_open_date.slice(0, 10) : "");
@@ -48,11 +44,6 @@ export default function WatchlistForm({
       setNotes(initialData.notes ?? "");
     } else if (prefillData) {
       setName(prefillData.name ?? "");
-      setType(
-        types.includes(prefillData.type as Watchlist["type"])
-          ? (prefillData.type as Watchlist["type"])
-          : "Scholarship"
-      );
       setFundingBody(prefillData.funding_body ?? "");
       setCountry(prefillData.country ?? "");
       setExpectedOpenDate(prefillData.expected_open_date ? prefillData.expected_open_date.slice(0, 10) : "");
@@ -70,7 +61,6 @@ export default function WatchlistForm({
 
     const payload = {
       name,
-      type,
       funding_body: fundingBody || null,
       country: country || null,
       expected_open_date: expectedOpenDate || null,
@@ -124,23 +114,6 @@ export default function WatchlistForm({
           onChange={(e) => setName(e.target.value)}
           className={fieldClasses}
         />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Type
-        </label>
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value as Watchlist["type"])}
-          className={fieldClasses}
-        >
-          {types.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
