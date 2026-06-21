@@ -78,6 +78,9 @@ export default function ApplicationsPage() {
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysisText, setAnalysisText] = useState<string | null>(null);
   const [analysisOpen, setAnalysisOpen] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportText, setReportText] = useState<string | null>(null);
+  const [reportOpen, setReportOpen] = useState(false);
   const [editingApplication, setEditingApplication] = useState<
     Application | undefined
   >();
@@ -315,6 +318,48 @@ Applications: ${list || "none"}`;
     }
   }
 
+  async function handleGenerateReport() {
+    setReportLoading(true);
+    try {
+      const list = activeApplications
+        .map(
+          (a) =>
+            `${a.name} (country: ${a.country || "unknown"}, status: ${a.status}, deadline: ${a.deadline || "none"})`
+        )
+        .join("; ");
+
+      const prompt = `You are a PhD application assistant. Generate a short application report (max 150 words) based on this data. Plain text only, no markdown, no bullet points.
+
+Cover these points:
+1. How many applications per country
+2. How many deadlines have already passed
+3. How many deadlines are coming up in the next 30 days
+4. Which applications are rejected
+5. One sentence on what to focus on now
+
+Applications: ${list || "none"}`;
+
+      const response = await fetch("/api/groq-ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Report failed");
+
+      setReportText(result.text);
+      setReportOpen(true);
+    } catch (err) {
+      setReportText(
+        err instanceof Error ? err.message : "Could not generate report"
+      );
+      setReportOpen(true);
+    } finally {
+      setReportLoading(false);
+    }
+  }
+
   function renderDeadline(deadline: string | null) {
     if (!deadline) return <span className="text-sm text-gray-400">—</span>;
 
@@ -419,6 +464,16 @@ Applications: ${list || "none"}`;
             )}
             Analyze Priorities
           </button>
+          <button
+            onClick={handleGenerateReport}
+            disabled={reportLoading}
+            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[#4a7c59] bg-white border border-[#4a7c59] rounded-md hover:bg-[#4a7c59]/5 transition-colors disabled:opacity-50"
+          >
+            {reportLoading && (
+              <span className="w-4 h-4 border-2 border-[#4a7c59] border-t-transparent rounded-full animate-spin" />
+            )}
+            Generate Report
+          </button>
         </div>
 
         <div className="flex items-center gap-2">
@@ -438,21 +493,43 @@ Applications: ${list || "none"}`;
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        {statusFilters.map((s) => (
-          <button
-            key={s}
-            onClick={() => setStatusFilter(s)}
-            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
-              statusFilter === s
-                ? "bg-[#4a7c59] text-white"
-                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-            }`}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
+      {(() => {
+        const statusCounts = activeApplications.reduce<Record<string, number>>(
+          (acc, a) => {
+            acc[a.status] = (acc[a.status] || 0) + 1;
+            return acc;
+          },
+          {}
+        );
+        const allCount = activeApplications.length;
+
+        return (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {statusFilters
+              .filter((s) => {
+                if (s === "All") return true;
+                if (s === "Applied") return true;
+                return (statusCounts[s] || 0) > 0;
+              })
+              .map((s) => {
+                const count = s === "All" ? allCount : statusCounts[s] || 0;
+                return (
+                  <button
+                    key={s}
+                    onClick={() => setStatusFilter(s)}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                      statusFilter === s
+                        ? "bg-[#4a7c59] text-white"
+                        : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    {s} ({count})
+                  </button>
+                );
+              })}
+          </div>
+        );
+      })()}
 
       {/* Stats summary */}
       {!loading && activeApplications.length > 0 && (
@@ -520,6 +597,23 @@ Applications: ${list || "none"}`;
                   onClick={() => setAnalysisOpen(false)}
                   className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors shrink-0"
                   aria-label="Dismiss analysis"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          )}
+
+          {reportOpen && reportText && (
+            <div className="mb-6 bg-white rounded-xl shadow-sm border-l-4 border-[#4a7c59] p-5 relative">
+              <div className="flex items-start justify-between gap-4">
+                <p className="text-sm text-[#2d3436] whitespace-pre-line">
+                  {reportText}
+                </p>
+                <button
+                  onClick={() => setReportOpen(false)}
+                  className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors shrink-0"
+                  aria-label="Dismiss report"
                 >
                   ×
                 </button>
