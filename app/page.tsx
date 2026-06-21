@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Supervisor } from "@/types";
+import { Application, Supervisor } from "@/types";
 import { formatDate, deadlineColor, daysUntil } from "@/lib/utils";
 import EmptyState from "@/components/ui/EmptyState";
+import { RefreshCw } from "lucide-react";
 
 interface DeadlineItem {
   id: string;
@@ -38,6 +39,10 @@ export default function DashboardPage() {
   });
   const [upcomingDeadlines, setUpcomingDeadlines] = useState<DeadlineItem[]>([]);
   const [followUps, setFollowUps] = useState<Supervisor[]>([]);
+
+  const [briefLoading, setBriefLoading] = useState(false);
+  const [briefText, setBriefText] = useState<string | null>(null);
+  const [briefOpen, setBriefOpen] = useState(false);
 
   useEffect(() => {
     async function fetchDashboard() {
@@ -119,6 +124,79 @@ export default function DashboardPage() {
     fetchDashboard();
   }, []);
 
+  function daysSince(date: string | null): number | null {
+    if (!date) return null;
+    const ms = new Date().getTime() - new Date(date).getTime();
+    return Math.floor(ms / (1000 * 60 * 60 * 24));
+  }
+
+  async function generateBrief() {
+    setBriefLoading(true);
+    try {
+      const [appsRes, supsRes] = await Promise.all([
+        supabase.from("applications").select("*").eq("archived", false),
+        supabase
+          .from("supervisors")
+          .select("*")
+          .eq("archived", false)
+          .eq("status", "Sent"),
+      ]);
+
+      const applications = (appsRes.data ?? []) as Application[];
+      const supervisors = (supsRes.data ?? []) as Supervisor[];
+
+      const now = new Date().toISOString();
+      const thirtyDaysFromNow = new Date(
+        Date.now() + 30 * 24 * 60 * 60 * 1000
+      ).toISOString();
+
+      const upcomingDeadlines = applications.filter(
+        (a) => a.deadline && a.deadline >= now && a.deadline <= thirtyDaysFromNow
+      );
+
+      const applicationsList = applications
+        .map((a) => `${a.name} (status: ${a.status}, deadline: ${a.deadline || "none"})`)
+        .join("; ");
+
+      const supervisorsList = supervisors
+        .map(
+          (s) =>
+            `${s.name} at ${s.university} (${daysSince(s.date_contacted) ?? "unknown"} days since contacted)`
+        )
+        .join("; ");
+
+      const deadlinesList = upcomingDeadlines
+        .map((a) => `${a.name} (${a.deadline})`)
+        .join("; ");
+
+      const prompt = `You are a PhD application assistant. Give a short daily brief (max 150 words) for someone managing PhD applications. Be direct and practical.
+
+Current data:
+- Applications: ${applicationsList || "none"}
+- Supervisors waiting for reply: ${supervisorsList || "none"}
+- Upcoming deadlines in 30 days: ${deadlinesList || "none"}
+
+Tell them: what needs urgent attention today, what can wait, and one encouragement sentence at the end. Plain text, no markdown, no bullet points.`;
+
+      const response = await fetch("/api/groq-ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to generate brief");
+
+      setBriefText(data.text);
+      setBriefOpen(true);
+    } catch (err) {
+      setBriefText(err instanceof Error ? err.message : "Could not generate brief");
+      setBriefOpen(true);
+    } finally {
+      setBriefLoading(false);
+    }
+  }
+
   const greeting = getGreeting();
   const today = new Date().toLocaleDateString("en-GB", {
     weekday: "long",
@@ -173,6 +251,46 @@ export default function DashboardPage() {
                 </p>
               </div>
             ))}
+          </div>
+
+          <div className="mb-8">
+            <button
+              onClick={generateBrief}
+              disabled={briefLoading}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#4a7c59] rounded-md hover:bg-[#3e6b4b] transition-colors disabled:opacity-50"
+            >
+              {briefLoading && (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              )}
+              Daily Brief
+            </button>
+
+            {briefOpen && briefText && (
+              <div className="mt-4 bg-white rounded-xl shadow-sm border-l-4 border-[#4a7c59] p-5 relative">
+                <div className="flex items-start justify-between gap-4">
+                  <p className="text-sm text-[#2d3436] whitespace-pre-line">
+                    {briefText}
+                  </p>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={generateBrief}
+                      disabled={briefLoading}
+                      className="p-1.5 rounded-md text-gray-400 hover:text-[#4a7c59] hover:bg-[#4a7c59]/10 transition-colors"
+                      aria-label="Regenerate brief"
+                    >
+                      <RefreshCw size={16} />
+                    </button>
+                    <button
+                      onClick={() => setBriefOpen(false)}
+                      className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                      aria-label="Dismiss brief"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">

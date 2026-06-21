@@ -47,6 +47,10 @@ export default function ApplicationsPage() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [analysisText, setAnalysisText] = useState<string | null>(null);
+  const [analysisOpen, setAnalysisOpen] = useState(false);
   const [editingApplication, setEditingApplication] = useState<
     Application | undefined
   >();
@@ -241,6 +245,49 @@ export default function ApplicationsPage() {
     }
   }
 
+  async function handleAnalyzePriorities() {
+    setAnalysisLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("applications")
+        .select("*")
+        .eq("archived", false);
+
+      if (error) throw error;
+
+      const applications = (data ?? []) as Application[];
+      const list = applications
+        .map(
+          (a) =>
+            `${a.name} (status: ${a.status}, deadline: ${a.deadline || "none"}, notes: ${a.notes || "none"})`
+        )
+        .join("; ");
+
+      const prompt = `You are a PhD application advisor. Analyze these applications and tell the user in plain text (max 100 words) which ones need immediate action, which are on track, and which can be deprioritized. Be specific with names and deadlines. No markdown, no bullet points.
+
+Applications: ${list || "none"}`;
+
+      const response = await fetch("/api/groq-ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Analysis failed");
+
+      setAnalysisText(result.text);
+      setAnalysisOpen(true);
+    } catch (err) {
+      setAnalysisText(
+        err instanceof Error ? err.message : "Could not analyze priorities"
+      );
+      setAnalysisOpen(true);
+    } finally {
+      setAnalysisLoading(false);
+    }
+  }
+
   function renderDeadline(deadline: string | null) {
     if (!deadline) return <span className="text-sm text-gray-400">—</span>;
 
@@ -320,18 +367,31 @@ export default function ApplicationsPage() {
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <div className="relative flex-1 max-w-md">
-          <Search
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-          />
-          <input
-            type="text"
-            placeholder="Search name, university, or funding body..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent"
-          />
+        <div className="flex flex-col sm:flex-row gap-3 flex-1">
+          <div className="relative flex-1 max-w-md">
+            <Search
+              size={18}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              type="text"
+              placeholder="Search name, university, or funding body..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent"
+            />
+          </div>
+
+          <button
+            onClick={handleAnalyzePriorities}
+            disabled={analysisLoading}
+            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-md hover:bg-amber-100 transition-colors disabled:opacity-50"
+          >
+            {analysisLoading && (
+              <span className="w-4 h-4 border-2 border-amber-700 border-t-transparent rounded-full animate-spin" />
+            )}
+            Analyze Priorities
+          </button>
         </div>
 
         <div className="flex items-center gap-2">
@@ -377,6 +437,23 @@ export default function ApplicationsPage() {
         />
       ) : (
         <>
+          {analysisOpen && analysisText && (
+            <div className="mb-6 bg-white rounded-xl shadow-sm border-l-4 border-amber-500 p-5 relative">
+              <div className="flex items-start justify-between gap-4">
+                <p className="text-sm text-[#2d3436] whitespace-pre-line">
+                  {analysisText}
+                </p>
+                <button
+                  onClick={() => setAnalysisOpen(false)}
+                  className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors shrink-0"
+                  aria-label="Dismiss analysis"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Desktop table */}
           <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-visible">
             <table className="w-full text-left">
