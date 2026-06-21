@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { Supervisor, Watchlist } from "@/types";
 import { formatDate, deadlineColor, daysUntil } from "@/lib/utils";
 import EmptyState from "@/components/ui/EmptyState";
-import { RefreshCw, FileText, Users, Clock, CalendarClock } from "lucide-react";
+import { RefreshCw, FileText, Users, Bookmark, Globe } from "lucide-react";
 
 interface DeadlineItem {
   id: string;
@@ -22,8 +22,8 @@ const dotColorClass: Record<"red" | "amber" | "green", string> = {
 const statIconColors = [
   { icon: FileText, bg: "bg-[#8b3a52]/10", color: "text-[#8b3a52]" },
   { icon: Users, bg: "bg-blue-400/20", color: "text-blue-400" },
-  { icon: Clock, bg: "bg-amber-400/20", color: "text-amber-500" },
-  { icon: CalendarClock, bg: "bg-red-400/20", color: "text-red-400" },
+  { icon: Bookmark, bg: "bg-amber-400/20", color: "text-amber-500" },
+  { icon: Globe, bg: "bg-emerald-400/20", color: "text-emerald-500" },
 ];
 
 function getGreeting(): string {
@@ -41,8 +41,8 @@ export default function DashboardPage() {
   const [stats, setStats] = useState({
     totalApplications: 0,
     totalSupervisors: 0,
-    noReply: 0,
-    deadlinesThisMonth: 0,
+    watchlistItems: 0,
+    countriesApplied: 0,
   });
   const [upcomingDeadlines, setUpcomingDeadlines] = useState<DeadlineItem[]>([]);
   const [followUps, setFollowUps] = useState<Supervisor[]>([]);
@@ -56,17 +56,14 @@ export default function DashboardPage() {
       setLoading(true);
 
       const now = new Date().toISOString();
-      const thirtyDaysFromNow = new Date(
-        Date.now() + 30 * 24 * 60 * 60 * 1000
-      ).toISOString();
 
       try {
         const [
           applicationsCount,
           supervisorsCount,
-          noReplyCount,
+          watchlistCount,
+          countriesRes,
           upcomingApplications,
-          deadlinesThisMonthCount,
           followUpSupervisors,
         ] = await Promise.all([
           supabase
@@ -78,10 +75,14 @@ export default function DashboardPage() {
             .select("*", { count: "exact", head: true })
             .eq("archived", false),
           supabase
-            .from("supervisors")
+            .from("watchlist")
             .select("*", { count: "exact", head: true })
+            .eq("archived", false),
+          supabase
+            .from("applications")
+            .select("country")
             .eq("archived", false)
-            .in("status", ["Sent", "No Response"]),
+            .not("country", "is", null),
           supabase
             .from("applications")
             .select("id, name, deadline")
@@ -89,12 +90,6 @@ export default function DashboardPage() {
             .gt("deadline", now)
             .order("deadline", { ascending: true })
             .limit(5),
-          supabase
-            .from("applications")
-            .select("*", { count: "exact", head: true })
-            .eq("archived", false)
-            .gte("deadline", now)
-            .lte("deadline", thirtyDaysFromNow),
           supabase
             .from("supervisors")
             .select("*")
@@ -104,11 +99,15 @@ export default function DashboardPage() {
             .limit(5),
         ]);
 
+        const uniqueCountries = new Set(
+          (countriesRes.data ?? []).map((r) => r.country).filter(Boolean)
+        );
+
         setStats({
           totalApplications: applicationsCount.count ?? 0,
           totalSupervisors: supervisorsCount.count ?? 0,
-          noReply: noReplyCount.count ?? 0,
-          deadlinesThisMonth: deadlinesThisMonthCount.count ?? 0,
+          watchlistItems: watchlistCount.count ?? 0,
+          countriesApplied: uniqueCountries.size,
         });
 
         const deadlines: DeadlineItem[] = (upcomingApplications.data ?? [])
@@ -213,12 +212,8 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
   const statCards = [
     { label: "Total Applications", value: stats.totalApplications },
     { label: "Supervisors", value: stats.totalSupervisors },
-    { label: "No Reply", value: stats.noReply },
-    {
-      label: "Deadlines This Month",
-      value: stats.deadlinesThisMonth,
-      highlight: stats.deadlinesThisMonth > 0,
-    },
+    { label: "Watchlist Items", value: stats.watchlistItems },
+    { label: "Countries Applied", value: stats.countriesApplied },
   ];
 
   return (
@@ -249,18 +244,10 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <p
-                        className={`text-xs font-medium uppercase tracking-wide ${
-                          card.highlight ? "text-amber-600" : "text-[#6b4f55]"
-                        }`}
-                      >
+                      <p className="text-xs font-medium uppercase tracking-wide text-[#6b4f55]">
                         {card.label}
                       </p>
-                      <p
-                        className={`text-3xl font-bold mt-2 ${
-                          card.highlight ? "text-amber-600" : "text-[#1a1a1a]"
-                        }`}
-                      >
+                      <p className="text-3xl font-bold mt-2 text-[#1a1a1a]">
                         {card.value}
                       </p>
                     </div>
