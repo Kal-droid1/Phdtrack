@@ -26,6 +26,33 @@ const dotColorClass: Record<"red" | "amber" | "green", string> = {
   green: "bg-green-500",
 };
 
+const countryFlags: Record<string, string> = {
+  Norway: "🇳🇴",
+  Finland: "🇫🇮",
+  Germany: "🇩🇪",
+  Switzerland: "🇨🇭",
+  Netherlands: "🇳🇱",
+  Denmark: "🇩🇰",
+  Sweden: "🇸🇪",
+  Portugal: "🇵🇹",
+  Luxembourg: "🇱🇺",
+};
+
+const statusStyles: Record<string, string> = {
+  Watching: "bg-gray-100 text-gray-700",
+  Sent: "bg-gray-100 text-gray-700",
+  Applied: "bg-blue-100 text-blue-700",
+  Replied: "bg-blue-100 text-blue-700",
+  "Under Review": "bg-purple-100 text-purple-700",
+  Accepted: "bg-green-100 text-green-700",
+  Interested: "bg-green-100 text-green-700",
+  Awarded: "bg-green-100 text-green-700",
+  Rejected: "bg-red-100 text-red-700",
+  Declined: "bg-red-100 text-red-700",
+  Waitlisted: "bg-amber-100 text-amber-700",
+  "No Response": "bg-amber-100 text-amber-700",
+};
+
 function isOpeningSoon(openDate: string | null): boolean {
   if (!openDate) return false;
   const days = daysUntil(openDate);
@@ -426,6 +453,52 @@ Applications: ${list || "none"}`;
           </button>
         ))}
       </div>
+
+      {/* Stats summary */}
+      {!loading && activeApplications.length > 0 && (
+        <div className="mb-6 space-y-3">
+          {/* By Country */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+            {Object.entries(
+              activeApplications.reduce<Record<string, number>>((acc, a) => {
+                const c = a.country || "Unknown";
+                acc[c] = (acc[c] || 0) + 1;
+                return acc;
+              }, {})
+            )
+              .sort((a, b) => b[1] - a[1])
+              .map(([country, count]) => (
+                <span
+                  key={country}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-[#4a7c59] text-white whitespace-nowrap"
+                >
+                  {countryFlags[country] || "🌍"} {country} {count}
+                </span>
+              ))}
+          </div>
+
+          {/* By Status */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {Object.entries(
+              activeApplications.reduce<Record<string, number>>((acc, a) => {
+                acc[a.status] = (acc[a.status] || 0) + 1;
+                return acc;
+              }, {})
+            )
+              .filter(([status, count]) => status === "Applied" || count > 0)
+              .map(([status, count]) => (
+                <span
+                  key={status}
+                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap ${
+                    statusStyles[status] || "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {status} {count}
+                </span>
+              ))}
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="text-gray-500 text-sm">Loading applications...</div>
