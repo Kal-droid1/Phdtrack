@@ -37,9 +37,7 @@ export default function SupervisorForm({
       setUniversity(initialData.university);
       setDepartment(initialData.department);
       setEmail(initialData.email);
-      setDateContacted(
-        initialData.date_contacted ? initialData.date_contacted.slice(0, 10) : ""
-      );
+      setDateContacted(initialData.date_contacted ? initialData.date_contacted.slice(0, 10) : "");
       setStatus(initialData.status);
       setNotes(initialData.notes);
     } else if (prefillData) {
@@ -48,12 +46,8 @@ export default function SupervisorForm({
       setUniversity(prefillData.university ?? "");
       setDepartment(prefillData.department ?? "");
       setEmail(prefillData.email ?? "");
-      setDateContacted(
-        prefillData.date_contacted ? prefillData.date_contacted.slice(0, 10) : ""
-      );
-      setStatus(
-        statuses.includes(prefillData.status ?? "") ? prefillData.status! : "Sent"
-      );
+      setDateContacted(prefillData.date_contacted ? prefillData.date_contacted.slice(0, 10) : "");
+      setStatus(statuses.includes(prefillData.status ?? "") ? prefillData.status! : "Sent");
       setNotes(prefillData.notes ?? "");
     }
   }, [initialData, prefillData]);
@@ -76,20 +70,12 @@ export default function SupervisorForm({
 
     try {
       if (initialData) {
-        const { error: updateError } = await supabase
-          .from("supervisors")
-          .update(payload)
-          .eq("id", initialData.id);
-
+        const { error: updateError } = await supabase.from("supervisors").update(payload).eq("id", initialData.id);
         if (updateError) throw updateError;
       } else {
-        const { error: insertError } = await supabase
-          .from("supervisors")
-          .insert(payload);
-
+        const { error: insertError } = await supabase.from("supervisors").insert(payload);
         if (insertError) throw insertError;
       }
-
       onSave();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -101,138 +87,68 @@ export default function SupervisorForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="p-3.5 rounded-xl text-sm leading-relaxed"
-          style={{
-            color: "#f43f5e",
-            background: "rgba(244, 63, 94, 0.1)",
-            border: "1px solid rgba(244, 63, 94, 0.2)",
-          }}
-        >
+        <div className="p-3.5 rounded-xl text-sm leading-relaxed bg-red-50 text-red-700 border border-red-200">
           {error}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-white/50 mb-1.5">
-          Name <span style={{ color: "#f43f5e" }}>*</span>
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">
+          Name <span className="text-red-500">*</span>
         </label>
-        <input
-          type="text"
-          required
-          value={name ?? ""}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <input type="text" required value={name ?? ""} onChange={(e) => setName(e.target.value)} className="border-gray-200" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/50 mb-1.5">
-          Title
-        </label>
-        <input
-          type="text"
-          placeholder="e.g. Professor, Dr."
-          value={title ?? ""}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">Title</label>
+        <input type="text" placeholder="e.g. Professor, Dr." value={title ?? ""} onChange={(e) => setTitle(e.target.value)} className="border-gray-200" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/50 mb-1.5">
-          University
-        </label>
-        <input
-          type="text"
-          value={university ?? ""}
-          onChange={(e) => setUniversity(e.target.value)}
-        />
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">University</label>
+        <input type="text" value={university ?? ""} onChange={(e) => setUniversity(e.target.value)} className="border-gray-200" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/50 mb-1.5">
-          Department
-        </label>
-        <input
-          type="text"
-          value={department ?? ""}
-          onChange={(e) => setDepartment(e.target.value)}
-        />
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">Department</label>
+        <input type="text" value={department ?? ""} onChange={(e) => setDepartment(e.target.value)} className="border-gray-200" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/50 mb-1.5">
-          Email
-        </label>
-        <input
-          type="email"
-          value={email ?? ""}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">Email</label>
+        <input type="email" value={email ?? ""} onChange={(e) => setEmail(e.target.value)} className="border-gray-200" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/50 mb-1.5">
-          Date Contacted
-        </label>
-        <input
-          type="date"
-          value={dateContacted ?? ""}
-          onChange={(e) => setDateContacted(e.target.value)}
-        />
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">Date Contacted</label>
+        <input type="date" value={dateContacted ?? ""} onChange={(e) => setDateContacted(e.target.value)} className="border-gray-200" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/50 mb-1.5">
-          Status
-        </label>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        >
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">Status</label>
+        <select value={status} onChange={(e) => setStatus(e.target.value)} className="border-gray-200">
           {statuses.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
+            <option key={s} value={s}>{s}</option>
           ))}
         </select>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white/50 mb-1.5">
-          Notes
-        </label>
-        <textarea
-          rows={4}
-          value={notes ?? ""}
-          onChange={(e) => setNotes(e.target.value)}
-        />
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">Notes</label>
+        <textarea rows={4} value={notes ?? ""} onChange={(e) => setNotes(e.target.value)} className="border-gray-200" />
       </div>
 
       <div className="flex items-center justify-end gap-3 pt-2">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200"
-          style={{
-            color: "rgba(255,255,255,0.5)",
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
-        >
+        <button type="button" onClick={onClose} className="px-4 py-2.5 text-sm font-medium rounded-xl text-gray-500 bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-all duration-200">
           Cancel
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-all duration-200 disabled:opacity-50"
-          style={{
-            background: "linear-gradient(135deg, #8b5cf6, #14b8a6)",
-          }}
+          className="px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-all duration-200 disabled:opacity-50 shadow-md hover:shadow-lg"
+          style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
         >
-          {saving
-            ? "Saving..."
-            : initialData
-            ? "Update Professor"
-            : "Add Professor"}
+          {saving ? "Saving..." : initialData ? "Update Professor" : "Add Professor"}
         </button>
       </div>
     </form>

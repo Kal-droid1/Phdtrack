@@ -8,9 +8,9 @@ import { Application, Watchlist } from "@/types";
 import { daysUntil, deadlineColor, formatDate } from "@/lib/utils";
 
 const dotColorClass: Record<"red" | "amber" | "green", string> = {
-  red: "bg-glow-rose shadow-glow-rose",
-  amber: "bg-glow-amber shadow-glow-amber",
-  green: "bg-glow-teal shadow-glow-teal",
+  red: "bg-rose",
+  amber: "bg-gold",
+  green: "bg-sage",
 };
 
 interface ReminderItem {
@@ -124,57 +124,39 @@ export default function Header() {
   const upcomingCount = reminders.length;
 
   return (
-    <header
-      className="sticky top-0 z-30 px-6 py-3"
-      style={{
-        background: "rgba(255,255,255,0.02)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-      }}
-    >
+    <header className="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100 px-6 py-3">
       <div className="flex items-center justify-end">
         <div className="relative" ref={containerRef}>
           <button
             onClick={() => setOpen(!open)}
-            className="relative p-2.5 rounded-xl text-white/40 hover:text-white transition-all duration-200"
-            style={{ background: "rgba(255,255,255,0.05)" }}
+            className="relative p-2.5 rounded-xl text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
             aria-label="Open reminders"
           >
             <Bell size={20} />
             {upcomingCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full text-[10px] font-bold text-white px-1 shadow-sm"
-                style={{ background: "linear-gradient(135deg, #8b5cf6, #14b8a6)" }}
-              >
+              <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white px-1 shadow-sm">
                 {upcomingCount}
               </span>
             )}
           </button>
 
           {open && (
-            <div
-              className="absolute right-0 mt-3 w-80 rounded-2xl py-4 z-50 animate-fadeIn"
-              style={{
-                background: "#0f0f17",
-                border: "1px solid rgba(255,255,255,0.1)",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
-              }}
-            >
-              <p className="px-5 text-sm font-semibold text-white/80 tracking-tight">
+            <div className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 py-4 z-50 animate-fadeIn">
+              <p className="px-5 text-sm font-semibold text-gray-900 tracking-tight">
                 Upcoming Reminders
               </p>
 
               <div className="mt-3 max-h-80 overflow-y-auto">
                 {reminders.length === 0 ? (
-                  <p className="px-5 text-sm text-white/40">
+                  <p className="px-5 text-sm text-gray-400">
                     No upcoming reminders
                   </p>
                 ) : (
-                  <ul className="divide-y" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                  <ul className="divide-y divide-gray-100">
                     {reminders.map((item) => (
                       <li
                         key={`${item.kind}-${item.id}`}
-                        className="px-5 py-3 flex items-center gap-3 transition-colors hover:bg-white/5"
+                        className="px-5 py-3 flex items-center gap-3 hover:bg-indigo-50/50 transition-colors"
                       >
                         <span
                           className={`w-2 h-2 rounded-full shrink-0 ${
@@ -182,15 +164,15 @@ export default function Header() {
                           }`}
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-white/80 truncate">
+                          <p className="text-sm font-medium text-gray-900 truncate">
                             {item.label}
                           </p>
-                          <p className="text-xs text-white/40">
+                          <p className="text-xs text-gray-500">
                             {formatDate(item.date)} &bull;{" "}
                             <span
                               className={
                                 item.kind === "Opening soon"
-                                  ? "text-glow-amber font-medium"
+                                  ? "text-amber-600 font-medium"
                                   : ""
                               }
                             >
@@ -208,18 +190,18 @@ export default function Header() {
                 )}
               </div>
 
-              <div className="mt-3 px-5 pt-3 border-t flex gap-3" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+              <div className="mt-3 px-5 pt-3 border-t border-gray-100 flex gap-3">
                 <Link
                   href="/applications"
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium gradient-text hover:opacity-80 transition-opacity"
+                  className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
                 >
                   Applications
                 </Link>
                 <Link
                   href="/watchlist"
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium gradient-text hover:opacity-80 transition-opacity"
+                  className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
                 >
                   Watchlist
                 </Link>

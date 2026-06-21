@@ -14,16 +14,40 @@ interface DeadlineItem {
 }
 
 const dotColorClass: Record<"red" | "amber" | "green", string> = {
-  red: "bg-glow-rose shadow-glow-rose",
-  amber: "bg-glow-amber shadow-glow-amber",
-  green: "bg-glow-teal shadow-glow-teal",
+  red: "bg-rose",
+  amber: "bg-gold",
+  green: "bg-sage",
 };
 
 const statConfigs = [
-  { icon: FileText, accent: "glow-purple", gradient: "gradient-text-purple" },
-  { icon: Users, accent: "glow-teal", gradient: "gradient-text-teal" },
-  { icon: Bookmark, accent: "glow-amber", gradient: "gradient-text-amber" },
-  { icon: Globe, accent: "glow-rose", gradient: "gradient-text-rose" },
+  {
+    icon: FileText,
+    accent: "border-indigo-500",
+    gradient: "gradient-text-indigo",
+    iconBg: "bg-indigo-100",
+    iconColor: "text-indigo-600",
+  },
+  {
+    icon: Users,
+    accent: "border-cyan-500",
+    gradient: "gradient-text-cyan",
+    iconBg: "bg-cyan-100",
+    iconColor: "text-cyan-600",
+  },
+  {
+    icon: Bookmark,
+    accent: "border-amber-400",
+    gradient: "gradient-text-amber",
+    iconBg: "bg-amber-100",
+    iconColor: "text-amber-600",
+  },
+  {
+    icon: Globe,
+    accent: "border-emerald-500",
+    gradient: "gradient-text-emerald",
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-600",
+  },
 ];
 
 function getGreeting(): string {
@@ -214,55 +238,47 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       {/* Greeting */}
       <div className="mb-10">
-        <p className="text-white/50 text-xl md:text-2xl font-light tracking-wide">{greeting},</p>
-        <div className="flex items-center gap-1 mt-1">
-          <h1 className="font-syne text-6xl md:text-7xl font-black text-white tracking-tight">
-            <span className="gradient-text">K</span>al.
+        <div className="flex items-center gap-0.5">
+          <h1 className="text-4xl md:text-5xl font-black text-[#1e1b4b] tracking-tight">
+            {greeting}, Kal
           </h1>
-          <span className="w-[3px] h-[2.5rem] bg-white/60 animate-blink ml-1 rounded-full" />
         </div>
-        <div className="flex items-center gap-3 mt-3">
-          <div className="w-0.5 h-4 rounded-full" style={{ background: "linear-gradient(180deg, #8b5cf6, #14b8a6)" }} />
-          <p className="text-white/30 text-sm italic">Tracking your path to academia.</p>
+        <div className="flex items-center gap-3 mt-2">
+          <div className="w-12 h-1 rounded-full bg-indigo-600" />
+          <p className="text-gray-400 text-sm italic">Tracking your path to academia.</p>
         </div>
       </div>
 
       {loading ? (
-        <div className="text-white/40 text-sm animate-pulse">Loading dashboard...</div>
+        <div className="text-gray-400 text-sm animate-pulse">Loading dashboard...</div>
       ) : (
         <>
           {/* Stat Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8">
             {statCards.map((card, idx) => {
-              const { icon: Icon, gradient } = statConfigs[idx];
+              const { icon: Icon, iconBg, iconColor, gradient } = statConfigs[idx];
+              const borderColors = [
+                "border-t-indigo-500",
+                "border-t-cyan-500",
+                "border-t-amber-400",
+                "border-t-emerald-500",
+              ];
               return (
                 <div
                   key={card.label}
-                  className="glass-card rounded-2xl p-5 md:p-6 group cursor-default"
-                  style={{
-                    borderColor: "rgba(255,255,255,0.1)",
-                  }}
-                  onMouseEnter={(e) => {
-                    const colors = ["#8b5cf6", "#14b8a6", "#f59e0b", "#f43f5e"];
-                    e.currentTarget.style.borderColor = colors[idx];
-                    e.currentTarget.style.boxShadow = `0 0 30px ${colors[idx]}22`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  className={`bg-white rounded-2xl shadow-lg p-5 md:p-6 card-hover border-t-[3px] ${borderColors[idx]} group cursor-default`}
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-white/30">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-gray-400">
                         {card.label}
                       </p>
                       <p className={`text-4xl md:text-5xl font-black mt-2 tracking-tight ${gradient}`}>
                         {card.value}
                       </p>
                     </div>
-                    <div className="p-3 rounded-xl bg-white/5 group-hover:scale-110 transition-transform duration-300">
-                      <Icon size={22} className="text-white/50" />
+                    <div className={`p-3 rounded-xl ${iconBg} group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon size={22} className={iconColor} />
                     </div>
                   </div>
                 </div>
@@ -275,49 +291,37 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             <button
               onClick={generateBrief}
               disabled={briefLoading}
-              className="group relative overflow-hidden flex items-center gap-2.5 px-8 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-300 disabled:opacity-50"
+              className="group flex items-center gap-2.5 px-8 py-3 text-sm font-semibold text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
               style={{
-                background: "linear-gradient(135deg, #8b5cf6, #14b8a6)",
-                boxShadow: "0 0 30px rgba(139,92,246,0.2), 0 0 60px rgba(20,184,166,0.1)",
+                background: "linear-gradient(135deg, #6366f1, #a855f7)",
               }}
             >
-              <span className="absolute inset-0 animate-shimmer pointer-events-none" />
               {briefLoading ? (
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin relative z-10" />
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                <Sparkles size={16} className="group-hover:rotate-12 transition-transform relative z-10" />
+                <Sparkles size={16} className="group-hover:rotate-12 transition-transform" />
               )}
-              <span className="relative z-10">{briefLoading ? "Generating..." : "Morning Brief"}</span>
+              {briefLoading ? "Generating..." : "Morning Brief"}
             </button>
 
             {briefOpen && briefText && (
-              <div
-                className="mt-4 rounded-2xl p-5 md:p-6 relative animate-fadeIn"
-                style={{
-                  background: "rgba(255,255,255,0.05)",
-                  backdropFilter: "blur(20px)",
-                  borderLeft: "4px solid #8b5cf6",
-                  borderTop: "1px solid rgba(255,255,255,0.1)",
-                  borderRight: "1px solid rgba(255,255,255,0.1)",
-                  borderBottom: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
+              <div className="mt-4 bg-white rounded-2xl shadow-lg border-l-[4px] border-indigo-500 p-5 md:p-6 relative animate-fadeIn">
                 <div className="flex items-start justify-between gap-4">
-                  <p className="text-sm text-white/70 leading-relaxed whitespace-pre-line">
+                  <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
                     {briefText}
                   </p>
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={generateBrief}
                       disabled={briefLoading}
-                      className="p-2 rounded-lg text-white/30 hover:text-white hover:bg-white/10 transition-all duration-200"
+                      className="p-2 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
                       aria-label="Regenerate brief"
                     >
                       <RefreshCw size={15} />
                     </button>
                     <button
                       onClick={() => setBriefOpen(false)}
-                      className="p-2 rounded-lg text-white/30 hover:text-white hover:bg-white/10 transition-all duration-200 text-lg leading-none"
+                      className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all duration-200 text-lg leading-none"
                       aria-label="Dismiss brief"
                     >
                       ×
@@ -331,14 +335,9 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
           {/* Two Panels */}
           <div className="grid md:grid-cols-2 gap-5 md:gap-6">
             {/* Upcoming Deadlines */}
-            <div className="rounded-2xl p-5 md:p-6" style={{
-              background: "rgba(255,255,255,0.05)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.1)",
-            }}>
+            <div className="bg-white rounded-2xl shadow-lg border-l-[4px] border-amber-400 p-5 md:p-6">
               <div className="flex items-center gap-2.5 mb-5">
-                <span className="w-1 h-5 rounded-full" style={{ background: "linear-gradient(180deg, #8b5cf6, #14b8a6)" }} />
-                <h2 className="text-xs font-semibold uppercase tracking-[0.2em] gradient-text">
+                <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-700">
                   Upcoming Deadlines
                 </h2>
               </div>
@@ -354,24 +353,24 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
                     return (
                       <li
                         key={item.id}
-                        className="flex items-center justify-between py-3 px-3 -mx-3 rounded-xl transition-all duration-200 hover:bg-white/5 hover:translate-x-1"
+                        className="flex items-center justify-between py-3 px-3 -mx-3 rounded-xl transition-all duration-200 hover:bg-indigo-50 hover:translate-x-1"
                       >
                         <div className="flex items-center gap-3">
                           <span
                             className={`w-2.5 h-2.5 rounded-full ${dotColorClass[color]}`}
                           />
                           <div>
-                            <p className="text-sm font-medium text-white/80">
+                            <p className="text-sm font-medium text-gray-900">
                               {item.name}
                             </p>
-                            <p className="text-xs text-white/40">
+                            <p className="text-xs text-gray-500">
                               {days < 0
                                 ? `${Math.abs(days)} days ago`
                                 : `${days} days left`}
                             </p>
                           </div>
                         </div>
-                        <span className="text-sm text-white/50 tabular-nums">
+                        <span className="text-sm text-gray-500 tabular-nums">
                           {formatDate(item.date)}
                         </span>
                       </li>
@@ -382,14 +381,9 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             </div>
 
             {/* Supervisors to Follow Up */}
-            <div className="rounded-2xl p-5 md:p-6" style={{
-              background: "rgba(255,255,255,0.05)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.1)",
-            }}>
+            <div className="bg-white rounded-2xl shadow-lg border-l-[4px] border-cyan-500 p-5 md:p-6">
               <div className="flex items-center gap-2.5 mb-5">
-                <span className="w-1 h-5 rounded-full" style={{ background: "linear-gradient(180deg, #14b8a6, #8b5cf6)" }} />
-                <h2 className="text-xs font-semibold uppercase tracking-[0.2em] gradient-text">
+                <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-700">
                   Follow Up
                 </h2>
               </div>
@@ -401,17 +395,17 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
                   {followUps.map((supervisor) => (
                     <li
                       key={supervisor.id}
-                      className="flex items-center justify-between py-3 px-3 -mx-3 rounded-xl transition-all duration-200 hover:bg-white/5 hover:translate-x-1"
+                      className="flex items-center justify-between py-3 px-3 -mx-3 rounded-xl transition-all duration-200 hover:bg-indigo-50 hover:translate-x-1"
                     >
                       <div>
-                        <p className="text-sm font-medium text-white/80">
+                        <p className="text-sm font-medium text-gray-900">
                           {supervisor.name}
                         </p>
-                        <p className="text-xs text-white/40">
+                        <p className="text-xs text-gray-500">
                           {supervisor.university}
                         </p>
                       </div>
-                      <span className="text-sm text-white/50 tabular-nums">
+                      <span className="text-sm text-gray-500 tabular-nums">
                         {supervisor.date_contacted
                           ? formatDate(supervisor.date_contacted)
                           : "Not contacted"}
