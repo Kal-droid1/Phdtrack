@@ -4,13 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Supervisor } from "@/types";
 
-const statuses = [
-  "Sent",
-  "Replied",
-  "Interested",
-  "Declined",
-  "No Response",
-];
+const statuses = ["Sent", "Interested", "Declined", "No Response"];
 
 interface SupervisorFormProps {
   initialData?: Supervisor;
