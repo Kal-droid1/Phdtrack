@@ -26,33 +26,6 @@ const dotColorClass: Record<"red" | "amber" | "green", string> = {
   green: "bg-green-500",
 };
 
-const countryFlags: Record<string, string> = {
-  Norway: "🇳🇴",
-  Finland: "🇫🇮",
-  Germany: "🇩🇪",
-  Switzerland: "🇨🇭",
-  Netherlands: "🇳🇱",
-  Denmark: "🇩🇰",
-  Sweden: "🇸🇪",
-  Portugal: "🇵🇹",
-  Luxembourg: "🇱🇺",
-};
-
-const statusStyles: Record<string, string> = {
-  Watching: "bg-gray-100 text-gray-700",
-  Sent: "bg-gray-100 text-gray-700",
-  Applied: "bg-blue-100 text-blue-700",
-  Replied: "bg-blue-100 text-blue-700",
-  "Under Review": "bg-purple-100 text-purple-700",
-  Accepted: "bg-green-100 text-green-700",
-  Interested: "bg-green-100 text-green-700",
-  Awarded: "bg-green-100 text-green-700",
-  Rejected: "bg-red-100 text-red-700",
-  Declined: "bg-red-100 text-red-700",
-  Waitlisted: "bg-amber-100 text-amber-700",
-  "No Response": "bg-amber-100 text-amber-700",
-};
-
 function isOpeningSoon(openDate: string | null): boolean {
   if (!openDate) return false;
   const days = daysUntil(openDate);
@@ -75,9 +48,6 @@ export default function ApplicationsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const [analysisLoading, setAnalysisLoading] = useState(false);
-  const [analysisText, setAnalysisText] = useState<string | null>(null);
-  const [analysisOpen, setAnalysisOpen] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [reportText, setReportText] = useState<string | null>(null);
   const [reportOpen, setReportOpen] = useState(false);
@@ -275,49 +245,6 @@ export default function ApplicationsPage() {
     }
   }
 
-  async function handleAnalyzePriorities() {
-    setAnalysisLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("applications")
-        .select("*")
-        .eq("archived", false);
-
-      if (error) throw error;
-
-      const applications = (data ?? []) as Application[];
-      const list = applications
-        .map(
-          (a) =>
-            `${a.name} (status: ${a.status}, deadline: ${a.deadline || "none"}, notes: ${a.notes || "none"})`
-        )
-        .join("; ");
-
-      const prompt = `You are a PhD application advisor. Analyze these applications and tell the user in plain text (max 100 words) which ones need immediate action, which are on track, and which can be deprioritized. Be specific with names and deadlines. No markdown, no bullet points.
-
-Applications: ${list || "none"}`;
-
-      const response = await fetch("/api/groq-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
-      });
-
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Analysis failed");
-
-      setAnalysisText(result.text);
-      setAnalysisOpen(true);
-    } catch (err) {
-      setAnalysisText(
-        err instanceof Error ? err.message : "Could not analyze priorities"
-      );
-      setAnalysisOpen(true);
-    } finally {
-      setAnalysisLoading(false);
-    }
-  }
-
   async function handleGenerateReport() {
     setReportLoading(true);
     try {
@@ -455,16 +382,6 @@ Applications: ${list || "none"}`;
           </div>
 
           <button
-            onClick={handleAnalyzePriorities}
-            disabled={analysisLoading}
-            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-md hover:bg-amber-100 transition-colors disabled:opacity-50"
-          >
-            {analysisLoading && (
-              <span className="w-4 h-4 border-2 border-amber-700 border-t-transparent rounded-full animate-spin" />
-            )}
-            Analyze Priorities
-          </button>
-          <button
             onClick={handleGenerateReport}
             disabled={reportLoading}
             className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[#4a7c59] bg-white border border-[#4a7c59] rounded-md hover:bg-[#4a7c59]/5 transition-colors disabled:opacity-50"
@@ -531,52 +448,6 @@ Applications: ${list || "none"}`;
         );
       })()}
 
-      {/* Stats summary */}
-      {!loading && activeApplications.length > 0 && (
-        <div className="mb-6 space-y-3">
-          {/* By Country */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
-            {Object.entries(
-              activeApplications.reduce<Record<string, number>>((acc, a) => {
-                const c = a.country || "Unknown";
-                acc[c] = (acc[c] || 0) + 1;
-                return acc;
-              }, {})
-            )
-              .sort((a, b) => b[1] - a[1])
-              .map(([country, count]) => (
-                <span
-                  key={country}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-[#4a7c59] text-white whitespace-nowrap"
-                >
-                  {countryFlags[country] || "🌍"} {country} {count}
-                </span>
-              ))}
-          </div>
-
-          {/* By Status */}
-          <div className="flex items-center gap-2 flex-wrap">
-            {Object.entries(
-              activeApplications.reduce<Record<string, number>>((acc, a) => {
-                acc[a.status] = (acc[a.status] || 0) + 1;
-                return acc;
-              }, {})
-            )
-              .filter(([status, count]) => status === "Applied" || count > 0)
-              .map(([status, count]) => (
-                <span
-                  key={status}
-                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap ${
-                    statusStyles[status] || "bg-gray-100 text-gray-700"
-                  }`}
-                >
-                  {status} {count}
-                </span>
-              ))}
-          </div>
-        </div>
-      )}
-
       {loading ? (
         <div className="text-gray-500 text-sm">Loading applications...</div>
       ) : filteredApplications.length === 0 ? (
@@ -587,23 +458,6 @@ Applications: ${list || "none"}`;
         />
       ) : (
         <>
-          {analysisOpen && analysisText && (
-            <div className="mb-6 bg-white rounded-xl shadow-sm border-l-4 border-amber-500 p-5 relative">
-              <div className="flex items-start justify-between gap-4">
-                <p className="text-sm text-[#2d3436] whitespace-pre-line">
-                  {analysisText}
-                </p>
-                <button
-                  onClick={() => setAnalysisOpen(false)}
-                  className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors shrink-0"
-                  aria-label="Dismiss analysis"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-          )}
-
           {reportOpen && reportText && (
             <div className="mb-6 bg-white rounded-xl shadow-sm border-l-4 border-[#4a7c59] p-5 relative">
               <div className="flex items-start justify-between gap-4">
