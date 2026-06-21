@@ -377,17 +377,17 @@ Applications: ${list || "none"}`;
               placeholder="Search name, university, or funding body..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent"
             />
           </div>
 
           <button
             onClick={handleGenerateReport}
             disabled={reportLoading}
-            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[#4a7c59] bg-white border border-[#4a7c59] rounded-md hover:bg-[#4a7c59]/5 transition-colors disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[#8b3a52] bg-white border border-[#8b3a52] rounded-md hover:bg-[#8b3a52]/5 transition-colors disabled:opacity-50"
           >
             {reportLoading && (
-              <span className="w-4 h-4 border-2 border-[#4a7c59] border-t-transparent rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-[#8b3a52] border-t-transparent rounded-full animate-spin" />
             )}
             Generate Report
           </button>
@@ -396,14 +396,14 @@ Applications: ${list || "none"}`;
         <div className="flex items-center gap-2">
           <button
             onClick={handleQuickAdd}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#4a7c59] bg-white border border-[#4a7c59] rounded-md hover:bg-[#4a7c59]/5 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#8b3a52] bg-white border border-[#8b3a52] rounded-md hover:bg-[#8b3a52]/5 transition-colors"
           >
             <Wand2 size={18} />
             Quick Add
           </button>
           <button
             onClick={handleAdd}
-            className="px-4 py-2 text-sm font-medium text-white bg-[#4a7c59] rounded-md hover:bg-[#3e6b4b] transition-colors"
+            className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors"
           >
             + Add Application
           </button>
@@ -436,7 +436,7 @@ Applications: ${list || "none"}`;
                     onClick={() => setStatusFilter(s)}
                     className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
                       statusFilter === s
-                        ? "bg-[#4a7c59] text-white"
+                        ? "bg-[#8b3a52] text-white"
                         : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                     }`}
                   >
@@ -459,7 +459,7 @@ Applications: ${list || "none"}`;
       ) : (
         <>
           {reportOpen && reportText && (
-            <div className="mb-6 bg-white rounded-xl shadow-sm border-l-4 border-[#4a7c59] p-5 relative">
+            <div className="mb-6 bg-white rounded-xl shadow-sm border-l-4 border-[#8b3a52] p-5 relative">
               <div className="flex items-start justify-between gap-4">
                 <p className="text-sm text-[#2d3436] whitespace-pre-line">
                   {reportText}
@@ -721,7 +721,7 @@ Applications: ${list || "none"}`;
           value={archiveLessons}
           onChange={(e) => setArchiveLessons(e.target.value)}
           placeholder="Write your lessons learned..."
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent resize-none"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent resize-none"
         />
       </ConfirmModal>
 

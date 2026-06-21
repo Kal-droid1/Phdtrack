@@ -70,7 +70,7 @@ export default function QuickAddModal({
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Describe the application or professor in plain text... e.g. Prof. Diener at UEF Finland, contacted June 10, no reply yet"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent resize-none"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent resize-none"
         />
 
         {error && (
@@ -89,7 +89,7 @@ export default function QuickAddModal({
           <button
             onClick={() => onParse(text)}
             disabled={loading || !text.trim()}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#4a7c59] rounded-md hover:bg-[#3e6b4b] transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors disabled:opacity-50"
           >
             {loading ? (
               <Loader2 size={18} className="animate-spin" />

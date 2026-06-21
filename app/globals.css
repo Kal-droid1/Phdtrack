@@ -3,26 +3,26 @@
 @tailwind utilities;
 
 body {
-  color: #f9fafb;
-  background: #111827;
+  color: #1a1a1a;
+  background: #edbfc6;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 input, select, textarea {
-  color: #f9fafb;
-  background-color: #1f2937;
-  border: 1px solid #374151;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  border: 1px solid #e8c5cc;
   border-radius: 8px;
   padding: 8px 12px;
   width: 100%;
 }
 
 input::placeholder, select::placeholder, textarea::placeholder {
-  color: #9ca3af;
+  color: #6b4f55;
 }
 
 input:focus, select:focus, textarea:focus {
-  outline: 2px solid #4ade80;
+  outline: 2px solid #8b3a52;
   outline-offset: 1px;
 }
 

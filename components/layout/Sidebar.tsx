@@ -23,8 +23,8 @@ export default function Sidebar() {
   return (
     <aside className="hidden md:flex fixed left-0 top-0 h-full w-[240px] flex-col bg-sidebar z-40">
       <div className="flex items-center h-16 px-6">
-        <span className="relative flex items-center gap-2 text-xl font-bold text-white">
-          <span className="w-2 h-2 rounded-full bg-accent" />
+        <span className="relative flex items-center gap-2 text-xl font-bold text-[#f5e6e8]">
+          <span className="w-2 h-2 rounded-full bg-[#e8a0b0]" />
           PhDTrack
         </span>
       </div>
@@ -40,8 +40,8 @@ export default function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-accentDark text-accent border-l-[3px] border-accent"
-                  : "text-textMuted hover:text-white hover:bg-white/5 border-l-[3px] border-transparent"
+                  ? "bg-[#8b3a52] text-white border-l-[3px] border-[#e8a0b0]"
+                  : "text-[#f5e6e8] hover:text-white hover:bg-white/10 border-l-[3px] border-transparent"
               }`}
             >
               <Icon size={20} />
@@ -51,13 +51,13 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="px-4 py-4 border-t border-gray-700/50">
+      <div className="px-4 py-4 border-t border-[#8b3a52]/30">
         <Link
           href="/settings"
           className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
             pathname === "/settings"
-              ? "bg-accentDark text-accent border-l-[3px] border-accent"
-              : "text-textMuted hover:text-white hover:bg-white/5 border-l-[3px] border-transparent"
+              ? "bg-[#8b3a52] text-white border-l-[3px] border-[#e8a0b0]"
+              : "text-[#f5e6e8] hover:text-white hover:bg-white/10 border-l-[3px] border-transparent"
           }`}
         >
           <Settings size={20} />

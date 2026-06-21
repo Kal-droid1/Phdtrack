@@ -20,9 +20,9 @@ const dotColorClass: Record<"red" | "amber" | "green", string> = {
 };
 
 const statIconColors = [
-  { icon: FileText, bg: "bg-accent/20", color: "text-accent" },
+  { icon: FileText, bg: "bg-[#8b3a52]/10", color: "text-[#8b3a52]" },
   { icon: Users, bg: "bg-blue-400/20", color: "text-blue-400" },
-  { icon: Clock, bg: "bg-amber-400/20", color: "text-secondary" },
+  { icon: Clock, bg: "bg-amber-400/20", color: "text-amber-500" },
   { icon: CalendarClock, bg: "bg-red-400/20", color: "text-red-400" },
 ];
 
@@ -226,16 +226,16 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
       {/* Greeting */}
       <div className="mb-8">
         <div className="inline-block">
-          <h1 className="text-2xl md:text-3xl font-bold text-white">
+          <h1 className="text-2xl md:text-3xl font-bold text-[#1a1a1a]">
             {greeting}, Kal
           </h1>
-          <div className="h-0.5 w-16 bg-accent rounded-full mt-1" />
+          <div className="h-0.5 w-16 bg-[#8b3a52] rounded-full mt-1" />
         </div>
-        <p className="text-sm text-textMuted mt-2">{today}</p>
+        <p className="text-sm text-[#6b4f55] mt-2">{today}</p>
       </div>
 
       {loading ? (
-        <div className="text-textMuted text-sm">Loading dashboard...</div>
+        <div className="text-[#6b4f55] text-sm">Loading dashboard...</div>
       ) : (
         <>
           {/* Stat Cards */}
@@ -245,20 +245,20 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
               return (
                 <div
                   key={card.label}
-                  className="bg-card border border-cardBorder rounded-xl p-5 hover:border-accent transition-colors duration-200"
+                  className="bg-white border border-[#e8c5cc] rounded-xl p-5 hover:border-[#8b3a52] transition-colors duration-200"
                 >
                   <div className="flex items-start justify-between">
                     <div>
                       <p
                         className={`text-xs font-medium uppercase tracking-wide ${
-                          card.highlight ? "text-secondary" : "text-textMuted"
+                          card.highlight ? "text-amber-600" : "text-[#6b4f55]"
                         }`}
                       >
                         {card.label}
                       </p>
                       <p
                         className={`text-3xl font-bold mt-2 ${
-                          card.highlight ? "text-secondary" : "text-white"
+                          card.highlight ? "text-amber-600" : "text-[#1a1a1a]"
                         }`}
                       >
                         {card.value}
@@ -278,32 +278,32 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             <button
               onClick={generateBrief}
               disabled={briefLoading}
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-black bg-accent rounded-lg hover:bg-green-300 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-[#8b3a52] rounded-lg hover:bg-[#a84a66] transition-colors disabled:opacity-50"
             >
               {briefLoading && (
-                <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               )}
               Daily Brief
             </button>
 
             {briefOpen && briefText && (
-              <div className="mt-4 bg-card border border-cardBorder rounded-xl border-l-4 border-l-accent p-5 relative">
+              <div className="mt-4 bg-white border border-[#e8c5cc] rounded-xl border-l-4 border-l-[#8b3a52] p-5 relative">
                 <div className="flex items-start justify-between gap-4">
-                  <p className="text-sm text-gray-200 whitespace-pre-line leading-relaxed">
+                  <p className="text-sm text-[#1a1a1a] whitespace-pre-line leading-relaxed">
                     {briefText}
                   </p>
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={generateBrief}
                       disabled={briefLoading}
-                      className="p-1.5 rounded-md text-textMuted hover:text-accent hover:bg-accent/10 transition-colors"
+                      className="p-1.5 rounded-md text-[#6b4f55] hover:text-[#8b3a52] hover:bg-[#8b3a52]/10 transition-colors"
                       aria-label="Regenerate brief"
                     >
                       <RefreshCw size={16} />
                     </button>
                     <button
                       onClick={() => setBriefOpen(false)}
-                      className="p-1.5 rounded-md text-textMuted hover:text-white hover:bg-white/10 transition-colors"
+                      className="p-1.5 rounded-md text-[#6b4f55] hover:text-[#1a1a1a] hover:bg-gray-100 transition-colors"
                       aria-label="Dismiss brief"
                     >
                       ×
@@ -317,8 +317,8 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
           {/* Two Panels */}
           <div className="grid md:grid-cols-2 gap-6">
             {/* Upcoming Deadlines */}
-            <div className="bg-card border border-cardBorder rounded-xl p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">
+            <div className="bg-white border border-[#e8c5cc] rounded-xl p-6">
+              <h2 className="text-lg font-semibold text-[#1a1a1a] mb-4">
                 Upcoming Deadlines
               </h2>
 
@@ -340,17 +340,17 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
                             className={`w-2.5 h-2.5 rounded-full ${dotColorClass[color]}`}
                           />
                           <div>
-                            <p className="text-sm font-medium text-white">
+                            <p className="text-sm font-medium text-[#1a1a1a]">
                               {item.name}
                             </p>
-                            <p className="text-xs text-textMuted">
+                            <p className="text-xs text-[#6b4f55]">
                               {days < 0
                                 ? `${Math.abs(days)} days ago`
                                 : `${days} days left`}
                             </p>
                           </div>
                         </div>
-                        <span className="text-sm text-textMuted">
+                        <span className="text-sm text-[#6b4f55]">
                           {formatDate(item.date)}
                         </span>
                       </li>
@@ -361,8 +361,8 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             </div>
 
             {/* Supervisors to Follow Up */}
-            <div className="bg-card border border-cardBorder rounded-xl p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">
+            <div className="bg-white border border-[#e8c5cc] rounded-xl p-6">
+              <h2 className="text-lg font-semibold text-[#1a1a1a] mb-4">
                 Supervisors to Follow Up
               </h2>
 
@@ -376,14 +376,14 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
                       className="flex items-center justify-between"
                     >
                       <div>
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-[#1a1a1a]">
                           {supervisor.name}
                         </p>
-                        <p className="text-xs text-textMuted">
+                        <p className="text-xs text-[#6b4f55]">
                           {supervisor.university}
                         </p>
                       </div>
-                      <span className="text-sm text-textMuted">
+                      <span className="text-sm text-[#6b4f55]">
                         {supervisor.date_contacted
                           ? formatDate(supervisor.date_contacted)
                           : "Not contacted"}

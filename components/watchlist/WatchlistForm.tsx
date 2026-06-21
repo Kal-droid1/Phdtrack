@@ -13,7 +13,7 @@ interface WatchlistFormProps {
 }
 
 const fieldClasses =
-  "w-full rounded-lg border border-[#d1d5db] bg-white px-3 py-2 text-sm text-[#1a1a1a] focus:outline-2 focus:outline-[#4a7c59] focus:outline-offset-1";
+  "w-full rounded-lg border border-[#d1d5db] bg-white px-3 py-2 text-sm text-[#1a1a1a] focus:outline-2 focus:outline-[#8b3a52] focus:outline-offset-1";
 
 export default function WatchlistForm({
   initialData,
@@ -224,7 +224,7 @@ export default function WatchlistForm({
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 text-sm font-medium text-white bg-[#4a7c59] rounded-md hover:bg-[#3e6b4b] transition-colors disabled:opacity-50"
+          className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors disabled:opacity-50"
         >
           {saving
             ? "Saving..."

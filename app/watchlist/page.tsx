@@ -348,7 +348,7 @@ Text: ${quickAddText}`;
               placeholder="Search name or funding body..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent"
             />
           </div>
 
@@ -367,14 +367,14 @@ Text: ${quickAddText}`;
         <div className="flex items-center gap-2">
           <button
             onClick={handleQuickAdd}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#4a7c59] bg-white border border-[#4a7c59] rounded-md hover:bg-[#4a7c59]/5 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#8b3a52] bg-white border border-[#8b3a52] rounded-md hover:bg-[#a84a66]/5 transition-colors"
           >
             <Wand2 size={18} />
             Quick Add
           </button>
           <button
             onClick={handleAdd}
-            className="px-4 py-2 text-sm font-medium text-white bg-[#4a7c59] rounded-md hover:bg-[#3e6b4b] transition-colors"
+            className="px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors"
           >
             + Add to Watchlist
           </button>
@@ -677,7 +677,7 @@ Text: ${quickAddText}`;
               value={quickAddText}
               onChange={(e) => setQuickAddText(e.target.value)}
               placeholder="e.g. DAAD Scholarship for Germany opens January 2025, funding body DAAD..."
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent resize-none"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent resize-none"
             />
 
             {quickAddError && (
@@ -696,7 +696,7 @@ Text: ${quickAddText}`;
               <button
                 onClick={handleQuickAddParse}
                 disabled={quickAddLoading || !quickAddText.trim()}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#4a7c59] rounded-md hover:bg-[#3e6b4b] transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#8b3a52] rounded-md hover:bg-[#a84a66] transition-colors disabled:opacity-50"
               >
                 {quickAddLoading ? (
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -724,7 +724,7 @@ Text: ${quickAddText}`;
           value={archiveLessons}
           onChange={(e) => setArchiveLessons(e.target.value)}
           placeholder="Write your lessons learned..."
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a7c59] focus:border-transparent resize-none"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8b3a52] focus:border-transparent resize-none"
         />
       </ConfirmModal>
 
