@@ -14,7 +14,6 @@ import {
   ChevronDown,
   ChevronUp,
   Search,
-  Bell,
   Wand2,
 } from "lucide-react";
 import QuickAddModal from "@/components/ui/QuickAddModal";
@@ -39,6 +38,14 @@ function isOpeningSoon(openDate: string | null): boolean {
   if (!openDate) return false;
   const days = daysUntil(openDate);
   return days >= 0 && days <= 30;
+}
+
+function extractStipend(notes: string | null): string | null {
+  if (!notes) return null;
+  const match =
+    notes.match(/(?:€|CHF)\s*[\d.,]+/i) ||
+    notes.match(/[\d.,]+\s*(?:€|CHF)/i);
+  return match ? match[0].trim() : null;
 }
 
 export default function ApplicationsPage() {
@@ -190,15 +197,6 @@ export default function ApplicationsPage() {
     fetchApplications();
   }
 
-  async function handleToggleReminder(application: Application) {
-    await supabase
-      .from("applications")
-      .update({ reminder: !application.reminder })
-      .eq("id", application.id);
-
-    fetchApplications();
-  }
-
   function handleSave() {
     setDrawerOpen(false);
     setEditingApplication(undefined);
@@ -256,27 +254,6 @@ export default function ApplicationsPage() {
           </span>
         </div>
       </div>
-    );
-  }
-
-  function renderReminder(application: Application) {
-    return (
-      <button
-        onClick={() => handleToggleReminder(application)}
-        className={`p-1.5 rounded-md transition-colors ${
-          application.reminder
-            ? "text-amber-500 hover:bg-amber-50"
-            : "text-gray-400 hover:bg-gray-100"
-        }`}
-        aria-label={
-          application.reminder ? "Disable reminder" : "Enable reminder"
-        }
-      >
-        <Bell
-          size={18}
-          fill={application.reminder ? "currentColor" : "none"}
-        />
-      </button>
     );
   }
 
@@ -416,10 +393,7 @@ export default function ApplicationsPage() {
                     Status
                   </th>
                   <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
-                    Reminder
-                  </th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
-                    Notes
+                    Stipend
                   </th>
                   <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase w-16">
                     {/* Actions */}
@@ -456,11 +430,8 @@ export default function ApplicationsPage() {
                     <td className="px-6 py-4">
                       <StatusBadge status={application.status} />
                     </td>
-                    <td className="px-6 py-4">
-                      {renderReminder(application)}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                      {application.notes || "—"}
+                    <td className="px-6 py-4 text-sm text-[#2d3436]">
+                      {extractStipend(application.notes) || "—"}
                     </td>
                     <td className="px-6 py-4 text-right relative overflow-visible">
                       {renderActions(application)}
@@ -518,15 +489,12 @@ export default function ApplicationsPage() {
                     <span className="text-gray-500 text-sm">Status</span>
                     <StatusBadge status={application.status} />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">Reminder</span>
-                    {renderReminder(application)}
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">Stipend</span>
+                    <span className="text-gray-700">
+                      {extractStipend(application.notes) || "—"}
+                    </span>
                   </div>
-                  {application.notes && (
-                    <p className="text-sm text-gray-600">
-                      {application.notes}
-                    </p>
-                  )}
                 </div>
               </div>
             ))}
