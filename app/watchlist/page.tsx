@@ -196,21 +196,24 @@ export default function WatchlistPage() {
                         {item.country && <p className="text-xs text-gray-400">{item.country}</p>}
                       </td>
                       <td className="px-5 py-4 hidden md:table-cell">
-                        <div className="space-y-1">
-                          <p className="text-sm text-gray-700 tabular-nums">
-                            <span className="text-[10px] uppercase tracking-wider text-gray-400 mr-1.5">Opens</span>
-                            {item.expected_open_date ? formatDate(item.expected_open_date) : <span className="text-gray-300">—</span>}
-                          </p>
-                          <p className="text-sm text-gray-700 tabular-nums">
-                            <span className="text-[10px] uppercase tracking-wider text-gray-400 mr-1.5">Deadline</span>
-                            {item.expected_deadline ? formatDate(item.expected_deadline) : <span className="text-gray-300">—</span>}
-                          </p>
-                          {openingSoon && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold text-amber-700 bg-amber-100 mt-0.5">
-                              Opening soon
+                        {item.expected_open_date || item.expected_deadline ? (
+                          <div className="flex items-center gap-1.5 tabular-nums">
+                            <span className="text-sm text-gray-700">
+                              {item.expected_open_date ? formatDate(item.expected_open_date) : <span className="text-gray-300">—</span>}
                             </span>
-                          )}
-                        </div>
+                            <span className="text-gray-300 text-xs">→</span>
+                            <span className="text-sm text-gray-700">
+                              {item.expected_deadline ? formatDate(item.expected_deadline) : <span className="text-gray-300">—</span>}
+                            </span>
+                            {openingSoon && (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold text-amber-700 bg-amber-100 ml-1">
+                                Opening soon
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-gray-300">—</span>
+                        )}
                       </td>
                       <td className="px-5 py-4 text-right">
                         <div className="flex items-center justify-end gap-1">
