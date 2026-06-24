@@ -114,7 +114,7 @@ export default function DashboardPage() {
             .not("country", "is", null),
           supabase
             .from("applications")
-            .select("status, country")
+            .select("id, name, status, country, deadline, open_date")
             .eq("archived", false),
           supabase
             .from("watchlist")
@@ -348,7 +348,7 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
           </div>
 
           {/* Tabbed Charts Panel */}
-          <div className="mt-6">
+          <div className="mt-6 mb-8">
             <DashboardCharts
               applications={applications}
               watchlistItems={watchlistItems}
@@ -356,7 +356,7 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
           </div>
 
           {/* Two Panels */}
-          <div className="grid md:grid-cols-2 gap-5 md:gap-6 mt-6">
+          <div className="grid md:grid-cols-2 gap-5 md:gap-6 mt-8">
             {/* Upcoming Deadlines */}
             <div className="bg-white rounded-2xl shadow-lg border-l-[4px] border-amber-400 p-5 md:p-6">
               <div className="flex items-center gap-2.5 mb-5">
