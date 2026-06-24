@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 interface Props {
   applications: { status: string }[];
+  embedded?: boolean;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -19,7 +20,7 @@ function getColor(status: string): string {
   return STATUS_COLORS[status] ?? "#d1d5db";
 }
 
-export default function StatusDonut({ applications }: Props) {
+export default function StatusDonut({ applications, embedded = false }: Props) {
   const counts: Record<string, number> = {};
   for (const app of applications) {
     counts[app.status] = (counts[app.status] ?? 0) + 1;
@@ -30,6 +31,7 @@ export default function StatusDonut({ applications }: Props) {
     .sort((a, b) => b.count - a.count);
 
   if (data.length === 0) {
+    if (embedded) return <p className="text-sm text-gray-400">No applications yet.</p>;
     return (
       <div className="bg-white rounded-2xl shadow-lg border-l-[4px] border-purple-500 p-5 md:p-6">
         <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-700 mb-5">
@@ -42,12 +44,8 @@ export default function StatusDonut({ applications }: Props) {
 
   const total = data.reduce((s, d) => s + d.count, 0);
 
-  return (
-    <div className="bg-white rounded-2xl shadow-lg border-l-[4px] border-purple-500 p-5 md:p-6">
-      <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-700 mb-3">
-        Application Status Breakdown
-      </h2>
-
+  const chartContent = (
+    <>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
           <Pie
@@ -92,6 +90,17 @@ export default function StatusDonut({ applications }: Props) {
           </div>
         ))}
       </div>
+    </>
+  );
+
+  if (embedded) return chartContent;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg border-l-[4px] border-purple-500 p-5 md:p-6">
+      <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-700 mb-3">
+        Application Status Breakdown
+      </h2>
+      {chartContent}
     </div>
   );
 }

@@ -5,9 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { Application, Supervisor, Watchlist as WatchlistType } from "@/types";
 import { formatDate, deadlineColor, daysUntil } from "@/lib/utils";
 import EmptyState from "@/components/ui/EmptyState";
-import StatusDonut from "@/components/charts/StatusDonut";
-import CountryBarChart from "@/components/charts/CountryBarChart";
-import WatchlistGantt from "@/components/charts/WatchlistGantt";
+import DashboardCharts from "@/components/charts/DashboardCharts";
 import { RefreshCw, FileText, Users, Bookmark, Globe, Sparkles } from "lucide-react";
 
 interface DeadlineItem {
@@ -349,14 +347,12 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             )}
           </div>
 
-          {/* Chart Sections */}
-          <div className="grid md:grid-cols-2 gap-5 md:gap-6 mt-6">
-            <StatusDonut applications={applications} />
-            <CountryBarChart applications={applications} />
-          </div>
-
+          {/* Tabbed Charts Panel */}
           <div className="mt-6">
-            <WatchlistGantt items={watchlistItems} />
+            <DashboardCharts
+              applications={applications}
+              watchlistItems={watchlistItems}
+            />
           </div>
 
           {/* Two Panels */}
