@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Supervisor, Watchlist } from "@/types";
+import { Application, Supervisor, Watchlist as WatchlistType } from "@/types";
 import { formatDate, deadlineColor, daysUntil } from "@/lib/utils";
 import EmptyState from "@/components/ui/EmptyState";
+import StatusDonut from "@/components/charts/StatusDonut";
+import CountryBarChart from "@/components/charts/CountryBarChart";
+import WatchlistGantt from "@/components/charts/WatchlistGantt";
 import { RefreshCw, FileText, Users, Bookmark, Globe, Sparkles } from "lucide-react";
 
 interface DeadlineItem {
@@ -70,6 +73,8 @@ export default function DashboardPage() {
   });
   const [upcomingDeadlines, setUpcomingDeadlines] = useState<DeadlineItem[]>([]);
   const [followUps, setFollowUps] = useState<Supervisor[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [watchlistItems, setWatchlistItems] = useState<WatchlistType[]>([]);
 
   const [briefLoading, setBriefLoading] = useState(false);
   const [briefText, setBriefText] = useState<string | null>(null);
@@ -87,6 +92,8 @@ export default function DashboardPage() {
           supervisorsCount,
           watchlistCount,
           countriesRes,
+          appsStatusRes,
+          watchlistRes,
           upcomingApplications,
           followUpSupervisors,
         ] = await Promise.all([
@@ -107,6 +114,14 @@ export default function DashboardPage() {
             .select("country")
             .eq("archived", false)
             .not("country", "is", null),
+          supabase
+            .from("applications")
+            .select("status, country")
+            .eq("archived", false),
+          supabase
+            .from("watchlist")
+            .select("name, expected_open_date, expected_deadline")
+            .eq("archived", false),
           supabase
             .from("applications")
             .select("id, name, deadline")
@@ -146,6 +161,8 @@ export default function DashboardPage() {
 
         setUpcomingDeadlines(deadlines);
         setFollowUps((followUpSupervisors.data ?? []) as Supervisor[]);
+        setApplications((appsStatusRes.data ?? []) as Application[]);
+        setWatchlistItems((watchlistRes.data ?? []) as WatchlistType[]);
       } finally {
         setLoading(false);
       }
@@ -183,7 +200,7 @@ export default function DashboardPage() {
       ]);
 
       const supervisors = (supsRes.data ?? []) as Supervisor[];
-      const watchlistItems = (watchRes.data ?? []) as Watchlist[];
+      const watchlistItems = (watchRes.data ?? []) as WatchlistType[];
 
       const supervisorsList = supervisors
         .map(
@@ -332,8 +349,18 @@ Upcoming watchlist items: ${watchlistList || "none"}`;
             )}
           </div>
 
+          {/* Chart Sections */}
+          <div className="grid md:grid-cols-2 gap-5 md:gap-6 mt-6">
+            <StatusDonut applications={applications} />
+            <CountryBarChart applications={applications} />
+          </div>
+
+          <div className="mt-6">
+            <WatchlistGantt items={watchlistItems} />
+          </div>
+
           {/* Two Panels */}
-          <div className="grid md:grid-cols-2 gap-5 md:gap-6">
+          <div className="grid md:grid-cols-2 gap-5 md:gap-6 mt-6">
             {/* Upcoming Deadlines */}
             <div className="bg-white rounded-2xl shadow-lg border-l-[4px] border-amber-400 p-5 md:p-6">
               <div className="flex items-center gap-2.5 mb-5">
