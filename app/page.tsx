@@ -221,23 +221,34 @@ export default function DashboardPage() {
             new Date(b.deadline!).getTime()
         );
 
+      const countriesList = Array.from(countriesWithPassedDeadline);
+      const decisionsWithUni = decisionsSoon.map(
+        (a) => `${a.name} (${a.university ?? "unknown university"}, ${a.deadline})`
+      );
+
       const contextData = [
         `Countries applied to: ${uniqueCountries.size}`,
-        `Countries with passed deadlines and no result: ${countriesWithPassedDeadline.size}`,
+        countriesList.length > 0
+          ? `Countries with passed deadlines and no result: ${countriesList.join(", ")}`
+          : "Countries with passed deadlines and no result: none",
         nextScholarship
           ? `Next scholarship: ${nextScholarship.name} (opens: ${nextScholarship.expected_open_date})`
           : "Next scholarship: none",
-        decisionsSoon.length > 0
-          ? `Decisions expected in next 14 days: ${decisionsSoon.map((a) => `${a.name} (${a.deadline})`).join("; ")}`
+        decisionsWithUni.length > 0
+          ? `Decisions expected in next 14 days: ${decisionsWithUni.join("; ")}`
           : "Decisions expected in next 14 days: none",
       ].join("\n");
 
-      const prompt = `You are a PhD application tracking assistant. Write a brief 3-4 sentence status report based on this data:
-- How many countries the user applied to, and how many have passed their decision deadline with no result yet
-- The next watchlist scholarship that is not yet open and when it opens
-- Any decisions expected in the next 14 days
+      const prompt = `You are a warm, encouraging PhD application assistant. Write a morning brief addressed to Kal personally, in 4-5 sentences with a natural, human tone.
 
-Rules: no supervisor names, no emotional language, no encouragement. Facts only. Tone is neutral and direct.
+Include:
+- Greet Kal by name
+- Out of ${uniqueCountries.size} countries applied, how many have passed their decision deadline with no result — name those countries
+- The next watchlist scholarship opening and its date
+- Any decision expected in the next 14 days — name the university
+- End with one short genuine sentence of encouragement about the process
+
+Do not mention supervisors. Keep it warm but grounded — not overly cheerful, just honest and human.
 
 Data:
 ${contextData}`;
