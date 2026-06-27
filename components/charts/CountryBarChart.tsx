@@ -12,7 +12,7 @@ import {
 } from "recharts";
 
 interface Props {
-  applications: { country: string | null }[];
+  applications: { country: string | null; status: string }[];
 }
 
 const BAR_COLORS = [
@@ -72,9 +72,16 @@ function getFlag(country: string): string {
 }
 
 export default function CountryBarChart({ applications }: Props) {
+  const countriesWithNonRejected = new Set(
+    applications
+      .filter((app) => app.country && app.status !== "Rejected")
+      .map((app) => app.country)
+  );
+
   const counts: Record<string, number> = {};
   for (const app of applications) {
     if (!app.country) continue;
+    if (!countriesWithNonRejected.has(app.country)) continue;
     counts[app.country] = (counts[app.country] ?? 0) + 1;
   }
 

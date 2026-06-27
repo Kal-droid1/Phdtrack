@@ -169,57 +169,78 @@ export default function DashboardPage() {
     fetchDashboard();
   }, []);
 
-  function daysSince(date: string | null): number | null {
-    if (!date) return null;
-    const ms = new Date().getTime() - new Date(date).getTime();
-    return Math.floor(ms / (1000 * 60 * 60 * 24));
-  }
-
   async function generateBrief() {
     setBriefLoading(true);
     try {
-      const [supsRes, watchRes] = await Promise.all([
-        supabase
-          .from("supervisors")
-          .select("*")
-          .eq("archived", false)
-          .eq("status", "Sent"),
-        supabase
-          .from("watchlist")
-          .select("*")
-          .eq("archived", false)
-          .not("expected_open_date", "is", null)
-          .gt("expected_open_date", new Date().toISOString())
-          .lte(
-            "expected_open_date",
-            new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString()
+      const now = new Date();
+      const in14Days = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+
+      const uniqueCountries = new Set(
+        applications.filter((a) => a.country).map((a) => a.country)
+      );
+
+      const countriesWithPassedDeadline = new Set(
+        applications
+          .filter(
+            (a) =>
+              a.country &&
+              a.deadline &&
+              new Date(a.deadline) < now &&
+              a.status !== "Accepted" &&
+              a.status !== "Rejected"
           )
-          .order("expected_open_date", { ascending: true }),
-      ]);
+          .map((a) => a.country)
+      );
 
-      const supervisors = (supsRes.data ?? []) as Supervisor[];
-      const watchlistItems = (watchRes.data ?? []) as WatchlistType[];
+      const nextScholarship =
+        watchlistItems
+          .filter(
+            (w) =>
+              w.type === "Scholarship" &&
+              w.expected_open_date &&
+              new Date(w.expected_open_date) > now
+          )
+          .sort(
+            (a, b) =>
+              new Date(a.expected_open_date!).getTime() -
+              new Date(b.expected_open_date!).getTime()
+          )[0] ?? null;
 
-      const supervisorsList = supervisors
-        .map(
-          (s) =>
-            `${s.name}, ${s.university} (${daysSince(s.date_contacted) ?? "unknown"} days since contacted)`
+      const decisionsSoon = applications
+        .filter(
+          (a) =>
+            a.deadline &&
+            new Date(a.deadline) >= now &&
+            new Date(a.deadline) <= in14Days &&
+            a.status !== "Rejected" &&
+            a.status !== "Accepted"
         )
-        .join("; ");
+        .sort(
+          (a, b) =>
+            new Date(a.deadline!).getTime() -
+            new Date(b.deadline!).getTime()
+        );
 
-      const watchlistList = watchlistItems
-        .map((w) => `${w.name} (expected: ${w.expected_open_date})`)
-        .join("; ");
+      const contextData = [
+        `Countries applied to: ${uniqueCountries.size}`,
+        `Countries with passed deadlines and no result: ${countriesWithPassedDeadline.size}`,
+        nextScholarship
+          ? `Next scholarship: ${nextScholarship.name} (opens: ${nextScholarship.expected_open_date})`
+          : "Next scholarship: none",
+        decisionsSoon.length > 0
+          ? `Decisions expected in next 14 days: ${decisionsSoon.map((a) => `${a.name} (${a.deadline})`).join("; ")}`
+          : "Decisions expected in next 14 days: none",
+      ].join("\n");
 
-      const prompt = `You are a PhD application assistant. The user has ALREADY SUBMITTED all their applications and is now waiting for results. Give a short daily brief (max 120 words) focused on:
-1. Which supervisors have not replied and need a follow-up (mention names and how many days since contacted)
-2. Any upcoming watchlist items opening soon
-3. General encouragement for someone in the waiting phase
+      const prompt = `You are a PhD application tracking assistant. Write a brief 3-4 sentence status report based on this data:
+- How many countries the user applied to, and how many have passed their decision deadline with no result yet
+- The next watchlist scholarship that is not yet open and when it opens
+- Any decisions expected in the next 14 days
 
-Do NOT tell them to submit or prepare applications — they are already done. Plain text only, no markdown, no bullet points.
+Rules: no supervisor names, no emotional language, no encouragement. Facts only. Tone is neutral and direct.
 
-Supervisors with no reply (Sent status): ${supervisorsList || "none"}
-Upcoming watchlist items: ${watchlistList || "none"}`;
+Data:
+${contextData}`;
 
       const response = await fetch("/api/groq-ai", {
         method: "POST",
