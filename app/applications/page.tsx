@@ -39,6 +39,7 @@ export default function ApplicationsPage() {
       .from("applications")
       .select("*")
       .eq("archived", false)
+      .neq("status", "Awaiting Result")
       .order("created_at", { ascending: false });
 
     if (!error && data) {
