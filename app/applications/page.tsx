@@ -10,7 +10,7 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import EmptyState from "@/components/ui/EmptyState";
 import QuickAddModal from "@/components/ui/QuickAddModal";
 import ApplicationForm from "@/components/applications/ApplicationForm";
-import { Plus, Search, Trash2, Edit3, Download, Wand2 } from "lucide-react";
+import { Plus, Search, Trash2, Edit3, Download, Wand2, ArrowRight } from "lucide-react";
 
 const filterPills = [
   { label: "All", value: "all" },
@@ -84,6 +84,17 @@ export default function ApplicationsPage() {
     if (!error) {
       setConfirmDelete(null);
       fetchApplications();
+    }
+  }
+
+  async function handleMoveToAwaiting(id: string) {
+    const { error } = await supabase
+      .from("applications")
+      .update({ status: "Awaiting Result" })
+      .eq("id", id);
+
+    if (!error) {
+      setApplications((prev) => prev.filter((app) => app.id !== id));
     }
   }
 
@@ -311,6 +322,16 @@ export default function ApplicationsPage() {
                       </td>
                       <td className="px-5 py-4 text-right">
                         <div className="flex items-center justify-end gap-1">
+                          {app.status === "Applied" && days !== null && days < 0 && (
+                            <button
+                              onClick={() => handleMoveToAwaiting(app.id)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-sky-50 text-sky-700 ring-1 ring-sky-200 hover:bg-sky-100 transition-all duration-200"
+                              title="Move to Awaiting Result"
+                            >
+                              <ArrowRight size={13} />
+                              Awaiting
+                            </button>
+                          )}
                           <button
                             onClick={() => openEdit(app)}
                             className="p-2 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
