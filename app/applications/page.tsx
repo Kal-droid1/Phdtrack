@@ -88,15 +88,20 @@ export default function ApplicationsPage() {
   }
 
   function handleMoveToAwaiting(id: string) {
-    setApplications((prev) => prev.filter((app) => app.id !== id));
+    console.log("[handleMoveToAwaiting] Fired for id:", id);
+    const statusValue = "Awaiting Result";
+    console.log("[handleMoveToAwaiting] Writing status:", statusValue);
     supabase
       .from("applications")
-      .update({ status: "Awaiting Result" })
+      .update({ status: statusValue })
       .eq("id", id)
-      .then(({ error }) => {
+      .then(({ error, data }) => {
         if (error) {
-          console.error("Failed to move to Awaiting Result:", error);
+          console.error("[handleMoveToAwaiting] Storage write FAILED:", error);
           fetchApplications();
+        } else {
+          console.log("[handleMoveToAwaiting] Storage write succeeded:", { data });
+          setApplications((prev) => prev.filter((app) => app.id !== id));
         }
       });
   }
