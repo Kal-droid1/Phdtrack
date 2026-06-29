@@ -87,15 +87,15 @@ export default function ApplicationsPage() {
     }
   }
 
-  async function handleMoveToAwaiting(id: string) {
-    const { error } = await supabase
+  function handleMoveToAwaiting(id: string) {
+    setApplications((prev) => prev.filter((app) => app.id !== id));
+    supabase
       .from("applications")
       .update({ status: "Awaiting Result" })
-      .eq("id", id);
-
-    if (!error) {
-      setApplications((prev) => prev.filter((app) => app.id !== id));
-    }
+      .eq("id", id)
+      .then(({ error }) => {
+        if (error) fetchApplications();
+      });
   }
 
   async function handleQuickAdd(rawText: string) {
