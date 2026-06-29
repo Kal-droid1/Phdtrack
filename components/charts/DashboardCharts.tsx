@@ -13,6 +13,8 @@ interface Props {
     country: string | null;
     deadline: string | null;
     open_date: string | null;
+    university: string | null;
+    program: string | null;
   }[];
   watchlistItems: {
     name: string;

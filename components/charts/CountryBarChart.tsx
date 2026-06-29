@@ -10,9 +10,68 @@ import {
   LabelList,
   Cell,
 } from "recharts";
+import type { TooltipContentProps } from "recharts/types/component/Tooltip";
 
 interface Props {
-  applications: { country: string | null; status: string }[];
+  applications: {
+    country: string | null;
+    status: string;
+    university: string | null;
+    program: string | null;
+  }[];
+}
+
+const TOOLTIP_MAX_ITEMS = 6;
+
+function CountryTooltip({ active, payload }: TooltipContentProps) {
+  if (!active || !payload?.length) return null;
+
+  const { country, count, apps } = payload[0].payload as {
+    country: string;
+    count: number;
+    apps: { university: string; program: string }[];
+  };
+  const needsTruncation = apps.length > TOOLTIP_MAX_ITEMS;
+  const visible = needsTruncation ? apps.slice(0, 5) : apps;
+
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: "12px",
+        border: "1px solid #e5e7eb",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+        padding: "10px 14px",
+        fontSize: "13px",
+        lineHeight: "1.6",
+        minWidth: "220px",
+        maxWidth: "380px",
+      }}
+    >
+      <div style={{ fontWeight: 600, color: "#111827", marginBottom: 4 }}>
+        {country} · {count} application{count !== 1 ? "s" : ""}
+      </div>
+      {visible.map((app, i) => (
+        <div
+          key={i}
+          style={{
+            color: "#4b5563",
+            paddingLeft: 2,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          - {app.university} · {app.program}
+        </div>
+      ))}
+      {needsTruncation && (
+        <div style={{ color: "#9ca3af", fontSize: "12px", marginTop: 2 }}>
+          ...+{apps.length - 5} more
+        </div>
+      )}
+    </div>
+  );
 }
 
 const BAR_COLORS = [
@@ -86,7 +145,17 @@ export default function CountryBarChart({ applications }: Props) {
   }
 
   const data = Object.entries(counts)
-    .map(([country, count]) => ({ country, count, flag: getFlag(country) }))
+    .map(([country, count]) => ({
+      country,
+      count,
+      flag: getFlag(country),
+      apps: applications
+        .filter((app) => app.country === country)
+        .map((app) => ({
+          university: app.university ?? "Unknown University",
+          program: app.program ?? "Unspecified Program",
+        })),
+    }))
     .sort((a, b) => b.count - a.count);
 
   if (data.length === 0) {
@@ -137,19 +206,7 @@ export default function CountryBarChart({ applications }: Props) {
             axisLine={false}
             width={140}
           />
-          <Tooltip
-            formatter={(value) => {
-              const n = Number(value);
-              return [`${n} application${n === 1 ? "" : "s"}`, "Count"];
-            }}
-            contentStyle={{
-              borderRadius: "12px",
-              border: "1px solid #e5e7eb",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-              fontSize: "13px",
-              padding: "8px 12px",
-            }}
-          />
+          <Tooltip content={CountryTooltip} />
           <Bar
             dataKey="count"
             radius={[0, 8, 8, 0]}
