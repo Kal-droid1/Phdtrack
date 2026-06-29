@@ -94,7 +94,10 @@ export default function ApplicationsPage() {
       .update({ status: "Awaiting Result" })
       .eq("id", id)
       .then(({ error }) => {
-        if (error) fetchApplications();
+        if (error) {
+          console.error("Failed to move to Awaiting Result:", error);
+          fetchApplications();
+        }
       });
   }
 
