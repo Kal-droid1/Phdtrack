@@ -114,7 +114,7 @@ export default function DashboardPage() {
             .not("country", "is", null),
           supabase
             .from("applications")
-            .select("id, name, status, country, deadline, open_date")
+            .select("id, name, status, country, deadline, open_date, university, program")
             .eq("archived", false),
           supabase
             .from("watchlist")
