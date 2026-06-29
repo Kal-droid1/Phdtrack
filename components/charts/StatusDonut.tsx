@@ -9,6 +9,7 @@ interface Props {
 const STATUS_COLORS: Record<string, string> = {
   Watching: "#8b5cf6",
   Applied: "#14b8a6",
+  "Awaiting Result": "#0ea5e9",
   "Under Review": "#f59e0b",
   Accepted: "#10b981",
   Rejected: "#ef4444",

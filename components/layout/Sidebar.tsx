@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 import {
   LayoutDashboard,
   GraduationCap,
+  Clock,
   Users,
   Bookmark,
   Settings,
@@ -13,12 +16,26 @@ import {
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/applications", label: "Applications", icon: GraduationCap },
+  { href: "/awaiting-result", label: "Awaiting Result", icon: Clock },
   { href: "/supervisors", label: "Supervisors", icon: Users },
   { href: "/watchlist", label: "Watchlist", icon: Bookmark },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [awaitingCount, setAwaitingCount] = useState<number>(0);
+
+  useEffect(() => {
+    async function fetchCount() {
+      const { count } = await supabase
+        .from("applications")
+        .select("*", { count: "exact", head: true })
+        .eq("archived", false)
+        .eq("status", "Awaiting Result");
+      setAwaitingCount(count ?? 0);
+    }
+    fetchCount();
+  }, [pathname]);
 
   return (
     <aside
@@ -44,6 +61,10 @@ export default function Sidebar() {
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
+          const label =
+            item.href === "/awaiting-result" && awaitingCount > 0
+              ? `Awaiting Result (${awaitingCount})`
+              : item.label;
 
           return (
             <Link
@@ -61,7 +82,7 @@ export default function Sidebar() {
                   isActive ? "text-indigo-600" : "text-white/70"
                 }`}
               />
-              <span>{item.label}</span>
+              <span>{label}</span>
             </Link>
           );
         })}

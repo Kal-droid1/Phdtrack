@@ -7,6 +7,7 @@ import { Bell } from "lucide-react";
 
 const statuses: Application["status"][] = [
   "Applied",
+  "Awaiting Result",
   "Accepted",
   "Rejected",
   "Waitlisted",

@@ -6,7 +6,7 @@ import { Application, Supervisor, Watchlist as WatchlistType } from "@/types";
 import { formatDate, deadlineColor, daysUntil } from "@/lib/utils";
 import EmptyState from "@/components/ui/EmptyState";
 import DashboardCharts from "@/components/charts/DashboardCharts";
-import { RefreshCw, FileText, Users, Bookmark, Globe, Sparkles } from "lucide-react";
+import { RefreshCw, FileText, Clock, Users, Bookmark, Globe, Sparkles } from "lucide-react";
 
 interface DeadlineItem {
   id: string;
@@ -27,6 +27,13 @@ const statConfigs = [
     gradient: "gradient-text-indigo",
     iconBg: "bg-indigo-100",
     iconColor: "text-indigo-600",
+  },
+  {
+    icon: Clock,
+    accent: "border-sky-500",
+    gradient: "gradient-text-sky",
+    iconBg: "bg-sky-100",
+    iconColor: "text-sky-600",
   },
   {
     icon: Users,
@@ -64,7 +71,8 @@ function getGreeting(): string {
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
-    totalApplications: 0,
+    activeApplications: 0,
+    awaitingResult: 0,
     totalSupervisors: 0,
     watchlistItems: 0,
     countriesApplied: 0,
@@ -85,8 +93,21 @@ export default function DashboardPage() {
       const now = new Date().toISOString();
 
       try {
+        // Auto-move Applied→Awaiting Result for past-deadline applications
+        try {
+          await supabase
+            .from("applications")
+            .update({ status: "Awaiting Result" })
+            .eq("status", "Applied")
+            .lt("deadline", now)
+            .eq("archived", false);
+        } catch {
+          // silent — auto-move is best-effort
+        }
+
         const [
-          applicationsCount,
+          activeCount,
+          awaitingCount,
           supervisorsCount,
           watchlistCount,
           countriesRes,
@@ -98,7 +119,14 @@ export default function DashboardPage() {
           supabase
             .from("applications")
             .select("*", { count: "exact", head: true })
-            .eq("archived", false),
+            .eq("archived", false)
+            .eq("status", "Applied")
+            .gt("deadline", now),
+          supabase
+            .from("applications")
+            .select("*", { count: "exact", head: true })
+            .eq("archived", false)
+            .eq("status", "Awaiting Result"),
           supabase
             .from("supervisors")
             .select("*", { count: "exact", head: true })
@@ -141,7 +169,8 @@ export default function DashboardPage() {
         );
 
         setStats({
-          totalApplications: applicationsCount.count ?? 0,
+          activeApplications: activeCount.count ?? 0,
+          awaitingResult: awaitingCount.count ?? 0,
           totalSupervisors: supervisorsCount.count ?? 0,
           watchlistItems: watchlistCount.count ?? 0,
           countriesApplied: uniqueCountries.size,
@@ -275,7 +304,8 @@ ${contextData}`;
   const greeting = getGreeting();
 
   const statCards = [
-    { label: "Applications", value: stats.totalApplications },
+    { label: "Active", value: stats.activeApplications },
+    { label: "Awaiting Result", value: stats.awaitingResult },
     { label: "Supervisors", value: stats.totalSupervisors },
     { label: "Watchlist", value: stats.watchlistItems },
     { label: "Countries", value: stats.countriesApplied },
@@ -301,11 +331,12 @@ ${contextData}`;
       ) : (
         <>
           {/* Stat Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5 mb-8">
             {statCards.map((card, idx) => {
               const { icon: Icon, iconBg, iconColor, gradient } = statConfigs[idx];
               const borderColors = [
                 "border-t-indigo-500",
+                "border-t-sky-500",
                 "border-t-cyan-500",
                 "border-t-amber-400",
                 "border-t-emerald-500",

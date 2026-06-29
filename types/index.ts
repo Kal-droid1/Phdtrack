@@ -25,7 +25,7 @@ export interface Application {
   funding_body: string | null
   open_date: string | null
   deadline: string | null
-  status: 'Watching' | 'Applied' | 'Under Review' | 'Accepted' | 'Rejected' | 'Waitlisted'
+  status: 'Watching' | 'Applied' | 'Awaiting Result' | 'Under Review' | 'Accepted' | 'Rejected' | 'Waitlisted'
   reminder: boolean
   notes: string | null
   archived: boolean

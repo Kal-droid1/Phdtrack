@@ -77,6 +77,13 @@ body {
   background-clip: text;
 }
 
+.gradient-text-sky {
+  background: linear-gradient(135deg, #0284c7, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* ============================================
    Animations
    ============================================ */
