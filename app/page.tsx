@@ -6,7 +6,7 @@ import { Application, Supervisor, Watchlist as WatchlistType } from "@/types";
 import { formatDate, deadlineColor, daysUntil } from "@/lib/utils";
 import EmptyState from "@/components/ui/EmptyState";
 import DashboardCharts from "@/components/charts/DashboardCharts";
-import { RefreshCw, FileText, Clock, Users, Bookmark, Globe, Sparkles } from "lucide-react";
+import { RefreshCw, Clock, Users, Bookmark, Globe, Sparkles } from "lucide-react";
 
 interface DeadlineItem {
   id: string;
@@ -21,13 +21,6 @@ const dotColorClass: Record<"red" | "amber" | "green", string> = {
 };
 
 const statConfigs = [
-  {
-    icon: FileText,
-    accent: "border-indigo-500",
-    gradient: "gradient-text-indigo",
-    iconBg: "bg-indigo-100",
-    iconColor: "text-indigo-600",
-  },
   {
     icon: Clock,
     accent: "border-sky-500",
@@ -292,7 +285,6 @@ ${contextData}`;
   const greeting = getGreeting();
 
   const statCards = [
-    { label: "Active", value: stats.activeApplications },
     { label: "Awaiting Result", value: stats.awaitingResult },
     { label: "Supervisors", value: stats.totalSupervisors },
     { label: "Watchlist", value: stats.watchlistItems },
@@ -319,11 +311,10 @@ ${contextData}`;
       ) : (
         <>
           {/* Stat Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 mb-8">
             {statCards.map((card, idx) => {
               const { icon: Icon, iconBg, iconColor, gradient } = statConfigs[idx];
               const borderColors = [
-                "border-t-indigo-500",
                 "border-t-sky-500",
                 "border-t-cyan-500",
                 "border-t-amber-400",
