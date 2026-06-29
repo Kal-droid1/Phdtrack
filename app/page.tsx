@@ -93,18 +93,6 @@ export default function DashboardPage() {
       const now = new Date().toISOString();
 
       try {
-        // Auto-move Applied→Awaiting Result for past-deadline applications
-        try {
-          await supabase
-            .from("applications")
-            .update({ status: "Awaiting Result" })
-            .eq("status", "Applied")
-            .lt("deadline", now)
-            .eq("archived", false);
-        } catch {
-          // silent — auto-move is best-effort
-        }
-
         const [
           activeCount,
           awaitingCount,
