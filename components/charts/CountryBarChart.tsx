@@ -87,47 +87,95 @@ const BAR_COLORS = [
 
 const COUNTRY_FLAGS: Record<string, string> = {
   "usa": "🇺🇸",
+  "us": "🇺🇸",
   "united states": "🇺🇸",
   "united states of america": "🇺🇸",
   "uk": "🇬🇧",
+  "gb": "🇬🇧",
   "united kingdom": "🇬🇧",
   "england": "🇬🇧",
   "canada": "🇨🇦",
+  "ca": "🇨🇦",
   "australia": "🇦🇺",
+  "au": "🇦🇺",
   "germany": "🇩🇪",
+  "de": "🇩🇪",
   "france": "🇫🇷",
+  "fr": "🇫🇷",
   "netherlands": "🇳🇱",
+  "nl": "🇳🇱",
   "holland": "🇳🇱",
   "switzerland": "🇨🇭",
+  "ch": "🇨🇭",
   "sweden": "🇸🇪",
+  "se": "🇸🇪",
   "denmark": "🇩🇰",
+  "dk": "🇩🇰",
   "norway": "🇳🇴",
+  "no": "🇳🇴",
   "japan": "🇯🇵",
+  "jp": "🇯🇵",
   "china": "🇨🇳",
+  "cn": "🇨🇳",
   "singapore": "🇸🇬",
+  "sg": "🇸🇬",
   "italy": "🇮🇹",
+  "it": "🇮🇹",
   "spain": "🇪🇸",
+  "es": "🇪🇸",
   "belgium": "🇧🇪",
+  "be": "🇧🇪",
   "austria": "🇦🇹",
+  "at": "🇦🇹",
   "finland": "🇫🇮",
+  "fi": "🇫🇮",
   "ireland": "🇮🇪",
+  "ie": "🇮🇪",
   "new zealand": "🇳🇿",
+  "nz": "🇳🇿",
   "south korea": "🇰🇷",
+  "kr": "🇰🇷",
   "india": "🇮🇳",
+  "in": "🇮🇳",
   "brazil": "🇧🇷",
+  "br": "🇧🇷",
   "south africa": "🇿🇦",
+  "za": "🇿🇦",
   "portugal": "🇵🇹",
+  "pt": "🇵🇹",
   "poland": "🇵🇱",
+  "pl": "🇵🇱",
   "czech republic": "🇨🇿",
+  "cz": "🇨🇿",
   "greece": "🇬🇷",
+  "gr": "🇬🇷",
   "turkey": "🇹🇷",
+  "tr": "🇹🇷",
   "thailand": "🇹🇭",
+  "th": "🇹🇭",
   "malaysia": "🇲🇾",
+  "my": "🇲🇾",
 };
+
+function isoCodeToFlag(code: string): string {
+  const upper = code.toUpperCase();
+  if (upper.length !== 2) return "";
+  const A = "A".charCodeAt(0);
+  const BASE = 0x1f1e6;
+  for (let i = 0; i < 2; i++) {
+    const cp = upper.charCodeAt(i);
+    if (cp < A || cp > A + 25) return "";
+  }
+  const c0 = upper.charCodeAt(0);
+  const c1 = upper.charCodeAt(1);
+  return String.fromCodePoint(BASE + (c0 - A)) + String.fromCodePoint(BASE + (c1 - A));
+}
 
 function getFlag(country: string): string {
   const key = country.toLowerCase().trim();
-  return COUNTRY_FLAGS[key] ?? "";
+  if (COUNTRY_FLAGS[key]) return COUNTRY_FLAGS[key];
+  if (key.length === 2) return isoCodeToFlag(key);
+  return "";
 }
 
 export default function CountryBarChart({ applications }: Props) {
