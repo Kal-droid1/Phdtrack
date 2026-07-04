@@ -19,6 +19,7 @@ interface Props {
     id: string;
     name: string;
     priority: string;
+    funding_body: string | null;
     expected_deadline: string | null;
   }[];
 }

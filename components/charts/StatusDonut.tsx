@@ -10,6 +10,7 @@ interface Props {
     id: string;
     name: string;
     priority: string;
+    funding_body: string | null;
     expected_deadline: string | null;
   }[];
 }
@@ -49,16 +50,25 @@ export default function StatusDonut({ applications, watchlistItems }: Props) {
 
     const nextDeadline = futureItems[0] ?? null;
     const nextDays = nextDeadline ? daysUntil(nextDeadline.expected_deadline!) : null;
+    const nextDeadlineLabel = nextDeadline
+      ? nextDeadline.funding_body || nextDeadline.name
+      : null;
 
-    const urgentCount = watchlistItems.filter((w) => w.priority === "urgent").length;
+    const urgentItems = watchlistItems.filter((w) => w.priority === "urgent");
 
-    const thisMonthCount = watchlistItems.filter((w) => {
+    const thisMonthItems = watchlistItems.filter((w) => {
       if (!w.expected_deadline) return false;
       const d = new Date(w.expected_deadline);
       return d >= startOfMonth && d <= endOfMonth;
-    }).length;
+    });
 
-    return { nextDeadline, nextDays, urgentCount, thisMonthCount };
+    return {
+      nextDeadline,
+      nextDeadlineLabel,
+      nextDays,
+      urgentItems,
+      thisMonthItems,
+    };
   }, [watchlistItems]);
 
   if (data.length === 0) {
@@ -143,40 +153,68 @@ export default function StatusDonut({ applications, watchlistItems }: Props) {
 
       {/* Stats panel */}
       <div className="flex-1 flex flex-col justify-center gap-5">
-        <div>
-          <p className="text-[10px] font-semibold text-gray-400 tracking-[0.1em] uppercase mb-1">
+        {/* Next Deadline */}
+        <div className="group relative">
+          <p className="text-[10px] font-semibold text-gray-400 tracking-[0.15em] uppercase mb-1.5 pb-1.5 border-b border-gray-100">
             Next Deadline
           </p>
           {stats.nextDeadline ? (
             <>
               <p className="text-sm font-semibold text-gray-900 truncate max-w-[180px]">
-                {stats.nextDeadline.name}
+                {stats.nextDeadlineLabel}
               </p>
               <p className="text-xs text-gray-500 mt-0.5">
                 {stats.nextDays} day{stats.nextDays !== 1 ? "s" : ""} remaining
               </p>
+              <div className="absolute left-0 top-full mt-1 z-50 w-max max-w-[220px] rounded-lg bg-gray-900 text-white text-xs px-3 py-2 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 pointer-events-none">
+                {stats.nextDeadline.name}
+              </div>
             </>
           ) : (
             <p className="text-xs text-gray-400">No upcoming deadlines</p>
           )}
         </div>
 
-        <div>
-          <p className="text-[10px] font-semibold text-gray-400 tracking-[0.1em] uppercase mb-1">
+        {/* Urgent Items */}
+        <div className="group relative">
+          <p className="text-[10px] font-semibold text-gray-400 tracking-[0.15em] uppercase mb-1.5 pb-1.5 border-b border-gray-100">
             Urgent Items
           </p>
-          <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.urgentCount}</span>
+          <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.urgentItems.length}</span>
           <p className="text-xs text-gray-500">marked Urgent</p>
+          {stats.urgentItems.length > 0 && (
+            <div className="absolute left-0 top-full mt-1 z-50 w-max max-w-[240px] rounded-lg bg-gray-900 text-white text-xs px-3 py-2 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 pointer-events-none">
+              <ul className="space-y-1">
+                {stats.urgentItems.map((item) => (
+                  <li key={item.id} className="truncate">
+                    {item.funding_body ? `${item.name} — ${item.funding_body}` : item.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
-        <div>
-          <p className="text-[10px] font-semibold text-gray-400 tracking-[0.1em] uppercase mb-1">
+        {/* This Month */}
+        <div className="group relative">
+          <p className="text-[10px] font-semibold text-gray-400 tracking-[0.15em] uppercase mb-1.5 pb-1.5 border-b border-gray-100">
             This Month
           </p>
-          <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.thisMonthCount}</span>
+          <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.thisMonthItems.length}</span>
           <p className="text-xs text-gray-500">
-            deadline{stats.thisMonthCount !== 1 ? "s" : ""} this month
+            deadline{stats.thisMonthItems.length !== 1 ? "s" : ""} this month
           </p>
+          {stats.thisMonthItems.length > 0 && (
+            <div className="absolute left-0 top-full mt-1 z-50 w-max max-w-[240px] rounded-lg bg-gray-900 text-white text-xs px-3 py-2 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 pointer-events-none">
+              <ul className="space-y-1">
+                {stats.thisMonthItems.map((item) => (
+                  <li key={item.id} className="truncate">
+                    {item.funding_body ? `${item.name} — ${item.funding_body}` : item.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>
