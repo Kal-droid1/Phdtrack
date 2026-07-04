@@ -9,10 +9,10 @@ interface PriorityBadgeProps {
 }
 
 const PRIORITY_CONFIG: Record<Priority, { label: string; bg: string; text: string; dot: string; hover: string }> = {
-  urgent: { label: "Urgent", bg: "bg-red-50", text: "text-red-700", dot: "bg-red-500", hover: "hover:bg-red-100" },
-  high: { label: "High", bg: "bg-orange-50", text: "text-orange-700", dot: "bg-orange-500", hover: "hover:bg-orange-100" },
-  normal: { label: "Normal", bg: "bg-gray-50", text: "text-gray-500", dot: "bg-gray-400", hover: "hover:bg-gray-100" },
-  low: { label: "Low", bg: "bg-blue-50", text: "text-blue-600", dot: "bg-blue-400", hover: "hover:bg-blue-100" },
+  urgent: { label: "Urgent", bg: "bg-red-100", text: "text-red-800", dot: "bg-red-600", hover: "hover:bg-red-200" },
+  high: { label: "High", bg: "bg-orange-100", text: "text-orange-800", dot: "bg-orange-600", hover: "hover:bg-orange-200" },
+  normal: { label: "Normal", bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-500", hover: "hover:bg-gray-200" },
+  low: { label: "Low", bg: "bg-slate-100", text: "text-slate-600", dot: "bg-slate-500", hover: "hover:bg-slate-200" },
 };
 
 const PRIORITY_ORDER: Priority[] = ["urgent", "high", "normal", "low"];

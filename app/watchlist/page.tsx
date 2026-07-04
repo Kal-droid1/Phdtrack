@@ -15,10 +15,10 @@ import { Plus, Search, Trash2, Edit3, Download, Wand2, ExternalLink, Pin, Filter
 const PRIORITY_ORDER: Record<Priority, number> = { urgent: 0, high: 1, normal: 2, low: 3 };
 
 const ROW_TINT: Record<Priority, string> = {
-  urgent: "#fef2f2",
-  high: "#fff7ed",
+  urgent: "#fee2e2",
+  high: "#ffedd5",
   normal: "",
-  low: "#f8fafc",
+  low: "#e2e8f0",
 };
 
 export default function WatchlistPage() {
