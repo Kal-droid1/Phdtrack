@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Watchlist, Priority } from "@/types";
-import { Bell } from "lucide-react";
+import { Bell, Pin } from "lucide-react";
 
 const PRIORITY_OPTIONS: { value: Priority; label: string }[] = [
   { value: "urgent", label: "Urgent" },
@@ -33,6 +33,7 @@ export default function WatchlistForm({
   const [expectedDeadline, setExpectedDeadline] = useState("");
   const [url, setUrl] = useState("");
   const [reminder, setReminder] = useState(false);
+  const [pinned, setPinned] = useState(false);
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +48,7 @@ export default function WatchlistForm({
       setExpectedDeadline(initialData.expected_deadline ? initialData.expected_deadline.slice(0, 10) : "");
       setUrl(initialData.url ?? "");
       setReminder(initialData.reminder);
+      setPinned(initialData.pinned);
       setNotes(initialData.notes ?? "");
     } else if (prefillData) {
       setName(prefillData.name ?? "");
@@ -57,6 +59,7 @@ export default function WatchlistForm({
       setExpectedDeadline(prefillData.expected_deadline ? prefillData.expected_deadline.slice(0, 10) : "");
       setUrl(prefillData.url ?? "");
       setReminder(prefillData.reminder ?? false);
+      setPinned(prefillData.pinned ?? false);
       setNotes(prefillData.notes ?? "");
     }
   }, [initialData, prefillData]);
@@ -75,6 +78,7 @@ export default function WatchlistForm({
       expected_deadline: expectedDeadline || null,
       url: url || null,
       reminder,
+      pinned,
       notes: notes || null,
     };
 
@@ -120,6 +124,22 @@ export default function WatchlistForm({
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">Pin</label>
+        <button
+          type="button"
+          onClick={() => setPinned(!pinned)}
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-sm font-medium transition-all duration-200 ${
+            pinned
+              ? "bg-indigo-50 border-indigo-200 text-indigo-600"
+              : "bg-white border-gray-200 text-gray-500 hover:border-indigo-200 hover:text-indigo-600"
+          }`}
+        >
+          <Pin size={18} fill={pinned ? "currentColor" : "none"} />
+          Pin to top
+        </button>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
