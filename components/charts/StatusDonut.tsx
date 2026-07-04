@@ -1,9 +1,17 @@
 "use client";
 
+import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { daysUntil } from "@/lib/utils";
 
 interface Props {
   applications: { status: string }[];
+  watchlistItems: {
+    id: string;
+    name: string;
+    priority: string;
+    expected_deadline: string | null;
+  }[];
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -20,7 +28,7 @@ function getColor(status: string): string {
   return STATUS_COLORS[status] ?? "#d1d5db";
 }
 
-export default function StatusDonut({ applications }: Props) {
+export default function StatusDonut({ applications, watchlistItems }: Props) {
   const counts: Record<string, number> = {};
   for (const app of applications) {
     counts[app.status] = (counts[app.status] ?? 0) + 1;
@@ -29,6 +37,29 @@ export default function StatusDonut({ applications }: Props) {
   const data = Object.entries(counts)
     .map(([status, count]) => ({ name: status, count }))
     .sort((a, b) => b.count - a.count);
+
+  const stats = useMemo(() => {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
+    const futureItems = watchlistItems
+      .filter((w) => w.expected_deadline && new Date(w.expected_deadline) > now)
+      .sort((a, b) => new Date(a.expected_deadline!).getTime() - new Date(b.expected_deadline!).getTime());
+
+    const nextDeadline = futureItems[0] ?? null;
+    const nextDays = nextDeadline ? daysUntil(nextDeadline.expected_deadline!) : null;
+
+    const urgentCount = watchlistItems.filter((w) => w.priority === "urgent").length;
+
+    const thisMonthCount = watchlistItems.filter((w) => {
+      if (!w.expected_deadline) return false;
+      const d = new Date(w.expected_deadline);
+      return d >= startOfMonth && d <= endOfMonth;
+    }).length;
+
+    return { nextDeadline, nextDays, urgentCount, thisMonthCount };
+  }, [watchlistItems]);
 
   if (data.length === 0) {
     return (
@@ -41,7 +72,7 @@ export default function StatusDonut({ applications }: Props) {
   const total = data.reduce((s, d) => s + d.count, 0);
 
   return (
-    <div className="flex items-center gap-8 md:gap-12">
+    <div className="flex items-start gap-8 md:gap-10">
       {/* Donut */}
       <div className="relative shrink-0" style={{ width: 320, height: 320 }}>
         <ResponsiveContainer width="100%" height="100%">
@@ -65,7 +96,6 @@ export default function StatusDonut({ applications }: Props) {
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        {/* Center label overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <span className="text-4xl font-black text-[#1e1b4b] font-[Syne,system-ui] leading-none">
             {total}
@@ -76,7 +106,7 @@ export default function StatusDonut({ applications }: Props) {
         </div>
       </div>
 
-      {/* Legend - right side */}
+      {/* Legend + Stats - right side */}
       <div className="flex flex-col gap-3 min-w-[160px]">
         {data.map((entry) => {
           const pct = Math.round((entry.count / total) * 100);
@@ -93,7 +123,6 @@ export default function StatusDonut({ applications }: Props) {
                     {entry.count}
                   </span>
                 </div>
-                {/* Mini bar */}
                 <div className="w-full h-1 bg-gray-100 rounded-full mt-1 overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
@@ -107,6 +136,42 @@ export default function StatusDonut({ applications }: Props) {
             </div>
           );
         })}
+
+        {/* Divider */}
+        <div className="border-t border-gray-100 my-2" />
+
+        {/* Watchlist stats panel */}
+        <div className="space-y-4">
+          {/* Next Deadline */}
+          <div>
+            {stats.nextDeadline ? (
+              <>
+                <p className="text-sm font-semibold text-gray-900 truncate max-w-[180px]">
+                  {stats.nextDeadline.name}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {stats.nextDays} day{stats.nextDays !== 1 ? "s" : ""} remaining
+                </p>
+              </>
+            ) : (
+              <p className="text-xs text-gray-400">No upcoming deadlines</p>
+            )}
+          </div>
+
+          {/* Urgent count */}
+          <div>
+            <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.urgentCount}</span>
+            <p className="text-xs text-gray-500">marked Urgent</p>
+          </div>
+
+          {/* This month's deadlines */}
+          <div>
+            <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.thisMonthCount}</span>
+            <p className="text-xs text-gray-500">
+              deadline{stats.thisMonthCount !== 1 ? "s" : ""} this month
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

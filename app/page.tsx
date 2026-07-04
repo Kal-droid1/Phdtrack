@@ -127,7 +127,7 @@ export default function DashboardPage() {
             .eq("archived", false),
           supabase
             .from("watchlist")
-            .select("name, expected_open_date, expected_deadline")
+            .select("id, name, priority, expected_open_date, expected_deadline")
             .eq("archived", false),
           supabase
             .from("applications")
@@ -393,6 +393,7 @@ ${contextData}`;
           <div className="mt-6 mb-8">
             <DashboardCharts
               applications={applications}
+              watchlistItems={watchlistItems as { id: string; name: string; priority: string; expected_deadline: string | null }[]}
             />
           </div>
 

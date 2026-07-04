@@ -15,6 +15,12 @@ interface Props {
     university: string | null;
     program: string | null;
   }[];
+  watchlistItems: {
+    id: string;
+    name: string;
+    priority: string;
+    expected_deadline: string | null;
+  }[];
 }
 
 const TABS = [
@@ -24,7 +30,7 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]["id"];
 
-export default function DashboardCharts({ applications }: Props) {
+export default function DashboardCharts({ applications, watchlistItems }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>("status");
 
   return (
@@ -48,7 +54,7 @@ export default function DashboardCharts({ applications }: Props) {
 
       {/* Content area */}
       <div>
-        {activeTab === "status" && <StatusDonut applications={applications} />}
+        {activeTab === "status" && <StatusDonut applications={applications} watchlistItems={watchlistItems} />}
         {activeTab === "countries" && <CountryBarChart applications={applications} />}
       </div>
     </div>
