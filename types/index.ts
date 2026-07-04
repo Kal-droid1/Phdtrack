@@ -35,6 +35,8 @@ export interface Application {
   updated_at: string
 }
 
+export type Priority = 'urgent' | 'high' | 'normal' | 'low'
+
 export interface Watchlist {
   id: string
   name: string
@@ -46,6 +48,8 @@ export interface Watchlist {
   url: string | null
   notes: string | null
   reminder: boolean
+  priority: Priority
+  pinned: boolean
   archived: boolean
   archived_at: string | null
   lessons: string | null

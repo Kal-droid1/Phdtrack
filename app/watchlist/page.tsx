@@ -1,15 +1,25 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
-import { Watchlist } from "@/types";
+import { Watchlist, Priority } from "@/types";
 import { formatDate, daysUntil } from "@/lib/utils";
 import Drawer from "@/components/ui/Drawer";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import EmptyState from "@/components/ui/EmptyState";
 import QuickAddModal from "@/components/ui/QuickAddModal";
 import WatchlistForm from "@/components/watchlist/WatchlistForm";
-import { Plus, Search, Trash2, Edit3, Download, Wand2, ExternalLink } from "lucide-react";
+import PriorityBadge from "@/components/watchlist/PriorityBadge";
+import { Plus, Search, Trash2, Edit3, Download, Wand2, ExternalLink, Pin, Filter } from "lucide-react";
+
+const PRIORITY_ORDER: Record<Priority, number> = { urgent: 0, high: 1, normal: 2, low: 3 };
+
+const ROW_TINT: Record<Priority, string> = {
+  urgent: "bg-red-50/40 dark:bg-red-950/30",
+  high: "bg-orange-50/40 dark:bg-orange-950/30",
+  normal: "",
+  low: "bg-gray-50/40 dark:bg-gray-800/40",
+};
 
 export default function WatchlistPage() {
   const [items, setItems] = useState<Watchlist[]>([]);
@@ -22,6 +32,16 @@ export default function WatchlistPage() {
   const [quickAddLoading, setQuickAddLoading] = useState(false);
   const [quickAddError, setQuickAddError] = useState<string | null>(null);
   const [prefillData, setPrefillData] = useState<Partial<Watchlist>>();
+
+  const [sortByPriority, setSortByPriority] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("watchlist_sort_by_priority");
+      return stored !== null ? stored === "true" : true;
+    }
+    return true;
+  });
+
+  const [priorityFilter, setPriorityFilter] = useState<Priority | "all">("all");
 
   const fetchItems = useCallback(async () => {
     setLoading(true);
@@ -37,11 +57,45 @@ export default function WatchlistPage() {
 
   useEffect(() => { fetchItems(); }, [fetchItems]);
 
-  const filtered = items.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase()) ||
-    (item.funding_body ?? "").toLowerCase().includes(search.toLowerCase()) ||
-    (item.country ?? "").toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    localStorage.setItem("watchlist_sort_by_priority", String(sortByPriority));
+  }, [sortByPriority]);
+
+  const filtered = useMemo(() => {
+    let result = items.filter((item) =>
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      (item.funding_body ?? "").toLowerCase().includes(search.toLowerCase()) ||
+      (item.country ?? "").toLowerCase().includes(search.toLowerCase())
+    );
+
+    if (priorityFilter !== "all") {
+      result = result.filter((item) => item.priority === priorityFilter);
+    }
+
+    return result;
+  }, [items, search, priorityFilter]);
+
+  const sorted = useMemo(() => {
+    const list = [...filtered];
+    if (!sortByPriority) return list;
+
+    return list.sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+
+      const aOrder = PRIORITY_ORDER[a.priority] ?? 2;
+      const bOrder = PRIORITY_ORDER[b.priority] ?? 2;
+
+      if (aOrder !== bOrder) return aOrder - bOrder;
+
+      const aDate = a.expected_open_date || a.expected_deadline;
+      const bDate = b.expected_open_date || b.expected_deadline;
+
+      if (aDate && bDate) return aDate.localeCompare(bDate);
+      if (aDate) return -1;
+      if (bDate) return 1;
+      return a.name.localeCompare(b.name);
+    });
+  }, [filtered, sortByPriority]);
 
   function openCreate() { setEditing(undefined); setPrefillData(undefined); setDrawerOpen(true); }
   function openEdit(item: Watchlist) { setEditing(item); setDrawerOpen(true); }
@@ -50,6 +104,27 @@ export default function WatchlistPage() {
     await supabase.from("watchlist").update({ archived: true }).eq("id", id);
     setConfirmDelete(null);
     fetchItems();
+  }
+
+  async function handlePriorityUpdate(id: string, priority: Priority) {
+    const prev = [...items];
+    setItems((current) =>
+      current.map((item) => (item.id === id ? { ...item, priority } : item))
+    );
+
+    const { error } = await supabase.from("watchlist").update({ priority }).eq("id", id);
+    if (error) setItems(prev);
+  }
+
+  async function handlePinToggle(item: Watchlist) {
+    const newPinned = !item.pinned;
+    const prev = [...items];
+    setItems((current) =>
+      current.map((i) => (i.id === item.id ? { ...i, pinned: newPinned } : i))
+    );
+
+    const { error } = await supabase.from("watchlist").update({ pinned: newPinned }).eq("id", item.id);
+    if (error) setItems(prev);
   }
 
   async function handleQuickAdd(rawText: string) {
@@ -78,17 +153,19 @@ export default function WatchlistPage() {
   }
 
   async function handleExportCSV() {
-    const headers = ["Name", "Funding Body", "Country", "Expected Open Date", "Expected Deadline", "URL", "Notes"];
-    const rows = filtered.map((item) => [
+    const headers = ["Name", "Funding Body", "Country", "Expected Open Date", "Expected Deadline", "URL", "Priority", "Pinned", "Notes"];
+    const rows = sorted.map((item) => [
       item.name,
       item.funding_body ?? "",
       item.country ?? "",
       item.expected_open_date ?? "",
       item.expected_deadline ?? "",
       item.url ?? "",
+      item.priority,
+      item.pinned ? "Yes" : "No",
       item.notes ?? "",
     ]);
-    const csv = [headers.join(","), ...rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(","))].join("\n");
+    const csv = [headers.join(","), ...rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -151,15 +228,40 @@ export default function WatchlistPage() {
             className="pl-10 py-2.5 bg-white border-gray-200 rounded-xl"
           />
         </div>
+
+        <div className="relative">
+          <Filter size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value as Priority | "all")}
+            className="pl-9 pr-8 py-2.5 bg-white border-gray-200 rounded-xl text-sm text-gray-700 appearance-none cursor-pointer"
+          >
+            <option value="all">All priorities</option>
+            <option value="urgent">Urgent only</option>
+            <option value="high">High only</option>
+            <option value="normal">Normal only</option>
+            <option value="low">Low only</option>
+          </select>
+        </div>
+
+        <label className="flex items-center gap-2 px-3.5 py-2.5 bg-white rounded-xl border border-gray-200 text-sm text-gray-600 cursor-pointer hover:border-indigo-200 transition-all duration-200">
+          <input
+            type="checkbox"
+            checked={sortByPriority}
+            onChange={(e) => setSortByPriority(e.target.checked)}
+            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          Sort by priority
+        </label>
       </div>
 
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-gray-400 text-sm animate-pulse">Loading...</div>
-        ) : filtered.length === 0 ? (
+        ) : sorted.length === 0 ? (
           <div className="py-12">
             <EmptyState
-              message={search ? "No watchlist items match your search." : "Your watchlist is empty."}
+              message={search || priorityFilter !== "all" ? "No watchlist items match your search." : "Your watchlist is empty."}
               actionLabel="Add to Watchlist"
               onAction={openCreate}
             />
@@ -176,13 +278,16 @@ export default function WatchlistPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {filtered.map((item) => {
+                {sorted.map((item) => {
                   const openingSoon = item.expected_open_date ? isOpeningSoon(item.expected_open_date) : false;
                   return (
-                    <tr key={item.id} className="row-hover">
+                    <tr key={item.id} className={`row-hover ${ROW_TINT[item.priority]}`}>
                       <td className="px-5 py-4">
-                        <div className="flex items-center gap-3">
-                          {openingSoon && (
+                        <div className="flex items-center gap-2.5">
+                          {item.pinned && (
+                            <Pin size={13} className="text-indigo-500 shrink-0" fill="currentColor" />
+                          )}
+                          {openingSoon && !item.pinned && (
                             <span className="w-2 h-2 rounded-full shrink-0 bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.4)]" />
                           )}
                           <div className="min-w-0">
@@ -216,7 +321,22 @@ export default function WatchlistPage() {
                         )}
                       </td>
                       <td className="px-5 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <PriorityBadge
+                            priority={item.priority}
+                            onUpdate={(p) => handlePriorityUpdate(item.id, p)}
+                          />
+                          <button
+                            onClick={() => handlePinToggle(item)}
+                            className={`p-2 rounded-lg transition-all duration-200 ${
+                              item.pinned
+                                ? "text-indigo-600 bg-indigo-50"
+                                : "text-gray-400 hover:text-indigo-600 hover:bg-indigo-50"
+                            }`}
+                            aria-label={item.pinned ? "Unpin" : "Pin to top"}
+                          >
+                            <Pin size={15} fill={item.pinned ? "currentColor" : "none"} />
+                          </button>
                           {item.url && (
                             <a
                               href={item.url}

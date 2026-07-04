@@ -2,8 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Watchlist } from "@/types";
+import { Watchlist, Priority } from "@/types";
 import { Bell } from "lucide-react";
+
+const PRIORITY_OPTIONS: { value: Priority; label: string }[] = [
+  { value: "urgent", label: "Urgent" },
+  { value: "high", label: "High" },
+  { value: "normal", label: "Normal" },
+  { value: "low", label: "Low" },
+];
 
 interface WatchlistFormProps {
   initialData?: Watchlist;
@@ -19,6 +26,7 @@ export default function WatchlistForm({
   onClose,
 }: WatchlistFormProps) {
   const [name, setName] = useState("");
+  const [priority, setPriority] = useState<Priority>("normal");
   const [fundingBody, setFundingBody] = useState("");
   const [country, setCountry] = useState("");
   const [expectedOpenDate, setExpectedOpenDate] = useState("");
@@ -32,6 +40,7 @@ export default function WatchlistForm({
   useEffect(() => {
     if (initialData) {
       setName(initialData.name);
+      setPriority(initialData.priority);
       setFundingBody(initialData.funding_body ?? "");
       setCountry(initialData.country ?? "");
       setExpectedOpenDate(initialData.expected_open_date ? initialData.expected_open_date.slice(0, 10) : "");
@@ -41,6 +50,7 @@ export default function WatchlistForm({
       setNotes(initialData.notes ?? "");
     } else if (prefillData) {
       setName(prefillData.name ?? "");
+      setPriority(prefillData.priority ?? "normal");
       setFundingBody(prefillData.funding_body ?? "");
       setCountry(prefillData.country ?? "");
       setExpectedOpenDate(prefillData.expected_open_date ? prefillData.expected_open_date.slice(0, 10) : "");
@@ -58,6 +68,7 @@ export default function WatchlistForm({
 
     const payload = {
       name,
+      priority,
       funding_body: fundingBody || null,
       country: country || null,
       expected_open_date: expectedOpenDate || null,
@@ -96,6 +107,19 @@ export default function WatchlistForm({
           Name <span className="text-red-500">*</span>
         </label>
         <input type="text" required placeholder="e.g. Fulbright Scholarship" value={name} onChange={(e) => setName(e.target.value)} className="border-gray-200" />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-600 mb-1.5">Priority</label>
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value as Priority)}
+          className="border-gray-200"
+        >
+          {PRIORITY_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
