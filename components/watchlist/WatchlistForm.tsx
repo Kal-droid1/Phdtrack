@@ -113,33 +113,35 @@ export default function WatchlistForm({
         <input type="text" required placeholder="e.g. Fulbright Scholarship" value={name} onChange={(e) => setName(e.target.value)} className="border-gray-200" />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-600 mb-1.5">Priority</label>
-        <select
-          value={priority}
-          onChange={(e) => setPriority(e.target.value as Priority)}
-          className="border-gray-200"
-        >
-          {PRIORITY_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
-      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-600 mb-1.5">Priority</label>
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as Priority)}
+            className="border-gray-200"
+          >
+            {PRIORITY_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-600 mb-1.5">Pin</label>
-        <button
-          type="button"
-          onClick={() => setPinned(!pinned)}
-          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-sm font-medium transition-all duration-200 ${
-            pinned
-              ? "bg-indigo-50 border-indigo-200 text-indigo-600"
-              : "bg-white border-gray-200 text-gray-500 hover:border-indigo-200 hover:text-indigo-600"
-          }`}
-        >
-          <Pin size={18} fill={pinned ? "currentColor" : "none"} />
-          Pin to top
-        </button>
+        <div>
+          <label className="block text-sm font-medium text-gray-600 mb-1.5">Pin</label>
+          <button
+            type="button"
+            onClick={() => setPinned(!pinned)}
+            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-sm font-medium transition-all duration-200 ${
+              pinned
+                ? "bg-indigo-50 border-indigo-200 text-indigo-600"
+                : "bg-white border-gray-200 text-gray-500 hover:border-indigo-200 hover:text-indigo-600"
+            }`}
+          >
+            <Pin size={18} fill={pinned ? "currentColor" : "none"} />
+            Pin to top
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
