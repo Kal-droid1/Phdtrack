@@ -304,16 +304,18 @@ export default function WatchlistPage() {
                       </td>
                       <td className="px-5 py-4 hidden md:table-cell">
                         {item.expected_open_date || item.expected_deadline ? (
-                          <div className="flex items-center gap-1.5 tabular-nums">
-                            <span className="text-sm text-gray-700">
-                              {item.expected_open_date ? formatDate(item.expected_open_date) : <span className="text-gray-300">—</span>}
-                            </span>
-                            <span className="text-gray-300 text-xs">→</span>
-                            <span className="text-sm text-gray-700">
-                              {item.expected_deadline ? formatDate(item.expected_deadline) : <span className="text-gray-300">—</span>}
-                            </span>
+                          <div>
+                            <div className="flex items-center gap-1.5 tabular-nums">
+                              <span className="text-sm text-gray-700">
+                                {item.expected_open_date ? formatDate(item.expected_open_date) : <span className="text-gray-300">—</span>}
+                              </span>
+                              <span className="text-gray-300 text-xs">→</span>
+                              <span className="text-sm text-gray-700">
+                                {item.expected_deadline ? formatDate(item.expected_deadline) : <span className="text-gray-300">—</span>}
+                              </span>
+                            </div>
                             {openingSoon && (
-                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold text-amber-700 bg-amber-100 ml-1">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-medium text-amber-700 bg-amber-100 mt-1">
                                 Opening soon
                               </span>
                             )}
