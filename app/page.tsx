@@ -393,7 +393,6 @@ ${contextData}`;
           <div className="mt-6 mb-8">
             <DashboardCharts
               applications={applications}
-              watchlistItems={watchlistItems}
             />
           </div>
 

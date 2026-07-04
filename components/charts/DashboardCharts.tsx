@@ -3,7 +3,6 @@
 import { useState } from "react";
 import StatusDonut from "./StatusDonut";
 import CountryBarChart from "./CountryBarChart";
-import TimelineChart from "./TimelineChart";
 
 interface Props {
   applications: {
@@ -16,22 +15,16 @@ interface Props {
     university: string | null;
     program: string | null;
   }[];
-  watchlistItems: {
-    name: string;
-    expected_open_date: string | null;
-    expected_deadline: string | null;
-  }[];
 }
 
 const TABS = [
   { id: "status", label: "Status" },
   { id: "countries", label: "Countries" },
-  { id: "timeline", label: "Timeline" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
 
-export default function DashboardCharts({ applications, watchlistItems }: Props) {
+export default function DashboardCharts({ applications }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>("status");
 
   return (
@@ -57,9 +50,6 @@ export default function DashboardCharts({ applications, watchlistItems }: Props)
       <div>
         {activeTab === "status" && <StatusDonut applications={applications} />}
         {activeTab === "countries" && <CountryBarChart applications={applications} />}
-        {activeTab === "timeline" && (
-          <TimelineChart applications={applications} watchlistItems={watchlistItems} />
-        )}
       </div>
     </div>
   );
