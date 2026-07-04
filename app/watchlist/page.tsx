@@ -15,10 +15,10 @@ import { Plus, Search, Trash2, Edit3, Download, Wand2, ExternalLink, Pin, Filter
 const PRIORITY_ORDER: Record<Priority, number> = { urgent: 0, high: 1, normal: 2, low: 3 };
 
 const ROW_TINT: Record<Priority, string> = {
-  urgent: "bg-red-50 dark:bg-red-950/20",
-  high: "bg-orange-50 dark:bg-orange-950/20",
+  urgent: "#fef2f2",
+  high: "#fff7ed",
   normal: "",
-  low: "bg-slate-50 dark:bg-slate-900/20",
+  low: "#f8fafc",
 };
 
 export default function WatchlistPage() {
@@ -283,7 +283,7 @@ export default function WatchlistPage() {
                 {sorted.map((item) => {
                   const openingSoon = item.expected_open_date ? isOpeningSoon(item.expected_open_date) : false;
                   return (
-                    <tr key={item.id} className={`row-hover ${ROW_TINT[item.priority]}`}>
+                    <tr key={item.id} className="row-hover" style={ROW_TINT[item.priority] ? { backgroundColor: ROW_TINT[item.priority] } : undefined}>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2.5">
                           {item.pinned && (
