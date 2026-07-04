@@ -123,7 +123,7 @@ export default function StatusDonut({ applications, watchlistItems }: Props) {
                     {entry.count}
                   </span>
                 </div>
-                <div className="w-full h-1 bg-gray-100 rounded-full mt-1 overflow-hidden">
+                <div className="w-full max-w-[180px] h-1 bg-gray-100 rounded-full mt-1 overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
@@ -144,6 +144,9 @@ export default function StatusDonut({ applications, watchlistItems }: Props) {
       {/* Stats panel */}
       <div className="flex-1 flex flex-col justify-center gap-5">
         <div>
+          <p className="text-[10px] font-semibold text-gray-400 tracking-[0.1em] uppercase mb-1">
+            Next Deadline
+          </p>
           {stats.nextDeadline ? (
             <>
               <p className="text-sm font-semibold text-gray-900 truncate max-w-[180px]">
@@ -159,11 +162,17 @@ export default function StatusDonut({ applications, watchlistItems }: Props) {
         </div>
 
         <div>
+          <p className="text-[10px] font-semibold text-gray-400 tracking-[0.1em] uppercase mb-1">
+            Urgent Items
+          </p>
           <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.urgentCount}</span>
           <p className="text-xs text-gray-500">marked Urgent</p>
         </div>
 
         <div>
+          <p className="text-[10px] font-semibold text-gray-400 tracking-[0.1em] uppercase mb-1">
+            This Month
+          </p>
           <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.thisMonthCount}</span>
           <p className="text-xs text-gray-500">
             deadline{stats.thisMonthCount !== 1 ? "s" : ""} this month
