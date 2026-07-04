@@ -167,18 +167,22 @@ export default function CountryBarChart({ applications }: Props) {
   }
 
   const maxCount = Math.max(...data.map((d) => d.count));
+  const ROW_HEIGHT = 38;
+  const MAX_VISIBLE = 12;
+  const chartHeight = data.length * ROW_HEIGHT + 20;
+  const needsScroll = data.length > MAX_VISIBLE;
 
   return (
-    <div className="pr-2">
+    <div className={needsScroll ? "pr-2 max-h-[478px] overflow-y-auto" : "pr-2"}>
       <ResponsiveContainer
         width="100%"
-        height={Math.max(200, data.length * 52 + 20)}
+        height={chartHeight}
       >
         <BarChart
           data={data}
           layout="vertical"
-          margin={{ top: 8, right: 40, left: 0, bottom: 8 }}
-          barSize={28}
+          margin={{ top: 6, right: 36, left: 0, bottom: 6 }}
+          barSize={22}
         >
           <XAxis type="number" hide domain={[0, maxCount * 1.4]} />
           <YAxis
@@ -187,24 +191,25 @@ export default function CountryBarChart({ applications }: Props) {
             tick={({ x, y, payload }) => {
               const item = data[payload.index];
               return (
-                <g transform={`translate(${x},${y})`}>
-                  <text
-                    x={0}
-                    y={0}
-                    dy={5}
-                    textAnchor="end"
-                    fontSize={13}
-                    fill="#374151"
-                    fontWeight={500}
-                  >
+                <foreignObject x={-165} y={Number(y) - 12} width={155} height={24} style={{ overflow: "visible" }}>
+                  <div style={{
+                    textAlign: "right",
+                    fontSize: 13,
+                    color: "#374151",
+                    fontWeight: 500,
+                    lineHeight: "24px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}>
                     {item?.flag ? `${item.flag}  ${payload.value}` : payload.value}
-                  </text>
-                </g>
+                  </div>
+                </foreignObject>
               );
             }}
             tickLine={false}
             axisLine={false}
-            width={140}
+            width={160}
           />
           <Tooltip content={CountryTooltip} />
           <Bar
