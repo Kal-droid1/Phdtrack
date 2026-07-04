@@ -127,7 +127,7 @@ export default function DashboardPage() {
             .eq("archived", false),
           supabase
             .from("watchlist")
-            .select("id, name, priority, expected_open_date, expected_deadline")
+            .select("id, name, type, priority, expected_open_date, expected_deadline")
             .eq("archived", false),
           supabase
             .from("applications")
