@@ -72,7 +72,7 @@ export default function StatusDonut({ applications, watchlistItems }: Props) {
   const total = data.reduce((s, d) => s + d.count, 0);
 
   return (
-    <div className="flex items-start gap-8 md:gap-10">
+    <div className="flex items-center gap-8 md:gap-10">
       {/* Donut */}
       <div className="relative shrink-0" style={{ width: 320, height: 320 }}>
         <ResponsiveContainer width="100%" height="100%">
@@ -106,8 +106,8 @@ export default function StatusDonut({ applications, watchlistItems }: Props) {
         </div>
       </div>
 
-      {/* Legend + Stats - right side */}
-      <div className="flex flex-col gap-3 min-w-[160px]">
+      {/* Legend */}
+      <div className="flex-1 flex flex-col gap-3">
         {data.map((entry) => {
           const pct = Math.round((entry.count / total) * 100);
           return (
@@ -136,41 +136,38 @@ export default function StatusDonut({ applications, watchlistItems }: Props) {
             </div>
           );
         })}
+      </div>
 
-        {/* Divider */}
-        <div className="border-t border-gray-100 my-2" />
+      {/* Divider */}
+      <div className="self-stretch border-l border-gray-100" />
 
-        {/* Watchlist stats panel */}
-        <div className="space-y-4">
-          {/* Next Deadline */}
-          <div>
-            {stats.nextDeadline ? (
-              <>
-                <p className="text-sm font-semibold text-gray-900 truncate max-w-[180px]">
-                  {stats.nextDeadline.name}
-                </p>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {stats.nextDays} day{stats.nextDays !== 1 ? "s" : ""} remaining
-                </p>
-              </>
-            ) : (
-              <p className="text-xs text-gray-400">No upcoming deadlines</p>
-            )}
-          </div>
+      {/* Stats panel */}
+      <div className="flex-1 flex flex-col justify-center gap-5">
+        <div>
+          {stats.nextDeadline ? (
+            <>
+              <p className="text-sm font-semibold text-gray-900 truncate max-w-[180px]">
+                {stats.nextDeadline.name}
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {stats.nextDays} day{stats.nextDays !== 1 ? "s" : ""} remaining
+              </p>
+            </>
+          ) : (
+            <p className="text-xs text-gray-400">No upcoming deadlines</p>
+          )}
+        </div>
 
-          {/* Urgent count */}
-          <div>
-            <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.urgentCount}</span>
-            <p className="text-xs text-gray-500">marked Urgent</p>
-          </div>
+        <div>
+          <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.urgentCount}</span>
+          <p className="text-xs text-gray-500">marked Urgent</p>
+        </div>
 
-          {/* This month's deadlines */}
-          <div>
-            <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.thisMonthCount}</span>
-            <p className="text-xs text-gray-500">
-              deadline{stats.thisMonthCount !== 1 ? "s" : ""} this month
-            </p>
-          </div>
+        <div>
+          <span className="text-lg font-bold text-[#1e1b4b] tabular-nums">{stats.thisMonthCount}</span>
+          <p className="text-xs text-gray-500">
+            deadline{stats.thisMonthCount !== 1 ? "s" : ""} this month
+          </p>
         </div>
       </div>
     </div>
