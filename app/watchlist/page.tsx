@@ -10,15 +10,15 @@ import EmptyState from "@/components/ui/EmptyState";
 import QuickAddModal from "@/components/ui/QuickAddModal";
 import WatchlistForm from "@/components/watchlist/WatchlistForm";
 import PriorityBadge from "@/components/watchlist/PriorityBadge";
-import { Plus, Search, Trash2, Edit3, Download, Wand2, ExternalLink, Pin, Filter } from "lucide-react";
+import { Plus, Search, Trash2, Edit3, Download, Wand2, ExternalLink, Pin, Filter, ArrowDownUp } from "lucide-react";
 
 const PRIORITY_ORDER: Record<Priority, number> = { urgent: 0, high: 1, normal: 2, low: 3 };
 
 const ROW_TINT: Record<Priority, string> = {
-  urgent: "bg-red-50/40 dark:bg-red-950/30",
-  high: "bg-orange-50/40 dark:bg-orange-950/30",
+  urgent: "bg-red-50 dark:bg-red-950/20",
+  high: "bg-orange-50 dark:bg-orange-950/20",
   normal: "",
-  low: "bg-gray-50/40 dark:bg-gray-800/40",
+  low: "bg-slate-50 dark:bg-slate-900/20",
 };
 
 export default function WatchlistPage() {
@@ -244,15 +244,17 @@ export default function WatchlistPage() {
           </select>
         </div>
 
-        <label className="flex items-center gap-2 px-3.5 py-2.5 bg-white rounded-xl border border-gray-200 text-sm text-gray-600 cursor-pointer hover:border-indigo-200 transition-all duration-200">
-          <input
-            type="checkbox"
-            checked={sortByPriority}
-            onChange={(e) => setSortByPriority(e.target.checked)}
-            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-          />
+        <button
+          onClick={() => setSortByPriority(!sortByPriority)}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border transition-all duration-200 ${
+            sortByPriority
+              ? "bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm"
+              : "bg-white border-gray-200 text-gray-500 hover:border-indigo-200 hover:text-indigo-600"
+          }`}
+        >
+          <ArrowDownUp size={15} />
           Sort by priority
-        </label>
+        </button>
       </div>
 
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
