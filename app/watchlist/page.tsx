@@ -77,15 +77,15 @@ export default function WatchlistPage() {
 
   const sorted = useMemo(() => {
     const list = [...filtered];
-    if (!sortByPriority) return list;
 
     return list.sort((a, b) => {
       if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
 
-      const aOrder = PRIORITY_ORDER[a.priority] ?? 2;
-      const bOrder = PRIORITY_ORDER[b.priority] ?? 2;
-
-      if (aOrder !== bOrder) return aOrder - bOrder;
+      if (sortByPriority) {
+        const aOrder = PRIORITY_ORDER[a.priority] ?? 2;
+        const bOrder = PRIORITY_ORDER[b.priority] ?? 2;
+        if (aOrder !== bOrder) return aOrder - bOrder;
+      }
 
       const aDate = a.expected_open_date || a.expected_deadline;
       const bDate = b.expected_open_date || b.expected_deadline;
