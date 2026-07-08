@@ -246,7 +246,8 @@ export default function CountryBarChart({ applications }: Props) {
           <YAxis
             type="category"
             dataKey="country"
-            tick={({ y, payload }) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            tick={({ x, y, payload }) => {
               const item = data[payload.index];
               return (
                 <foreignObject x={-165} y={Number(y) - 12} width={155} height={24} style={{ overflow: "visible" }}>
