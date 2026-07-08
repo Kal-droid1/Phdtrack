@@ -246,24 +246,21 @@ export default function CountryBarChart({ applications }: Props) {
           <YAxis
             type="category"
             dataKey="country"
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             tick={({ x, y, payload }) => {
               const item = data[payload.index];
+              const label = item?.flag ? `${item.flag}  ${payload.value}` : payload.value;
               return (
-                <foreignObject x={-165} y={Number(y) - 12} width={155} height={24} style={{ overflow: "visible" }}>
-                  <div style={{
-                    textAlign: "right",
-                    fontSize: 13,
-                    color: "#374151",
-                    fontWeight: 500,
-                    lineHeight: "24px",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}>
-                    {item?.flag ? `${item.flag}  ${payload.value}` : payload.value}
-                  </div>
-                </foreignObject>
+                <text
+                  x={Number(x)}
+                  y={Number(y)}
+                  dy={4}
+                  textAnchor="end"
+                  fill="#374151"
+                  fontSize={13}
+                  fontWeight={500}
+                >
+                  {label}
+                </text>
               );
             }}
             tickLine={false}
