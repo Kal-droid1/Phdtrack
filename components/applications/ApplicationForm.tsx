@@ -17,6 +17,7 @@ const statuses: Application["status"][] = [
 interface ApplicationFormProps {
   initialData?: Application;
   prefillData?: Partial<Application>;
+  prefillStatus?: Application["status"];
   onSave: () => void;
   onClose: () => void;
 }
@@ -24,6 +25,7 @@ interface ApplicationFormProps {
 export default function ApplicationForm({
   initialData,
   prefillData,
+  prefillStatus,
   onSave,
   onClose,
 }: ApplicationFormProps) {
@@ -61,14 +63,15 @@ export default function ApplicationForm({
       setOpenDate(prefillData.open_date ? prefillData.open_date.slice(0, 10) : "");
       setDeadline(prefillData.deadline ? prefillData.deadline.slice(0, 10) : "");
       setStatus(
-        statuses.includes(prefillData.status as Application["status"])
+        prefillStatus ??
+        (statuses.includes(prefillData.status as Application["status"])
           ? (prefillData.status as Application["status"])
-          : "Watching"
+          : "Watching")
       );
       setReminder(prefillData.reminder ?? false);
       setNotes(prefillData.notes ?? "");
     }
-  }, [initialData, prefillData]);
+  }, [initialData, prefillData, prefillStatus]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

@@ -9,8 +9,9 @@ import ConfirmModal from "@/components/ui/ConfirmModal";
 import EmptyState from "@/components/ui/EmptyState";
 import QuickAddModal from "@/components/ui/QuickAddModal";
 import WatchlistForm from "@/components/watchlist/WatchlistForm";
+import ApplicationForm from "@/components/applications/ApplicationForm";
 import PriorityBadge from "@/components/watchlist/PriorityBadge";
-import { Plus, Search, Trash2, Edit3, Download, Wand2, ExternalLink, Pin, Filter, ArrowDownUp } from "lucide-react";
+import { Plus, Search, Trash2, Edit3, Download, Wand2, ExternalLink, Pin, Filter, ArrowDownUp, MoveRight } from "lucide-react";
 
 const PRIORITY_ORDER: Record<Priority, number> = { urgent: 0, high: 1, normal: 2, low: 3 };
 
@@ -27,6 +28,7 @@ export default function WatchlistPage() {
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editing, setEditing] = useState<Watchlist | undefined>(undefined);
+  const [moveToAppItem, setMoveToAppItem] = useState<Watchlist | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [quickAddLoading, setQuickAddLoading] = useState(false);
@@ -353,6 +355,14 @@ export default function WatchlistPage() {
                             </a>
                           )}
                           <button
+                            onClick={() => setMoveToAppItem(item)}
+                            className="p-2 rounded-lg text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-200"
+                            aria-label="Move to Application"
+                            title="Move to Application"
+                          >
+                            <MoveRight size={15} />
+                          </button>
+                          <button
                             onClick={() => openEdit(item)}
                             className="p-2 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
                             aria-label="Edit"
@@ -385,6 +395,29 @@ export default function WatchlistPage() {
           onSave={() => { setDrawerOpen(false); fetchItems(); }}
           onClose={() => setDrawerOpen(false)}
         />
+      </Drawer>
+
+      <Drawer isOpen={moveToAppItem !== null} onClose={() => setMoveToAppItem(null)} title="Move to Application">
+        {moveToAppItem && (
+          <ApplicationForm
+            key={moveToAppItem.id}
+            prefillData={{
+              name: moveToAppItem.name,
+              university: moveToAppItem.funding_body ?? null,
+              country: moveToAppItem.country,
+              funding_body: moveToAppItem.funding_body,
+              deadline: moveToAppItem.expected_deadline,
+              notes: moveToAppItem.notes,
+            }}
+            prefillStatus="Applied"
+            onSave={async () => {
+              setMoveToAppItem(null);
+              await supabase.from("watchlist").update({ archived: true }).eq("id", moveToAppItem.id);
+              fetchItems();
+            }}
+            onClose={() => setMoveToAppItem(null)}
+          />
+        )}
       </Drawer>
 
       <ConfirmModal
