@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { COUNTRIES } from "@/lib/countries";
 
 export async function POST(request: Request) {
   const { text, type } = await request.json();
@@ -65,6 +66,12 @@ Return only the JSON object, nothing else.`
         parsed[key] = null
       }
     })
+    if (parsed.country) {
+      const normalized = COUNTRIES.find(
+        (c) => c.toLowerCase() === parsed.country.trim().toLowerCase()
+      );
+      parsed.country = normalized ?? parsed.country.trim();
+    }
     return NextResponse.json(parsed)
   } catch (err) {
     const message = err instanceof Error ? err.message : "Parsing failed";

@@ -178,27 +178,36 @@ function getFlag(country: string): string {
   return "";
 }
 
+function displayCountry(raw: string): string {
+  return raw.trim();
+}
+
 export default function CountryBarChart({ applications }: Props) {
+  const normalized = (s: string) => s.trim().toLowerCase();
+
   const countriesWithNonRejected = new Set(
     applications
       .filter((app) => app.country && app.status !== "Rejected")
-      .map((app) => app.country)
+      .map((app) => normalized(app.country!))
   );
 
   const counts: Record<string, number> = {};
+  const canonical: Record<string, string> = {};
   for (const app of applications) {
     if (!app.country) continue;
-    if (!countriesWithNonRejected.has(app.country)) continue;
-    counts[app.country] = (counts[app.country] ?? 0) + 1;
+    const key = normalized(app.country);
+    if (!countriesWithNonRejected.has(key)) continue;
+    counts[key] = (counts[key] ?? 0) + 1;
+    canonical[key] = app.country;
   }
 
   const data = Object.entries(counts)
-    .map(([country, count]) => ({
-      country,
+    .map(([key, count]) => ({
+      country: displayCountry(canonical[key]),
       count,
-      flag: getFlag(country),
+      flag: getFlag(canonical[key]),
       apps: applications
-        .filter((app) => app.country === country)
+        .filter((app) => app.country && normalized(app.country) === key)
         .map((app) => ({
           university: app.university ?? "Unknown University",
           program: app.program ?? "Unspecified Program",

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Application } from "@/types";
+import { COUNTRIES } from "@/lib/countries";
 import { Bell } from "lucide-react";
 
 const statuses: Application["status"][] = [
@@ -140,7 +141,12 @@ export default function ApplicationForm({
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1.5">Country</label>
-          <input type="text" value={country ?? ""} onChange={(e) => setCountry(e.target.value)} className="border-gray-200" />
+          <select value={country ?? ""} onChange={(e) => setCountry(e.target.value)} className="border-gray-200">
+            <option value="">Select country...</option>
+            {COUNTRIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
         </div>
       </div>
 

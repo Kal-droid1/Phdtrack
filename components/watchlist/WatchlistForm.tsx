@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Watchlist, Priority } from "@/types";
+import { COUNTRIES } from "@/lib/countries";
 import { Bell, Pin } from "lucide-react";
 
 const PRIORITY_OPTIONS: { value: Priority; label: string }[] = [
@@ -151,7 +152,12 @@ export default function WatchlistForm({
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1.5">Country</label>
-          <input type="text" placeholder="e.g. Germany" value={country} onChange={(e) => setCountry(e.target.value)} className="border-gray-200" />
+          <select value={country} onChange={(e) => setCountry(e.target.value)} className="border-gray-200">
+            <option value="">Select country...</option>
+            {COUNTRIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
         </div>
       </div>
 
