@@ -195,6 +195,7 @@ export default function CountryBarChart({ applications }: Props) {
   const canonical: Record<string, string> = {};
   for (const app of applications) {
     if (!app.country) continue;
+    if (app.status === "Rejected") continue;
     const key = normalized(app.country);
     if (!countriesWithNonRejected.has(key)) continue;
     counts[key] = (counts[key] ?? 0) + 1;
@@ -207,7 +208,7 @@ export default function CountryBarChart({ applications }: Props) {
       count,
       flag: getFlag(canonical[key]),
       apps: applications
-        .filter((app) => app.country && normalized(app.country) === key)
+        .filter((app) => app.country && normalized(app.country) === key && app.status !== "Rejected")
         .map((app) => ({
           university: app.university ?? "Unknown University",
           program: app.program ?? "Unspecified Program",
