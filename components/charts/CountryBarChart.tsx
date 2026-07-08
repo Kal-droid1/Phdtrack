@@ -246,7 +246,7 @@ export default function CountryBarChart({ applications }: Props) {
           <YAxis
             type="category"
             dataKey="country"
-            tick={({ x, y, payload }) => {
+            tick={({ y, payload }) => {
               const item = data[payload.index];
               return (
                 <foreignObject x={-165} y={Number(y) - 12} width={155} height={24} style={{ overflow: "visible" }}>
